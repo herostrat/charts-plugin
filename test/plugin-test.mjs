@@ -1,16 +1,20 @@
-'use strict'
-const fs = require('fs')
-const _ = require('lodash')
-const path = require('path')
-const http = require('http')
-const chai = require('chai')
-const chaiHttp = require('chai-http')
-const express = require('express')
-const expect = chai.expect
-const Plugin = require('../plugin/index')
-const expectedCharts = require('./expected-charts.json')
+import fs from 'fs'
+import _ from 'lodash'
+import path from 'path'
+import http from 'http'
+import { expect } from 'chai'
+import { request as chaiRequest } from 'chai-http'
+import express from 'express'
+import bodyParser from 'body-parser'
+import { fileURLToPath } from 'url'
+import Plugin from '../plugin/index.js'
 
-chai.use(chaiHttp)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const expectedCharts = JSON.parse(
+  fs.readFileSync(new URL('./expected-charts.json', import.meta.url), 'utf8')
+)
+
 
 describe('GET /resources/charts', () => {
   let plugin
@@ -181,7 +185,7 @@ const expectTileResponse = (response, expectedTilePath, expectedFormat) => {
 
 const createDefaultApp = () => {
   let app = express()
-  app.use(require('body-parser').json())
+  app.use(bodyParser.json())
   app.debug = (x) => console.log(x)
   app.config = { configPath: path.resolve(__dirname) }
 
@@ -205,7 +209,7 @@ const createDefaultApp = () => {
 
 const get = (server, location) => {
   const baseUrl = `http://localhost:${server.address().port}`
-  return chai
-    .request(baseUrl)
+  return chaiRequest
+    .execute(baseUrl)
     .get(location)
 }

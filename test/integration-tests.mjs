@@ -1,13 +1,16 @@
-'use strict'
+import fs from 'fs'
+import path from 'path'
+import { expect } from 'chai'
+import { request as chaiRequest } from 'chai-http'
+import express from 'express'
+import bodyParser from 'body-parser'
+import http from 'http'
+import { fileURLToPath } from 'url'
+import Plugin from '../plugin/index.js'
 
-const fs = require('fs')
-const path = require('path')
-const chai = require('chai')
-const chaiHttp = require('chai-http')
-const express = require('express')
-const expect = chai.expect
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-chai.use(chaiHttp)
 
 /**
  * Integration Tests: Chart Loading & Tile Serving
@@ -19,12 +22,9 @@ chai.use(chaiHttp)
  * 4. Y-flipping works correctly for TMS
  */
 
-const Plugin = require('../plugin/index')
-const http = require('http')
-
 const createTestApp = () => {
   let app = express()
-  app.use(require('body-parser').json())
+  app.use(bodyParser.json())
   app.debug = (x) => console.log(x)
   app.config = { configPath: path.resolve(__dirname) }
 
@@ -46,7 +46,7 @@ const createTestApp = () => {
 
 const getRequest = (server, location) => {
   const baseUrl = `http://localhost:${server.address().port}`
-  return chai.request(baseUrl).get(location)
+  return chaiRequest.execute(baseUrl).get(location)
 }
 
 describe('Integration Tests: Chart Loading', () => {

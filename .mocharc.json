@@ -1,10 +1,10 @@
 {
   "spec": [
-    "test/unit-tests.js",
-    "test/edge-case-tests.js",
-    "test/coverage-improvement-tests.js",
-    "test/integration-tests.js",
-    "test/plugin-test.js"
+    "test/unit-tests.mjs",
+    "test/edge-case-tests.mjs",
+    "test/coverage-improvement-tests.mjs",
+    "test/integration-tests.mjs",
+    "test/plugin-test.mjs"
   ],
   "timeout": 10000,
   "reporter": "spec",

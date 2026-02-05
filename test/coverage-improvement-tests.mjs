@@ -1,9 +1,8 @@
-'use strict'
+import fs from 'fs'
+import path from 'path'
+import * as chai from 'chai'
 
-const fs = require('fs')
-const path = require('path')
-const chai = require('chai')
-const expect = chai.expect
+const { expect } = chai
 
 /**
  * Coverage Improvement Tests

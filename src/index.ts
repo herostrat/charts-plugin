@@ -285,10 +285,20 @@ module.exports = (app: ChartProviderApp): Plugin => {
   const registerRoutes = () => {
     app.debug('** Registering API paths **')
 
+    const normalizeParam = (value: string | string[] | undefined) => {
+      if (Array.isArray(value)) {
+        return value[0] ?? ''
+      }
+      return value ?? ''
+    }
+
     app.get(
       `${chartTilesPath}/:identifier/:z([0-9]*)/:x([0-9]*)/:y([0-9]*)`,
       async (req: Request, res: Response) => {
-        const { identifier, z, x, y } = req.params
+        const identifier = normalizeParam(req.params.identifier)
+        const z = normalizeParam(req.params.z)
+        const x = normalizeParam(req.params.x)
+        const y = normalizeParam(req.params.y)
         const ix = parseInt(x)
         const iy = parseInt(y)
         const iz = parseInt(z)
@@ -317,7 +327,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
     app.post(
       `${chartTilesPath}/cache/:identifier`,
       async (req: Request, res: Response) => {
-        const { identifier } = req.params
+        const identifier = normalizeParam(req.params.identifier)
         const { regionGUID, tile, bbox, maxZoom } = req.body as {
           regionGUID?: string
           tile?: Tile // query params come in as strings
@@ -366,7 +376,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
     app.post(
       `${chartTilesPath}/cache/jobs/:id`,
       (req: Request, res: Response) => {
-        const { id } = req.params
+        const id = normalizeParam(req.params.id)
         const { action } = req.body as { action: string }
         const parsedId = parseInt(id)
         const job = ChartSeedingManager.ActiveJobs[parsedId]
@@ -392,7 +402,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
     app.get(
       apiRoutePrefix[1] + '/charts/:identifier',
       (req: Request, res: Response) => {
-        const { identifier } = req.params
+        const identifier = normalizeParam(req.params.identifier)
         const provider = chartProviders[identifier]
         if (provider) {
           return res.json(sanitizeProvider(provider))
