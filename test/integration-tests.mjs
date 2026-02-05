@@ -571,6 +571,41 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
     })
   })
 
+  it('returns 404 for mixed invalid tile parameters', () => {
+    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+      getRequest(testServer, '/signalk/chart-tiles/test/4/5/x')
+    ).catch(e => e.response)
+    .then((response) => {
+      expect(response.status).to.equal(404)
+      return getRequest(testServer, '/signalk/chart-tiles/test/x/5/6')
+    }).catch(e => e.response)
+    .then((response) => {
+      expect(response.status).to.equal(404)
+    })
+  })
+
+  it('returns 404 for negative or decimal tile parameters', () => {
+    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+      getRequest(testServer, '/signalk/chart-tiles/test/-1/0/0')
+    ).catch(e => e.response)
+    .then((response) => {
+      expect(response.status).to.equal(404)
+      return getRequest(testServer, '/signalk/chart-tiles/test/4/5/6.1')
+    }).catch(e => e.response)
+    .then((response) => {
+      expect(response.status).to.equal(404)
+    })
+  })
+
+  it('returns 404 for whitespace-padded tile parameters', () => {
+    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+      getRequest(testServer, '/signalk/chart-tiles/test/4/5/%206')
+    ).catch(e => e.response)
+    .then((response) => {
+      expect(response.status).to.equal(404)
+    })
+  })
+
   it('returns 404 for out-of-range zoom levels', () => {
     return plugin.start({ chartPaths: ['charts'] }).then(() =>
       getRequest(testServer, '/signalk/chart-tiles/test/0/0/0')

@@ -292,13 +292,18 @@ module.exports = (app: ChartProviderApp): Plugin => {
       return value ?? ''
     }
 
+    const isValidTileParam = (value: string) => /^\d+$/.test(value)
+
     app.get(
-      `${chartTilesPath}/:identifier/:z([0-9]*)/:x([0-9]*)/:y([0-9]*)`,
+      `${chartTilesPath}/:identifier/:z/:x/:y`,
       async (req: Request, res: Response) => {
         const identifier = normalizeParam(req.params.identifier)
         const z = normalizeParam(req.params.z)
         const x = normalizeParam(req.params.x)
         const y = normalizeParam(req.params.y)
+        if (!isValidTileParam(z) || !isValidTileParam(x) || !isValidTileParam(y)) {
+          return res.sendStatus(404)
+        }
         const ix = parseInt(x)
         const iy = parseInt(y)
         const iz = parseInt(z)
