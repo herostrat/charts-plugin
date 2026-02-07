@@ -3,3 +3,10 @@ node_modules/
 plugin/
 package-lock.json
 tsconfig.tsbuildinfo
+coverage/
+.nyc_output/
+dev-data/signalk-data/
+tmp/
+*.log
+*.tmp
+*.cache

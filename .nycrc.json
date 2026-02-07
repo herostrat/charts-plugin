@@ -1,0 +1,25 @@
+{
+  "branches": 80,
+  "lines": 80,
+  "functions": 80,
+  "statements": 80,
+  "all": true,
+  "include": [
+    "plugin/**/*.js"
+  ],
+  "exclude": [
+    "**/*.d.ts",
+    "node_modules/**",
+    "test/**",
+    "public/**"
+  ],
+  "reporter": [
+    "text",
+    "text-summary",
+    "html",
+    "lcov"
+  ],
+  "report-dir": "./coverage",
+  "temp-dir": "./.nyc_output",
+  "source-map": false
+}

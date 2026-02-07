@@ -1,0 +1,838 @@
+{
+  "sourceFile": "seamarks.pmtiles",
+  "vector_layers": [
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "restriction": "String"
+      },
+      "id": "anchorage",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "radius": "String"
+      },
+      "id": "anchor_berth",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "color_pattern": "String",
+        "construction": "String",
+        "name": "String",
+        "reflectivity": "String",
+        "shape": "String"
+      },
+      "id": "beacon",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "minimum_depth": "String",
+        "name": "String"
+      },
+      "id": "berth",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "construction": "String",
+        "name": "String"
+      },
+      "id": "bridge",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "bunker_station",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String",
+        "shape": "String"
+      },
+      "id": "building",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "color": "String",
+        "color_pattern": "String",
+        "name": "String",
+        "reflectivity": "String",
+        "shape": "String"
+      },
+      "id": "buoy",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "restriction": "String"
+      },
+      "id": "cable_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "cable",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "water_level": "String"
+      },
+      "id": "causeway",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "checkpoint",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "coastguard_station",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "communication_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "crane",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "control_point",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "color_pattern": "String",
+        "name": "String",
+        "shape": "String"
+      },
+      "id": "daymark",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "distance": "String",
+        "name": "String",
+        "unit": "String"
+      },
+      "id": "distance_mark",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "dredged_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "dumping_ground",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String"
+      },
+      "id": "exceptional_structure",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String",
+        "restriction": "String"
+      },
+      "id": "fairway",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "ferry_route",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "wall",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "frequency": "String",
+        "generation": "String",
+        "name": "String",
+        "period": "String",
+        "range": "String",
+        "sequence": "String"
+      },
+      "id": "fog_signal",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "fortified_structure",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String"
+      },
+      "id": "fishing_facility",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "gate",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "gridiron",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "harbour_basin",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "harbour",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "hulk",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "inshore_traffic_zone",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "color_pattern": "String",
+        "name": "String",
+        "reflectivity": "String"
+      },
+      "id": "landmark",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "character": "String",
+        "color": "String",
+        "index": "Number"
+      },
+      "id": "light",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "light_float",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "color_pattern": "String",
+        "name": "String"
+      },
+      "id": "light_vessel",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "lock_basin",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "restriction": "String",
+        "water_level": "String"
+      },
+      "id": "marine_farm",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "military_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "color_pattern": "String",
+        "name": "String",
+        "reflectivity": "String",
+        "shape": "String"
+      },
+      "id": "mooring",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "orientation": "String"
+      },
+      "id": "navigation_line",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "addition": "String",
+        "category": "String",
+        "function": "String",
+        "name": "String"
+      },
+      "id": "notice",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "water_level": "String"
+      },
+      "id": "obstruction",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "oil_barrier",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "color_pattern": "String",
+        "name": "String",
+        "reflectivity": "String"
+      },
+      "id": "platform",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "production_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "channel": "String",
+        "name": "String"
+      },
+      "id": "pilot_boarding",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "condition": "String",
+        "name": "String"
+      },
+      "id": "pile",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "pipeline",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "restriction": "String"
+      },
+      "id": "pipeline_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "pontoon",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "precautionary_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "water_level": "String"
+      },
+      "id": "pylon",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "radar_line",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "radar_range",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "radar_reflector",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "radar_transponder",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "channel": "String",
+        "name": "String"
+      },
+      "id": "radar_station",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "channel": "String",
+        "name": "String",
+        "orientation": "String",
+        "traffic_flow": "String"
+      },
+      "id": "calling-in_point",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "radio_station",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "recommended_route_centreline",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String",
+        "orientation": "String",
+        "traffic_flow": "String"
+      },
+      "id": "recommended_track",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "orientation": "String"
+      },
+      "id": "recommended_traffic_lane",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "rescue_station",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "restriction": "String"
+      },
+      "id": "restricted_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "retro_reflector",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "sand_waves",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String",
+        "surface": "String",
+        "water_level": "String"
+      },
+      "id": "seabed_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "sea_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String"
+      },
+      "id": "seagrass",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "restriction": "String"
+      },
+      "id": "seaplane_landing_area",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "tank",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "construction": "String",
+        "name": "String"
+      },
+      "id": "shoreline_construction",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "channel": "String",
+        "name": "String"
+      },
+      "id": "signal_station",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String",
+        "offset_x": "Number",
+        "offset_y": "Number"
+      },
+      "id": "small_craft_facility",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "spring",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "submarine_transit_lane",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "topmark",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "separation_boundary",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "separation_crossing",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "separation_lane",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "separation_line",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "separation_roundabout",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "separation_zone",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "turning_basin",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "two-way_route",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "name": "String"
+      },
+      "id": "rock",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "vegetation",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "virtual_aton",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {},
+      "id": "vehicle_transfer",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String"
+      },
+      "id": "water_turbulence",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "name": "String"
+      },
+      "id": "waterway_gauge",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String"
+      },
+      "id": "weed",
+      "maxzoom": 12,
+      "minzoom": 8
+    },
+    {
+      "fields": {
+        "category": "String",
+        "depth": "String",
+        "name": "String",
+        "reflectivity": "String"
+      },
+      "id": "wreck",
+      "maxzoom": 12,
+      "minzoom": 8
+    }
+  ]
+}

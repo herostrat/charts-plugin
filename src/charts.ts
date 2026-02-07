@@ -4,6 +4,7 @@ import { Dirent, promises as fs } from 'fs'
 import * as _ from 'lodash'
 import { ChartProvider } from './types'
 import { promisify } from 'util'
+import { openPmtilesFile } from './pmtiles'
 
 // Dynamically load MBTiles to prevent module load failure
 let MBTiles: any = null
@@ -16,7 +17,10 @@ async function loadMBTiles() {
       MBTiles = module.default || module
     } catch (err) {
       mbtilesLoadError = err as Error
-      console.error('Failed to load @signalk/mbtiles module:', (err as Error).message)
+      console.error(
+        'Failed to load @signalk/mbtiles module:',
+        (err as Error).message
+      )
     }
   }
 }
@@ -28,15 +32,20 @@ export function findCharts(chartBaseDir: string) {
       const results = []
       for (const file of files) {
         const isMbtilesFile = file.name.match(/\.mbtiles$/i)
+        const isPmtilesFile = file.name.match(/\.pmtiles$/i)
         const filePath = path.resolve(chartBaseDir, file.name)
         const isDirectory = file.isDirectory()
         if (isMbtilesFile) {
           if (mbtilesLoadError) {
-            console.warn(`Skipping mbtiles file ${file.name}: MBTiles module not available`)
+            console.warn(
+              `Skipping mbtiles file ${file.name}: MBTiles module not available`
+            )
             results.push(null)
           } else {
             results.push(await openMbtilesFile(filePath, file.name))
           }
+        } else if (isPmtilesFile) {
+          results.push(await openPmtilesFile(filePath, file.name))
         } else if (isDirectory) {
           results.push(await directoryToMapInfo(filePath, file.name))
         } else {
@@ -45,7 +54,10 @@ export function findCharts(chartBaseDir: string) {
       }
       return results
     })
-    .then((result: (ChartProvider | null | undefined)[]) => _.filter(result, _.identity) as ChartProvider[])
+    .then(
+      (result: (ChartProvider | null | undefined)[]) =>
+        _.filter(result, _.identity) as ChartProvider[]
+    )
     .then((charts: ChartProvider[]) =>
       _.reduce(
         charts,

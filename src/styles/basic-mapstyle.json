@@ -1,0 +1,58 @@
+{
+  "version": 8,
+  "name": "Basic Vector Style (Sample)",
+  "metadata": {
+    "note": "Replace tiles URL with your chart tile endpoint."
+  },
+  "sources": {
+    "charts": {
+      "type": "vector",
+      "tiles": ["http://localhost:3000/signalk/chart-tiles/REPLACE/{z}/{x}/{y}"],
+      "minzoom": 0,
+      "maxzoom": 16
+    }
+  },
+  "layers": [
+    {
+      "id": "areas-fill",
+      "type": "fill",
+      "source": "charts",
+      "source-layer": "areas",
+      "paint": {
+        "fill-color": "#4a90e2",
+        "fill-opacity": 0.2
+      }
+    },
+    {
+      "id": "areas-line",
+      "type": "line",
+      "source": "charts",
+      "source-layer": "areas",
+      "paint": {
+        "line-color": "#2c3e50",
+        "line-width": 1
+      }
+    },
+    {
+      "id": "lines-line",
+      "type": "line",
+      "source": "charts",
+      "source-layer": "lines",
+      "paint": {
+        "line-color": "#27ae60",
+        "line-width": 1
+      }
+    },
+    {
+      "id": "points-circle",
+      "type": "circle",
+      "source": "charts",
+      "source-layer": "points",
+      "paint": {
+        "circle-color": "#e67e22",
+        "circle-radius": 3,
+        "circle-opacity": 0.9
+      }
+    }
+  ]
+}

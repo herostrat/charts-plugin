@@ -7,9 +7,21 @@ import bodyParser from 'body-parser'
 import http from 'http'
 import { fileURLToPath } from 'url'
 import Plugin from '../plugin/index.js'
+import { PMTiles, tileTypeExt } from 'pmtiles'
+import zlib from 'zlib'
+import { VectorTile } from '@mapbox/vector-tile'
+import Protobuf from 'pbf'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const pmtilesDir = path.resolve(__dirname, 'charts-pmtiles')
+const pmtilesValid = path.join(pmtilesDir, 'test_fixture_1.pmtiles')
+const pmtilesEmpty = path.join(pmtilesDir, 'empty.pmtiles')
+const pmtilesInvalid = path.join(pmtilesDir, 'invalid.pmtiles')
+const hasPmtilesFixtures =
+  fs.existsSync(pmtilesValid) &&
+  fs.existsSync(pmtilesEmpty) &&
+  fs.existsSync(pmtilesInvalid)
 
 
 /**
@@ -26,7 +38,12 @@ const createTestApp = () => {
   let app = express()
   app.use(bodyParser.json())
   app.debug = (x) => console.log(x)
-  app.config = { configPath: path.resolve(__dirname) }
+  app.config = {
+    configPath: path.resolve(__dirname),
+    version: '2.0.0',
+    ssl: false,
+    getExternalPort: () => app.get('port')
+  }
 
   app.statusMessage = () => 'started'
   app.error = (msg) => undefined
@@ -47,6 +64,126 @@ const createTestApp = () => {
 const getRequest = (server, location) => {
   const baseUrl = `http://localhost:${server.address().port}`
   return chaiRequest.execute(baseUrl).get(location)
+}
+
+const startPluginWithChartPaths = (pluginInstance, chartPaths) => {
+  return pluginInstance.start({ chartPaths })
+}
+
+class NodeFileSource {
+  constructor(filePath) {
+    this.filePath = filePath
+  }
+
+  getKey() {
+    return this.filePath
+  }
+
+  async getBytes(offset, length, signal) {
+    if (signal?.aborted) {
+      throw new Error('AbortError')
+    }
+    const handle = await fs.promises.open(this.filePath, 'r')
+    try {
+      const buffer = Buffer.alloc(length)
+      const { bytesRead } = await handle.read(buffer, 0, length, offset)
+      const view = buffer.subarray(0, bytesRead)
+      return {
+        data: view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength)
+      }
+    } finally {
+      await handle.close()
+    }
+  }
+}
+
+const lonLatToTileXY = (lon, lat, zoom) => {
+  const n = 2 ** zoom
+  const x = Math.floor(((lon + 180) / 360) * n)
+  const y = Math.floor(
+    ((1 -
+      Math.log(
+        Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)
+      ) /
+        Math.PI) /
+      2) *
+      n
+  )
+  return [x, y]
+}
+
+const findFirstTile = async (pmtilesHandle, header) => {
+  const centerLon = (header.minLon + header.maxLon) / 2
+  const centerLat = (header.minLat + header.maxLat) / 2
+  const maxSearchZoom = Math.min(header.minZoom + 2, header.maxZoom)
+
+  for (let z = header.minZoom; z <= maxSearchZoom; z++) {
+    const n = 2 ** z
+    const [centerX, centerY] = lonLatToTileXY(centerLon, centerLat, z)
+    const startX = Math.max(0, centerX - 2)
+    const endX = Math.min(n - 1, centerX + 2)
+    const startY = Math.max(0, centerY - 2)
+    const endY = Math.min(n - 1, centerY + 2)
+
+    for (let x = startX; x <= endX; x++) {
+      for (let y = startY; y <= endY; y++) {
+        const tile = await pmtilesHandle.getZxy(z, x, y)
+        if (tile) {
+          return { z, x, y, tile }
+        }
+      }
+    }
+  }
+
+  return null
+}
+
+const resolveExpectedContentType = (format) => {
+  const normalized = format?.toLowerCase() || ''
+  if (['pbf', 'mvt'].includes(normalized)) {
+    return 'application/vnd.mapbox-vector-tile'
+  }
+  if (['png', 'jpeg', 'jpg', 'webp', 'avif'].includes(normalized)) {
+    return `image/${normalized === 'jpg' ? 'jpeg' : normalized}`
+  }
+  return 'application/octet-stream'
+}
+
+const isVectorFormat = (format) => {
+  const normalized = format?.toLowerCase() || ''
+  return ['pbf', 'mvt'].includes(normalized)
+}
+
+const isGzipBuffer = (buffer) => {
+  return Buffer.isBuffer(buffer) && buffer.length > 2 && buffer[0] === 0x1f && buffer[1] === 0x8b
+}
+
+const decodeVectorTile = (buffer) => {
+  if (!Buffer.isBuffer(buffer)) {
+    throw new Error('Expected tile buffer for decoding')
+  }
+  const data = isGzipBuffer(buffer) ? zlib.gunzipSync(buffer) : buffer
+  return new VectorTile(new Protobuf(data))
+}
+
+const getPmtilesDetails = async () => {
+  const pmtilesHandle = new PMTiles(new NodeFileSource(pmtilesValid))
+  const header = await pmtilesHandle.getHeader()
+  const metadata = await pmtilesHandle.getMetadata().catch(() => ({}))
+  const ext = tileTypeExt(header.tileType)
+  const expectedFormat = ext ? ext.replace('.', '') : undefined
+  const vectorLayers = Array.isArray(metadata?.vector_layers)
+    ? metadata.vector_layers
+        .map((layer) => layer?.id)
+        .filter((id) => typeof id === 'string')
+    : []
+  return {
+    pmtilesHandle,
+    header,
+    metadata,
+    expectedFormat,
+    vectorLayers
+  }
 }
 
 describe('Integration Tests: Chart Loading', () => {
@@ -88,6 +225,78 @@ describe('Integration Tests: Chart Loading', () => {
       })
     })
 
+    it('loads PMTiles chart metadata correctly', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(async () => {
+          const result = await getRequest(
+            testServer,
+            '/signalk/v1/api/resources/charts/test_fixture_1'
+          )
+          const { header, expectedFormat, vectorLayers } =
+            await getPmtilesDetails()
+
+          expect(result.status).to.equal(200)
+          expect(result.body).to.have.property('identifier', 'test_fixture_1')
+          expect(result.body).to.have.property('bounds')
+          expect(result.body.bounds).to.deep.equal([
+            header.minLon,
+            header.minLat,
+            header.maxLon,
+            header.maxLat
+          ])
+          expect(result.body).to.have.property('minzoom', header.minZoom)
+          expect(result.body).to.have.property('maxzoom', header.maxZoom)
+          if (expectedFormat) {
+            expect(result.body).to.have.property('format', expectedFormat)
+          }
+          expect(result.body).to.have.property('chartLayers')
+          expect(result.body.chartLayers).to.deep.equal(vectorLayers)
+        })
+    })
+
+    it('returns 404 for empty PMTiles file', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(() =>
+          getRequest(testServer, '/signalk/v1/api/resources/charts/empty')
+        )
+        .then((result) => {
+          expect(result.status).to.equal(404)
+        })
+    })
+
+    it('returns 404 for invalid PMTiles file', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(() =>
+          getRequest(testServer, '/signalk/v1/api/resources/charts/invalid')
+        )
+        .then((result) => {
+          expect(result.status).to.equal(404)
+        })
+    })
+
+    it('excludes empty/invalid PMTiles from chart list', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(() => getRequest(testServer, '/signalk/v1/api/resources/charts'))
+        .then((result) => {
+          const charts = result.body
+          expect(charts).to.have.property('test_fixture_1')
+          expect(charts).to.not.have.property('empty')
+          expect(charts).to.not.have.property('invalid')
+        })
+    })
+
     it('includes all required metadata fields', () => {
       return plugin.start({}).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts')
@@ -99,6 +308,186 @@ describe('Integration Tests: Chart Loading', () => {
           expect(chart).to.have.property('type')
         })
       })
+
+    it('exposes PMTiles layers on v2 resources', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(async () => {
+          const result = await getRequest(
+            testServer,
+            '/signalk/v2/api/resources/charts/test_fixture_1'
+          )
+          const { vectorLayers } = await getPmtilesDetails()
+
+          expect(result.status).to.equal(200)
+          expect(result.body).to.have.property('layers')
+          expect(result.body.layers).to.deep.equal(vectorLayers)
+        })
+    })
+
+    it('sets mapstyleJSON for vector PMTiles charts on v2', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { expectedFormat } = await getPmtilesDetails()
+      if (!isVectorFormat(expectedFormat)) {
+        this.skip()
+      }
+      const result = await getRequest(
+        testServer,
+        '/signalk/v2/api/resources/charts/test_fixture_1'
+      )
+
+      expect(result.status).to.equal(200)
+      expect(result.body).to.have.property('type', 'mapstyleJSON')
+      expect(result.body).to.have.property('url')
+      expect(result.body).to.have.property('style')
+      expect(result.body.url).to.equal('/signalk/chart-style/test_fixture_1')
+      expect(result.body.style).to.equal(result.body.url)
+    })
+
+    it('validates PMTiles fields in v2 chart list', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(async () => {
+          const result = await getRequest(
+            testServer,
+            '/signalk/v2/api/resources/charts'
+          )
+          const { header, expectedFormat, vectorLayers } =
+            await getPmtilesDetails()
+
+          expect(result.status).to.equal(200)
+          expect(result.body).to.have.property('test_fixture_1')
+          const entry = result.body.test_fixture_1
+          expect(entry).to.have.property('bounds')
+          expect(entry.bounds).to.deep.equal([
+            header.minLon,
+            header.minLat,
+            header.maxLon,
+            header.maxLat
+          ])
+          expect(entry).to.have.property('minzoom', header.minZoom)
+          expect(entry).to.have.property('maxzoom', header.maxZoom)
+          if (expectedFormat) {
+            expect(entry).to.have.property('format', expectedFormat)
+          }
+          expect(entry).to.have.property('layers')
+          expect(entry.layers).to.deep.equal(vectorLayers)
+          expect(result.body).to.not.have.property('empty')
+          expect(result.body).to.not.have.property('invalid')
+        })
+    })
+
+    it('serves chart-style JSON for vector PMTiles charts', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { expectedFormat } = await getPmtilesDetails()
+      if (!isVectorFormat(expectedFormat)) {
+        this.skip()
+      }
+
+      const response = await getRequest(
+        testServer,
+        '/signalk/chart-style/test_fixture_1'
+      )
+
+      expect(response.status).to.equal(200)
+      expect(response.body).to.have.property('version', 8)
+      expect(response.body).to.have.property('sources')
+      expect(response.body.sources).to.have.property('charts-vector')
+      expect(response.body).to.have.property('layers')
+      expect(response.body.layers).to.be.an('array')
+    })
+
+    it('aligns style layers with chart vector layers', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { expectedFormat, vectorLayers } = await getPmtilesDetails()
+      if (!isVectorFormat(expectedFormat)) {
+        this.skip()
+      }
+
+      const response = await getRequest(
+        testServer,
+        '/signalk/chart-style/test_fixture_1'
+      )
+
+      expect(response.status).to.equal(200)
+      const sources = response.body.sources || {}
+      expect(sources).to.have.property('charts-vector')
+      expect(sources['charts-vector']).to.have.property('tiles')
+      expect(sources['charts-vector'].tiles[0]).to.match(
+        /\/signalk\/chart-tiles\/test_fixture_1\//
+      )
+
+      const layers = Array.isArray(response.body.layers)
+        ? response.body.layers
+        : []
+      const styledLayers = layers.filter(
+        (layer) =>
+          layer &&
+          layer.source === 'charts-vector' &&
+          typeof layer['source-layer'] === 'string'
+      )
+      expect(styledLayers.length).to.be.greaterThan(0)
+
+      const knownLayers = new Set(vectorLayers)
+      styledLayers.forEach((layer) => {
+        expect(knownLayers.has(layer['source-layer'])).to.equal(true)
+      })
+    })
+
+    it('maps PMTiles name and description from metadata', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(async () => {
+          const result = await getRequest(
+            testServer,
+            '/signalk/v1/api/resources/charts/test_fixture_1'
+          )
+          const { metadata } = await getPmtilesDetails()
+          const expectedName = metadata?.name || 'test_fixture_1'
+          const expectedDescription = metadata?.description || ''
+
+          expect(result.status).to.equal(200)
+          expect(result.body).to.have.property('name', expectedName)
+          expect(result.body).to.have.property(
+            'description',
+            expectedDescription
+          )
+        })
+    })
+
+    it('exposes PMTiles tile URL template in v2 response', function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+        .then(async () => {
+          const result = await getRequest(
+            testServer,
+            '/signalk/v2/api/resources/charts/test_fixture_1'
+          )
+
+          expect(result.status).to.equal(200)
+          expect(result.body).to.have.property('url')
+          expect(result.body.url).to.equal(
+            '/signalk/chart-tiles/test_fixture_1/{z}/{x}/{y}'
+          )
+        })
+    })
     })
   })
 })
@@ -153,6 +542,55 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
         expect(response.headers['content-type']).to.equal('image/png')
       })
     })
+
+    it('returns correct content-type for PMTiles tiles', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { pmtilesHandle, header, expectedFormat } =
+        await getPmtilesDetails()
+      const result = await findFirstTile(pmtilesHandle, header)
+      if (!result || !expectedFormat) {
+        throw new Error('Unable to locate a valid PMTiles tile for test')
+      }
+
+      const response = await getRequest(
+        testServer,
+        `/signalk/chart-tiles/test_fixture_1/${result.z}/${result.x}/${result.y}`
+      )
+      const expectedType = resolveExpectedContentType(expectedFormat)
+      expect(response.status).to.equal(200)
+      expect(response.headers['content-type']).to.equal(expectedType)
+    })
+
+    it('keeps content-encoding aligned with PMTiles payload', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { pmtilesHandle, header, expectedFormat } =
+        await getPmtilesDetails()
+      if (!isVectorFormat(expectedFormat)) {
+        this.skip()
+      }
+      const result = await findFirstTile(pmtilesHandle, header)
+      if (!result) {
+        throw new Error('Unable to locate a valid PMTiles tile for test')
+      }
+
+      const response = await getRequest(
+        testServer,
+        `/signalk/chart-tiles/test_fixture_1/${result.z}/${result.x}/${result.y}`
+      )
+      expect(response.status).to.equal(200)
+      const encoding = response.headers['content-encoding']
+      if (isGzipBuffer(response.body)) {
+        expect(encoding).to.equal('gzip')
+      } else if (encoding) {
+        expect(encoding).to.not.equal('gzip')
+      }
+    })
   })
 })
 
@@ -200,6 +638,59 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
         )
       })
     })
+
+    it('pmtiles tile content matches archive data', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+
+      const pmtilesHandle = new PMTiles(new NodeFileSource(pmtilesValid))
+      const header = await pmtilesHandle.getHeader()
+      const result = await findFirstTile(pmtilesHandle, header)
+      if (!result) {
+        throw new Error('Unable to locate a valid tile in test_fixture_1.pmtiles')
+      }
+
+      const response = await getRequest(
+        testServer,
+        `/signalk/chart-tiles/test_fixture_1/${result.z}/${result.x}/${result.y}`
+      )
+      expect(response.status).to.equal(200)
+      expect(response.body.length).to.be.greaterThan(0)
+      expect(response.body.toString('hex')).to.equal(
+        Buffer.from(result.tile.data).toString('hex')
+      )
+    })
+
+    it('decodes PMTiles vector tile served over HTTP', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { pmtilesHandle, header, expectedFormat } =
+        await getPmtilesDetails()
+      if (!isVectorFormat(expectedFormat)) {
+        this.skip()
+      }
+      const result = await findFirstTile(pmtilesHandle, header)
+      if (!result) {
+        throw new Error('Unable to locate a valid tile in test_fixture_1.pmtiles')
+      }
+
+      const response = await getRequest(
+        testServer,
+        `/signalk/chart-tiles/test_fixture_1/${result.z}/${result.x}/${result.y}`
+      )
+      expect(response.status).to.equal(200)
+      expect(response.body.length).to.be.greaterThan(0)
+
+      const tile = decodeVectorTile(response.body)
+      const layerIds = Object.keys(tile.layers || {})
+      expect(layerIds.length).to.be.greaterThan(0)
+      const firstLayer = tile.layers[layerIds[0]]
+      expect(firstLayer.length).to.be.greaterThan(0)
+    })
   })
 
   describe('Response Body Characteristics', () => {
@@ -224,6 +715,39 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
           }
         )
       })
+    })
+
+    it('returns 404 for PMTiles request outside zoom range', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { header } = await getPmtilesDetails()
+      const z = header.maxZoom + 5
+      const response = await getRequest(
+        testServer,
+        `/signalk/chart-tiles/test_fixture_1/${z}/0/0`
+      )
+      expect(response.status).to.equal(404)
+    })
+
+    it('uses cache-control defaults when PMTiles does not provide headers', async function () {
+      if (!hasPmtilesFixtures) {
+        this.skip()
+      }
+      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      const { pmtilesHandle, header } = await getPmtilesDetails()
+      const result = await findFirstTile(pmtilesHandle, header)
+      if (!result) {
+        throw new Error('Unable to locate a valid PMTiles tile for test')
+      }
+
+      const response = await getRequest(
+        testServer,
+        `/signalk/chart-tiles/test_fixture_1/${result.z}/${result.x}/${result.y}`
+      )
+      expect(response.status).to.equal(200)
+      expect(response.headers).to.have.property('cache-control')
     })
   })
 })

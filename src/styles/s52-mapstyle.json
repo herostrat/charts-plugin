@@ -1,0 +1,46 @@
+{
+  "version": 8,
+  "name": "S-52 Placeholder Style",
+  "sprite": "/@signalk/charts-plugin/styles/sprites/s52",
+  "sources": {
+    "charts": {
+      "type": "vector",
+      "tiles": ["http://localhost:3000/signalk/chart-tiles/REPLACE/{z}/{x}/{y}"],
+      "minzoom": 0,
+      "maxzoom": 16
+    }
+  },
+  "layers": [
+    {
+      "id": "points-icon",
+      "type": "symbol",
+      "source": "charts",
+      "source-layer": "points",
+      "layout": {
+        "icon-image": "circle",
+        "icon-size": 1,
+        "icon-allow-overlap": true
+      }
+    },
+    {
+      "id": "lines-line",
+      "type": "line",
+      "source": "charts",
+      "source-layer": "lines",
+      "paint": {
+        "line-color": "#27ae60",
+        "line-width": 1
+      }
+    },
+    {
+      "id": "areas-fill",
+      "type": "fill",
+      "source": "charts",
+      "source-layer": "areas",
+      "paint": {
+        "fill-color": "#4a90e2",
+        "fill-opacity": 0.2
+      }
+    }
+  ]
+}

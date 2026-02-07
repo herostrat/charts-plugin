@@ -1,0 +1,12 @@
+services:
+  signalk:
+    image: signalk/signalk-server:latest
+    container_name: signalk-charts-plugin-dev
+    ports:
+      - "3000:3000"
+    user: "0:0" # Avoid permission issues with bind mounts
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/home/node/signalk/node_modules/@signalk/charts-plugin:rw
+      - ./dev-data/signalk-data:/root/.signalk:rw

@@ -1,3 +1,5 @@
+import type { PMTiles } from 'pmtiles'
+
 type MapSourceType =
   | 'tilelayer'
   | 'S-57'
@@ -7,10 +9,11 @@ type MapSourceType =
   | 'tileJSON'
 
 export interface ChartProvider {
-  _fileFormat?: 'mbtiles' | 'directory'
+  _fileFormat?: 'mbtiles' | 'directory' | 'pmtiles'
   _filePath: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _mbtilesHandle?: any
+  _pmtilesHandle?: PMTiles
   _flipY?: boolean
   identifier: string
   name: string

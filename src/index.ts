@@ -5,7 +5,12 @@ import { findCharts } from './charts'
 import { apiRoutePrefix } from './constants'
 import { ChartProvider, OnlineChartProvider } from './types'
 import { ChartSeedingManager, ChartDownloader, Tile } from './chartDownloader'
-import { Request, Response, Application } from 'express'
+import {
+  buildNauticalVectorStyle,
+  type ThemeId
+} from './style/nautical-style-generator'
+import type { S52ObjectDefinition } from './style/nautical-catalog'
+import express, { Request, Response, Application } from 'express'
 import { OutgoingHttpHeaders } from 'http'
 import {
   Plugin,
@@ -17,12 +22,14 @@ interface Config {
   chartPaths: string[]
   cachePath: string
   onlineChartProviders: OnlineChartProvider[]
+  vectorCatalogs?: Array<{
+    identifier: string
+    catalog: 's52' | 'none'
+  }>
 }
 
 interface ChartProviderApp
-  extends ServerAPI,
-    ResourceProviderRegistry,
-    Application {
+  extends ServerAPI, ResourceProviderRegistry, Application {
   config: {
     ssl: boolean
     configPath: string
@@ -34,10 +41,14 @@ interface ChartProviderApp
 const MIN_ZOOM = 1
 const MAX_ZOOM = 24
 const chartTilesPath = '/signalk/chart-tiles'
+const chartStylePath = '/signalk/chart-style'
+const defaultCatalogId = 's52'
+type VectorCatalogChoice = 's52' | 'none'
 
 module.exports = (app: ChartProviderApp): Plugin => {
   let chartProviders: { [key: string]: ChartProvider } = {}
   let pluginStarted = false
+  let vectorCatalogById = new Map<string, VectorCatalogChoice>()
   let props: Config = {
     chartPaths: [],
     cachePath: '',
@@ -67,7 +78,8 @@ module.exports = (app: ChartProviderApp): Plugin => {
         versionWarning: {
           type: 'string',
           title: 'REQUIRES NODE VERSION >=22',
-          description: 'Starting with version 4 this plugin will not work with Node versions older than 22. You can install an older plugin version from the App store.',
+          description:
+            'Starting with version 4 this plugin will not work with Node versions older than 22. You can install an older plugin version from the App store.',
           default: ''
         }
       }),
@@ -183,6 +195,30 @@ module.exports = (app: ChartProviderApp): Plugin => {
             }
           }
         }
+      },
+      vectorCatalogs: {
+        type: 'array',
+        title: 'Vector chart catalog selection',
+        description:
+          'Choose a catalog per vector chart identifier. Use "none" to disable catalog hints so the plotter uses defaults.',
+        items: {
+          type: 'object',
+          title: 'Vector catalog entry',
+          required: ['identifier', 'catalog'],
+          properties: {
+            identifier: {
+              type: 'string',
+              title: 'Chart identifier',
+              description: 'Matches the chart identifier returned by the resources API.'
+            },
+            catalog: {
+              type: 'string',
+              title: 'Catalog',
+              default: defaultCatalogId,
+              enum: [defaultCatalogId, 'none']
+            }
+          }
+        }
       }
     }
   }
@@ -216,6 +252,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
 
     app.debug(`** loaded config: ${config}`)
     props = { ...config }
+    vectorCatalogById = buildVectorCatalogMap(props.vectorCatalogs)
 
     urlBase = `${app.config.ssl ? 'https' : 'http'}://localhost:${
       'getExternalPort' in app.config ? app.config.getExternalPort() : 3000
@@ -261,10 +298,9 @@ module.exports = (app: ChartProviderApp): Plugin => {
         list.push(await findCharts(chartPath))
       }
       return list
-    })()
-      .then((list: ChartProvider[]) =>
-        _.reduce(list, (result, charts) => _.merge({}, result, charts), {})
-      )
+    })().then((list: ChartProvider[]) =>
+      _.reduce(list, (result, charts) => _.merge({}, result, charts), {})
+    )
 
     return loadProviders
       .then((charts: { [key: string]: ChartProvider }) => {
@@ -274,6 +310,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
           } charts from ${chartPaths.join(', ')}.`
         )
         chartProviders = _.merge({}, charts, onlineProviders)
+        validateVectorProviders(chartProviders, app)
       })
       .catch((e: Error) => {
         console.error(`Error loading chart providers`, e.message)
@@ -284,6 +321,11 @@ module.exports = (app: ChartProviderApp): Plugin => {
 
   const registerRoutes = () => {
     app.debug('** Registering API paths **')
+
+    const publicAssets = path.resolve(__dirname, 'public')
+    if (fs.existsSync(publicAssets)) {
+      app.use('/@signalk/charts-plugin', express.static(publicAssets))
+    }
 
     const normalizeParam = (value: string | string[] | undefined) => {
       if (Array.isArray(value)) {
@@ -301,7 +343,11 @@ module.exports = (app: ChartProviderApp): Plugin => {
         const z = normalizeParam(req.params.z)
         const x = normalizeParam(req.params.x)
         const y = normalizeParam(req.params.y)
-        if (!isValidTileParam(z) || !isValidTileParam(x) || !isValidTileParam(y)) {
+        if (
+          !isValidTileParam(z) ||
+          !isValidTileParam(x) ||
+          !isValidTileParam(y)
+        ) {
           return res.sendStatus(404)
         }
         const ix = parseInt(x)
@@ -319,6 +365,8 @@ module.exports = (app: ChartProviderApp): Plugin => {
               return serveTileFromFilesystem(res, provider, iz, ix, iy)
             case 'mbtiles':
               return serveTileFromMbtiles(res, provider, iz, ix, iy)
+            case 'pmtiles':
+              return serveTileFromPmtiles(res, provider, iz, ix, iy)
             default:
               console.log(
                 `Unknown chart provider fileformat ${provider._fileFormat}`
@@ -328,6 +376,20 @@ module.exports = (app: ChartProviderApp): Plugin => {
         }
       }
     )
+
+    app.get(`${chartStylePath}/:identifier`, (req: Request, res: Response) => {
+      const identifier = normalizeParam(req.params.identifier)
+      const theme: ThemeId = 'day'
+      const provider = chartProviders[identifier]
+      if (!provider || !shouldUseVectorStyle(provider)) {
+        return res.sendStatus(404)
+      }
+      const catalogChoice = vectorCatalogById.get(identifier) ?? defaultCatalogId
+      const mapping = loadS52Mapping()
+      const catalogObjects =
+        catalogChoice === 'none' ? [] : mapping.objects || []
+      return res.json(buildNauticalVectorStyle(provider, catalogObjects, theme))
+    })
 
     app.post(
       `${chartTilesPath}/cache/:identifier`,
@@ -495,10 +557,92 @@ const responseHttpOptions = {
 }
 
 const isAllowedTileFormat = (format?: string) => {
-  const allowedFormats = new Set(['png', 'jpg', 'jpeg', 'pbf'])
+  const allowedFormats = new Set(['png', 'jpg', 'jpeg', 'pbf', 'mvt', 'webp', 'avif'])
   const normalized = format ? format.toLowerCase() : ''
   return normalized !== '' && allowedFormats.has(normalized)
 }
+
+const resolveTileContentType = (format?: string) => {
+  const normalized = format ? format.toLowerCase() : ''
+  switch (normalized) {
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'webp':
+    case 'avif':
+      return `image/${normalized === 'jpg' ? 'jpeg' : normalized}`
+    case 'pbf':
+    case 'mvt':
+      return 'application/vnd.mapbox-vector-tile'
+    default:
+      return 'application/octet-stream'
+  }
+}
+
+const isGzipBuffer = (buffer: Buffer) => {
+  return buffer.length > 2 && buffer[0] === 0x1f && buffer[1] === 0x8b
+}
+
+const validateVectorProviders = (
+  providers: { [key: string]: ChartProvider },
+  app: ChartProviderApp
+) => {
+  Object.values(providers).forEach((provider) => {
+    if (!isVectorFormat(provider.format)) {
+      return
+    }
+    const layerIds =
+      provider.v2?.layers || provider.v1?.chartLayers || ([] as string[])
+    if (!layerIds || layerIds.length === 0) {
+      app.debug(
+        `Vector chart "${provider.identifier}" has no vector_layers metadata; style will render empty.`
+      )
+    }
+  })
+}
+
+const isVectorFormat = (format?: string) => {
+  if (!format) {
+    return false
+  }
+  const normalized = format.toLowerCase()
+  return normalized === 'pbf' || normalized === 'mvt'
+}
+
+const shouldUseVectorStyle = (provider: ChartProvider) => {
+  return isVectorFormat(provider.format)
+}
+
+type S52Mapping = {
+  version?: string
+  objects?: S52ObjectDefinition[]
+}
+
+let cachedS52Mapping: S52Mapping | null = null
+
+const loadS52Mapping = (): S52Mapping => {
+  if (cachedS52Mapping) {
+    return cachedS52Mapping
+  }
+  const candidates = [
+    path.resolve(__dirname, '../src/style/mapping/object-catalog.json'),
+    path.resolve(__dirname, '../style/mapping/object-catalog.json')
+  ]
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      try {
+        const raw = fs.readFileSync(candidate, 'utf8')
+        cachedS52Mapping = JSON.parse(raw) as S52Mapping
+        return cachedS52Mapping
+      } catch {
+        break
+      }
+    }
+  }
+  cachedS52Mapping = { objects: [] }
+  return cachedS52Mapping
+}
+
 
 const resolveUniqueChartPaths = (
   chartPaths: string[],
@@ -508,6 +652,23 @@ const resolveUniqueChartPaths = (
     path.resolve(configBasePath, chartPath)
   )
   return _.uniq(paths)
+}
+
+const buildVectorCatalogMap = (
+  entries?: Array<{ identifier: string; catalog: VectorCatalogChoice }>
+) => {
+  const map = new Map<string, VectorCatalogChoice>()
+  if (!entries) {
+    return map
+  }
+  entries.forEach((entry) => {
+    if (!entry?.identifier) {
+      return
+    }
+    const choice = entry.catalog === 'none' ? 'none' : defaultCatalogId
+    map.set(entry.identifier, choice)
+  })
+  return map
 }
 
 const convertOnlineProviderConfig = (provider: OnlineChartProvider) => {
@@ -577,7 +738,17 @@ const sanitizeProvider = (provider: ChartProvider, version = 1) => {
     'v1',
     'v2'
   ]) as ChartProvider
-  return _.merge(provider, v)
+  const merged = _.merge({}, provider, v) as ChartProvider & {
+    url?: string
+    tilemapUrl?: string
+    style?: string
+  }
+  if (version === 2 && shouldUseVectorStyle(provider)) {
+    merged.type = 'mapstyleJSON'
+    merged.url = `${chartStylePath}/${provider.identifier}`
+    merged.style = merged.url
+  }
+  return merged
 }
 
 const ensureDirectoryExists = (path: string) => {
@@ -651,4 +822,48 @@ const serveTileFromMbtiles = (
       }
     }
   )
+}
+
+const serveTileFromPmtiles = async (
+  res: Response,
+  provider: ChartProvider,
+  z: number,
+  x: number,
+  y: number
+) => {
+  if (!isAllowedTileFormat(provider.format)) {
+    res.status(404).send('Tile not found')
+    return
+  }
+  if (!provider._pmtilesHandle) {
+    res.status(500).send('PMTiles handle not available')
+    return
+  }
+  try {
+    const tile = await provider._pmtilesHandle.getZxy(z, x, y)
+    if (!tile) {
+      res.sendStatus(404)
+      return
+    }
+    const payload = Buffer.from(tile.data)
+    res.set('Content-Type', resolveTileContentType(provider.format))
+    if (isGzipBuffer(payload)) {
+      res.set('Content-Encoding', 'gzip')
+    }
+    if (tile.cacheControl) {
+      res.set('Cache-Control', tile.cacheControl)
+    } else {
+      res.set('Cache-Control', responseHttpOptions.headers['Cache-Control'])
+    }
+    if (tile.expires) {
+      res.set('Expires', tile.expires)
+    }
+    res.status(200).send(payload)
+  } catch (err) {
+    console.error(
+      `Error fetching PMTiles tile ${provider.identifier}/${z}/${x}/${y}:`,
+      err
+    )
+    res.sendStatus(500)
+  }
 }
