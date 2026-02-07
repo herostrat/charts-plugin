@@ -7,17 +7,17 @@
       "symbolId": "s52_achare",
       "sprite": "circle",
       "prettyName": "Anchorage Area",
-      "featureType": "poi",
+      "featureType": "area",
       "s52ColorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
-        "minZoom": 10,
+        "layerType": "area",
+        "minZoom": 8,
         "priority": 20,
         "maxZoom": 24,
-        "description": "anchorage area as a point at small scale, or anchor points of mooring trot at large scale",
+        "description": "anchorage area rendered as a filled polygon with an optional anchor symbol",
         "iconId": "achare"
       }
     },
@@ -381,18 +381,16 @@
       "symbolId": "s52_buaare",
       "sprite": "circle",
       "prettyName": "Built-Up Area",
-      "featureType": "poi",
+      "featureType": "area",
       "s52ColorScheme": {
         "default": "#957322",
         "black": "#000000"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
-        "minZoom": 10,
-        "priority": 6,
+        "layerType": "area",
+        "minZoom": 0,
         "maxZoom": 24,
-        "description": "built-up area",
-        "iconId": "buaare"
+        "description": "built-up area"
       }
     },
     {
@@ -1389,17 +1387,15 @@
       "symbolId": "s52_lndare",
       "sprite": "circle",
       "prettyName": "Land Area",
-      "featureType": "poi",
+      "featureType": "area",
       "s52ColorScheme": {
         "default": "#D4D094"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
-        "minZoom": 10,
-        "priority": 5,
+        "layerType": "area",
+        "minZoom": 0,
         "maxZoom": 24,
-        "description": "land as a point at small scale",
-        "iconId": "lndare"
+        "description": "land area"
       }
     },
     {
@@ -2389,13 +2385,13 @@
       "symbolId": "s52_sndwav",
       "sprite": "circle",
       "prettyName": "SNDWAV",
-      "featureType": "poi",
+      "featureType": "area",
       "s52ColorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
-        "minZoom": 10,
+        "layerType": "area",
+        "minZoom": 8,
         "maxZoom": 24,
         "description": "sand waves",
         "iconId": "sndwav"
@@ -2427,16 +2423,16 @@
       "symbolId": "s52_splare",
       "sprite": "circle",
       "prettyName": "Separation Area",
-      "featureType": "poi",
+      "featureType": "area",
       "s52ColorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
-        "minZoom": 7,
+        "layerType": "area",
+        "minZoom": 8,
         "maxZoom": 24,
-        "description": "HO caution note",
+        "description": "sea plane landing area",
         "iconId": "splare"
       }
     },
@@ -2827,13 +2823,13 @@
       "symbolId": "s52_wedklp",
       "sprite": "circle",
       "prettyName": "WEDKLP",
-      "featureType": "poi",
+      "featureType": "area",
       "s52ColorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
-        "minZoom": 10,
+        "layerType": "area",
+        "minZoom": 8,
         "maxZoom": 24,
         "description": "weed, kelp",
         "iconId": "wedklp"

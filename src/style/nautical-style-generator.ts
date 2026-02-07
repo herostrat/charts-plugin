@@ -172,9 +172,11 @@ function buildWaterAndDepthLayers(
  */
 function buildLandLayers(
   areaLayerIds: string[],
-  colors: S52ThemeColors
+  colors: S52ThemeColors,
+  fillColorOverride?: string
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
+  const fillColor = fillColorOverride ?? colors.land
 
   for (const layerId of areaLayerIds) {
     // Basis Land-Fläche
@@ -184,7 +186,7 @@ function buildLandLayers(
       source: 'charts-vector',
       'source-layer': layerId,
       paint: {
-        'fill-color': colors.land,
+        'fill-color': fillColor,
         'fill-opacity': 1.0
       }
     })
@@ -264,10 +266,19 @@ function buildAreaLayers(
   const catalogMap = catalog
     ? new Map(catalog.map((obj) => [obj.id, obj]))
     : new Map()
+  const aliasMap = new Map<string, S52ObjectDefinition>()
+  if (catalog) {
+    for (const obj of catalog) {
+      for (const alias of obj.aliases || []) {
+        aliasMap.set(alias.toUpperCase(), obj)
+      }
+    }
+  }
+  const patternAreas = new Set(['ACHARE', 'SNDWAV', 'WEDKLP', 'SPLARE'])
 
   for (const layerId of areaLayerIds) {
     const normalized = layerId.toUpperCase()
-    const catalogEntry = catalogMap.get(normalized)
+    const catalogEntry = catalogMap.get(normalized) || aliasMap.get(normalized)
 
     const fillColor = catalogEntry?.s52ColorScheme?.default || colors.light
     const fillOpacity = normalized === 'ACHARE' ? 0.15 : 0.1 // Ankerbereiche deutlich sichtbar
@@ -283,6 +294,20 @@ function buildAreaLayers(
       }
     })
 
+    if (patternAreas.has(normalized) && catalogEntry?.mapboxRenderingHints?.iconId) {
+      const patternId = `${catalogEntry.mapboxRenderingHints.iconId}-pattern`
+      layers.push({
+        id: `area-pattern-${sanitizeId(layerId)}`,
+        type: 'fill',
+        source: 'charts-vector',
+        'source-layer': layerId,
+        paint: {
+          'fill-pattern': patternId,
+          'fill-opacity': 0.18
+        }
+      })
+    }
+
     // Outline
     layers.push({
       id: `area-outline-${sanitizeId(layerId)}`,
@@ -295,6 +320,44 @@ function buildAreaLayers(
         'line-opacity': 0.8
       }
     })
+
+    const areaIconId = catalogEntry?.mapboxRenderingHints?.iconId
+    if (areaIconId) {
+      const minZoom = catalogEntry?.mapboxRenderingHints?.minZoom ?? 10
+      const iconSizeByZoom = catalogEntry?.mapboxRenderingHints?.iconSizeByZoom
+      layers.push({
+        id: `area-symbol-${sanitizeId(layerId)}`,
+        type: 'symbol',
+        source: 'charts-vector',
+        'source-layer': layerId,
+        minzoom: minZoom,
+        layout: {
+          'icon-image': [
+            'case',
+            ['all', ['has', 'symbol_id'], ['!=', ['get', 'symbol_id'], '']],
+            ['replace', ['downcase', ['get', 'symbol_id']], 's52_', ''],
+            areaIconId
+          ],
+          'symbol-placement': 'point',
+          'icon-anchor': 'center',
+          'icon-size': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            8,
+            iconSizeByZoom?.z8 ?? 0.8,
+            12,
+            iconSizeByZoom?.z12 ?? 1.0,
+            16,
+            iconSizeByZoom?.z16 ?? 1.2
+          ],
+          'symbol-avoid-edges': false,
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+          'icon-optional': true
+        }
+      })
+    }
   }
 
   return layers
@@ -466,12 +529,16 @@ export function buildNauticalVectorStyle(
 
     // Land under everything
     ...buildLandLayers(
-      classified.areas.filter((id) => /LNDARE|BUAARE|LAND|URBAN/i.test(id)),
+      classified.areas.filter((id) => /LNDARE|LAND/i.test(id)),
       colors
     ),
 
-    // Navigation lines (mittlere Ebene)
-    ...buildLineLayers(classified.lines, catalog, colors),
+    // Urban areas above land
+    ...buildLandLayers(
+      classified.areas.filter((id) => /BUAARE|URBAN/i.test(id)),
+      colors,
+      colors.urban
+    ),
 
     // Areas/zones (z.B. Ankerbereiche)
     ...buildAreaLayers(
@@ -479,6 +546,9 @@ export function buildNauticalVectorStyle(
       catalog,
       colors
     ),
+
+    // Navigation lines (mittlere Ebene, oberhalb von Areas)
+    ...buildLineLayers(classified.lines, catalog, colors),
 
     // POIs (Tonnen, Feuer, etc.) - über Areas
     ...buildPOILayers(classified.poi, catalog, colors),
