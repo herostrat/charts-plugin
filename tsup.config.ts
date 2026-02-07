@@ -1,0 +1,24 @@
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  format: ['esm'],
+  outDir: 'plugin',
+  dts: true,
+  clean: true,
+  platform: 'node',
+  external: [
+    'express',
+    'lodash',
+    '@signalk/mbtiles',
+    '@signalk/server-api',
+    'pmtiles',
+    'xml2js',
+    '@turf/bbox',
+    '@turf/boolean-intersects',
+    '@turf/helpers',
+    'check-disk-space',
+    'geojson-antimeridian-cut',
+    'p-limit'
+  ]
+})

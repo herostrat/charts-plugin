@@ -1,8 +1,9 @@
-const js = require('@eslint/js')
-const tsPlugin = require('@typescript-eslint/eslint-plugin')
-const tsParser = require('@typescript-eslint/parser')
-const globals = require('globals')
-const prettier = require('eslint-config-prettier')
+
+import js from '@eslint/js';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import globals from 'globals';
+import prettier from 'eslint-config-prettier';
 
 const baseLanguageOptions = {
   ecmaVersion: 2019,
@@ -10,7 +11,7 @@ const baseLanguageOptions = {
   globals: globals.node
 }
 
-module.exports = [
+export default [
   {
     files: ['src/**/*.{js,ts}'],
     languageOptions: baseLanguageOptions,

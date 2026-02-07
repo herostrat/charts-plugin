@@ -1,18 +1,19 @@
 /**
- * Nautischer Mapbox-Style Generator
+ * Nautical Mapbox style generator.
  *
- * Ersetzt das alte `buildBasicVectorStyle()` mit einer flexibleren,
- * S-52 konformen Implementierung für Vector Tiles.
+ * Replaces the old `buildBasicVectorStyle()` with a more flexible,
+ * S-52 compliant implementation for vector tiles.
  *
- * Wird progressiv eingeführt, kann als Feature-Flag neben dem alten
- * "basic" Modus koexistieren.
+ * Introduced progressively and can coexist with the old
+ * "basic" mode behind a feature flag.
  */
 
 import type { ChartProvider } from '../types'
-import { classifyLayers, S52ObjectDefinition } from './nautical-catalog'
+import { classifyLayers } from './nautical-catalog'
+import type { S52ObjectDefinition } from './nautical-catalog'
 
 // ============================================================================
-// BASE STYLES (S-52 FARB-PALETTE)
+// BASE STYLES (S-52 COLOR PALETTE)
 // ============================================================================
 
 type ThemeId = 'day' | 'night'
@@ -98,7 +99,7 @@ function getNauticalBaseStyle(theme: ThemeId) {
 // ============================================================================
 
 /**
- * Generiere Wasser/Tiefenkonturen Layer
+ * Build water/depth contour layers
  */
 function buildWaterAndDepthLayers(
   depthLayerIds: string[],
@@ -106,9 +107,9 @@ function buildWaterAndDepthLayers(
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
 
-  // Base water (hinter anderen Elementen)
-  // Hinweis: In realer Impl. könnte dies auch ein explizites "water" Feature sein
-  // Für jetzt: Statischer Layer als Background
+  // Base water (behind other elements)
+  // Note: In a real implementation this could be an explicit "water" feature
+  // For now: static layer as background
   layers.push({
     id: 'water-base',
     type: 'background',
@@ -117,7 +118,7 @@ function buildWaterAndDepthLayers(
     }
   })
 
-  // Tiefenkonturen (source-layer pro depthLayerId)
+  // Depth contours (source-layer per depthLayerId)
   for (const layerId of depthLayerIds) {
     layers.push({
       id: `depth-contours-${sanitizeId(layerId)}`,
@@ -141,7 +142,7 @@ function buildWaterAndDepthLayers(
       }
     })
 
-    // Tiefen-Labels (z.B. "12 m")
+    // Depth labels (e.g. "12 m")
     layers.push({
       id: `depth-labels-${sanitizeId(layerId)}`,
       type: 'symbol',
@@ -168,7 +169,7 @@ function buildWaterAndDepthLayers(
 }
 
 /**
- * Generiere Landmassen und Urban-Area Layer
+ * Build landmass and urban area layers
  */
 function buildLandLayers(
   areaLayerIds: string[],
@@ -179,7 +180,7 @@ function buildLandLayers(
   const fillColor = fillColorOverride ?? colors.land
 
   for (const layerId of areaLayerIds) {
-    // Basis Land-Fläche
+    // Base land fill
     layers.push({
       id: `land-${sanitizeId(layerId)}`,
       type: 'fill',
@@ -191,7 +192,7 @@ function buildLandLayers(
       }
     })
 
-    // Optional: Landmassen-Outline
+    // Optional: land outline
     layers.push({
       id: `land-outline-${sanitizeId(layerId)}`,
       type: 'line',
@@ -208,7 +209,7 @@ function buildLandLayers(
 }
 
 /**
- * Generiere Linien-Layer (Navigationslinie, Kabel, etc.)
+ * Build line layers (navigation line, cable, etc.)
  */
 function buildLineLayers(
   lineLayerIds: string[],
@@ -226,7 +227,7 @@ function buildLineLayers(
 
     // Standard-Linie
     const lineColor = catalogEntry?.s52ColorScheme?.default || colors.navLine
-    const linePattern = normalized === 'NAVLNE' ? [4, 2] : undefined // Dashed für Navigationslinie
+    const linePattern = normalized === 'NAVLNE' ? [4, 2] : undefined // Dashed for navigation line
 
     layers.push({
       id: `line-${sanitizeId(layerId)}`,
@@ -255,7 +256,7 @@ function buildLineLayers(
 }
 
 /**
- * Generiere Area/Polygon Layer (Ankerbereiche, Sperrgebiete, etc.)
+ * Build area/polygon layers (anchorage, restricted areas, etc.)
  */
 function buildAreaLayers(
   areaLayerIds: string[],
@@ -281,7 +282,7 @@ function buildAreaLayers(
     const catalogEntry = catalogMap.get(normalized) || aliasMap.get(normalized)
 
     const fillColor = catalogEntry?.s52ColorScheme?.default || colors.light
-    const fillOpacity = normalized === 'ACHARE' ? 0.15 : 0.1 // Ankerbereiche deutlich sichtbar
+    const fillOpacity = normalized === 'ACHARE' ? 0.15 : 0.1 // Make anchorage areas more visible
 
     layers.push({
       id: `area-fill-${sanitizeId(layerId)}`,
@@ -294,7 +295,10 @@ function buildAreaLayers(
       }
     })
 
-    if (patternAreas.has(normalized) && catalogEntry?.mapboxRenderingHints?.iconId) {
+    if (
+      patternAreas.has(normalized) &&
+      catalogEntry?.mapboxRenderingHints?.iconId
+    ) {
       const patternId = `${catalogEntry.mapboxRenderingHints.iconId}-pattern`
       layers.push({
         id: `area-pattern-${sanitizeId(layerId)}`,
@@ -364,7 +368,7 @@ function buildAreaLayers(
 }
 
 /**
- * Generiere POI/Symbol Layer (Buoys, Beacons, Lighthouses, etc.)
+ * Build POI/symbol layers (buoys, beacons, lighthouses, etc.)
  */
 function buildPOILayers(
   poiLayerIds: string[],
@@ -437,7 +441,7 @@ function buildPOILayers(
 }
 
 /**
- * Generiere Hazard Layer (Wracks, Felsen, Untiefen)
+ * Build hazard layers (wrecks, rocks, shoals)
  */
 function buildHazardLayers(
   hazardLayerIds: string[],
@@ -458,7 +462,7 @@ function buildHazardLayers(
       catalogEntry?.mapboxRenderingHints?.iconId ||
       getDefaultHazardIconId(layerId)
 
-    // Hazard-Symbol (höhere Priorität als normale POIs)
+    // Hazard symbol (higher priority than regular POIs)
     layers.push({
       id: `hazard-symbol-${sanitizeId(layerId)}`,
       type: 'symbol',
@@ -478,7 +482,7 @@ function buildHazardLayers(
       }
     })
 
-    // Halo/Marker für Hazards (visuelles Highlight)
+    // Halo/marker for hazards (visual highlight)
     layers.push({
       id: `hazard-halo-${sanitizeId(layerId)}`,
       type: 'circle',
@@ -504,7 +508,7 @@ function buildHazardLayers(
 // ============================================================================
 
 /**
- * Generiere einen vollständigen nautischen Mapbox-Style für Vektor-Tiles
+ * Build a complete nautical Mapbox style for vector tiles
  *
  * Diese Funktion sollte das alte `buildBasicVectorStyle()` ersetzen.
  * Sie ist modular und unterstützt verschiedene Layer-Typen
@@ -519,10 +523,10 @@ export function buildNauticalVectorStyle(
   // 1. Hole Layer-IDs aus Provider
   const layerIds = provider.v2?.layers || provider.v1?.chartLayers || []
 
-  // 2. Klassifiziere Layers
+  // 2. Classify layers
   const classified = classifyLayers(layerIds, catalog)
 
-  // 3. Baue Layer-Array auf (Reihenfolge wichtig!)
+  // 3. Build layer array (order matters)
   const generatedLayers = [
     // Background (Wasser)
     ...buildWaterAndDepthLayers(classified.depth, colors),
@@ -540,24 +544,24 @@ export function buildNauticalVectorStyle(
       colors.urban
     ),
 
-    // Areas/zones (z.B. Ankerbereiche)
+    // Areas/zones (e.g. anchorage)
     ...buildAreaLayers(
       classified.areas.filter((id) => !/LNDARE|BUAARE|LAND|URBAN/i.test(id)),
       catalog,
       colors
     ),
 
-    // Navigation lines (mittlere Ebene, oberhalb von Areas)
+    // Navigation lines (middle layer, above areas)
     ...buildLineLayers(classified.lines, catalog, colors),
 
-    // POIs (Tonnen, Feuer, etc.) - über Areas
+    // POIs (buoys, lights, etc.) - above areas
     ...buildPOILayers(classified.poi, catalog, colors),
 
-    // Hazards (Wracks, Felsen) - höchste Priorität
+    // Hazards (wrecks, rocks) - highest priority
     ...buildHazardLayers(classified.hazard, catalog, colors)
   ]
 
-  // 4. Zusammenfassen mit Base-Style
+  // 4. Combine with base style
   const baseStyle = getNauticalBaseStyle(theme)
 
   return {
@@ -579,7 +583,7 @@ export function buildNauticalVectorStyle(
 // ============================================================================
 
 /**
- * Sanitize Layer-ID für Mapbox (nur alphanumeric, -, _)
+ * Sanitize layer ID for Mapbox (alphanumeric, -, _ only)
  */
 function sanitizeId(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9_-]/g, '_')
@@ -641,7 +645,10 @@ const FREEBOARD_ATON_VARIANTS: Array<{ pattern: RegExp; icon: string }> = [
   { pattern: /virtual.*safe|safe.*virtual/, icon: 'virtual-safe' },
   { pattern: /virtual.*special|special.*virtual/, icon: 'virtual-special' },
   { pattern: /virtual.*port|port.*virtual/, icon: 'virtual-port' },
-  { pattern: /virtual.*starboard|starboard.*virtual/, icon: 'virtual-starboard' },
+  {
+    pattern: /virtual.*starboard|starboard.*virtual/,
+    icon: 'virtual-starboard'
+  },
   { pattern: /real.*north|north.*real/, icon: 'real-north' },
   { pattern: /real.*east|east.*real/, icon: 'real-east' },
   { pattern: /real.*south|south.*real/, icon: 'real-south' },
@@ -666,7 +673,10 @@ function getFreeboardPoiIconId(normalizedLayerId: string): string | null {
     }
   }
 
-  if (normalizedLayerId.includes('virtual') && normalizedLayerId.includes('aton')) {
+  if (
+    normalizedLayerId.includes('virtual') &&
+    normalizedLayerId.includes('aton')
+  ) {
     return 'virtual-aton'
   }
 
@@ -686,6 +696,6 @@ function normalizeIconKey(value: string): string {
 }
 
 /**
- * Feature-Flag Option: Nutze entweder neuen "nautical" oder alten "basic" Style
+ * Feature flag option: use the new "nautical" or the old "basic" style
  */
 export type { ThemeId }

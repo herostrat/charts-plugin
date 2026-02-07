@@ -1,0 +1,111 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { Resvg } from '@resvg/resvg-js';
+import { PNG } from 'pngjs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const repoRoot = path.resolve(__dirname, '..');
+const outputDir = path.resolve(repoRoot, 'plugin/public/styles/sprites');
+const outputBase = path.join(outputDir, 's52');
+const iconDir = path.resolve(repoRoot, 'src/assets/charts/icons');
+
+fs.mkdirSync(outputDir, { recursive: true });
+
+const writeSpriteJson = (filePath: string, entries: string[], size: number, pixelRatio: number) => {
+  const data: Record<string, any> = {};
+  entries.forEach((entry, index) => {
+    data[entry] = {
+      x: index * size,
+      y: 0,
+      width: size,
+      height: size,
+      pixelRatio
+    };
+  });
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+};
+
+const iconNames = fs
+  .readdirSync(iconDir)
+  .filter((file) => file.toLowerCase().endsWith('.svg'))
+  .map((file) => path.basename(file, '.svg'))
+  .sort();
+
+if (iconNames.length === 0) {
+  console.error('No SVG icons found in', iconDir);
+  process.exit(1);
+}
+
+const iconSvgs = iconNames.map((name) => ({
+  name,
+  path: path.join(iconDir, `${name}.svg`)
+}));
+
+const renderIcon = (svgPath: string, size: number) => {
+  const svg = fs.readFileSync(svgPath, 'utf8');
+
+  const renderWithFit = (fitTo: any) => {
+    const resvg = new Resvg(svg, { fitTo });
+    const rendered = resvg.render();
+    return PNG.sync.read(rendered.asPng());
+  };
+
+  let decoded = renderWithFit({ mode: 'width', value: size });
+  if (decoded.width > size || decoded.height > size) {
+    decoded = renderWithFit({ mode: 'height', value: size });
+  }
+  if (decoded.width > size || decoded.height > size) {
+    const scale = size / Math.max(decoded.width, decoded.height);
+    decoded = renderWithFit({ mode: 'zoom', value: scale });
+  }
+
+  if (decoded.width === size && decoded.height === size) {
+    return decoded;
+  }
+
+  const padded = new PNG({ width: size, height: size });
+  const offsetX = Math.max(0, Math.floor((size - decoded.width) / 2));
+  const offsetY = Math.max(0, Math.floor((size - decoded.height) / 2));
+  PNG.bitblt(
+    decoded,
+    padded,
+    0,
+    0,
+    decoded.width,
+    decoded.height,
+    offsetX,
+    offsetY
+  );
+  return padded;
+};
+
+const buildSprite = (size: number, suffix: string, pixelRatio: number) => {
+  const outputPng = `${outputBase}${suffix}.png`;
+  const outputJson = `${outputBase}${suffix}.json`;
+
+  const spriteWidth = size * iconSvgs.length;
+  const sprite = new PNG({ width: spriteWidth, height: size });
+
+  iconSvgs.forEach((icon, index) => {
+    const rendered = renderIcon(icon.path, size);
+    PNG.bitblt(
+      rendered,
+      sprite,
+      0,
+      0,
+      rendered.width,
+      rendered.height,
+      index * size,
+      0
+    );
+  });
+
+  fs.writeFileSync(outputPng, PNG.sync.write(sprite));
+  writeSpriteJson(outputJson, iconNames, size, pixelRatio);
+};
+
+buildSprite(32, '', 1);
+buildSprite(64, '@2x', 2);

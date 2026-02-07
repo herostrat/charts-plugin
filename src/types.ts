@@ -9,7 +9,7 @@ type MapSourceType =
   | 'tileJSON'
 
 export interface ChartProvider {
-  _fileFormat?: 'mbtiles' | 'directory' | 'pmtiles'
+  _fileFormat?: 'mbtiles' | 'directory' | 'pmtiles' | 'geotiff'
   _filePath: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _mbtilesHandle?: any

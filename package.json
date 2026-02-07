@@ -3,21 +3,21 @@
   "version": "3.3.0",
   "description": "Signal K plugin to provide chart support for Signal K server",
   "main": "plugin/index.js",
+  "type": "module",
   "scripts": {
-    "build": "tsc && npm run copy-style-assets && npm run build:sprites",
-    "build-declaration": "tsc --declaration --allowJs false",
-    "copy-style-assets": "node scripts/copy-style-assets.js",
-    "watch": "npm run copy-style-assets && npm run build:sprites && tsc -w",
-    "start": "npm run copy-style-assets && npm run build:sprites && tsc -w",
+    "build": "tsup && npm run copy-style-assets && npm run build:sprites",
+    "copy-style-assets": "tsx scripts/copy-style-assets.ts",
+    "watch": "tsup --watch --onSuccess \"npm run copy-style-assets && npm run build:sprites\"",
+    "start": "npm run watch",
     "prepare": "npm run build",
     "prettier": "prettier -w src/",
     "lint": "eslint \"src/**/*.{ts,js}\" --fix",
     "format": "npm run prettier && npm run lint",
     "ci-lint": "eslint \"src/**/*.{ts,js}\" && prettier --check src/",
-    "test": "mocha",
+    "test": "mocha --node-option import=tsx \"test/**/*.mjs\" \"test/**/*.ts\"",
     "coverage": "nyc npm test",
     "coverage:report": "nyc report --reporter=html && echo 'Coverage report generated at coverage/index.html'",
-    "build:sprites": "node scripts/build-sprites.js"
+    "build:sprites": "tsx scripts/build-sprites.ts"
   },
   "license": "Apache-2.0",
   "keywords": [
@@ -55,7 +55,7 @@
     "@resvg/resvg-js": "^2.6.2",
     "@types/express": "^5.0.6",
     "@types/lodash": "^4.17.23",
-    "@types/node": "^25.2.1",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "body-parser": "^2.2.2",
@@ -70,6 +70,9 @@
     "pbf": "^4.0.1",
     "pngjs": "^7.0.0",
     "prettier": "^3.8.1",
-    "typescript": "^5.9.3"
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.3.3"
   }
 }

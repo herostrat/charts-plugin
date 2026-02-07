@@ -14,8 +14,9 @@ import booleanIntersects from '@turf/boolean-intersects'
 import { bbox } from '@turf/bbox'
 import { polygon } from '@turf/helpers'
 import checkDiskSpace from 'check-disk-space'
-import { ResourcesApi } from '@signalk/server-api'
-import { ChartProvider } from './types'
+import type { ResourcesApi } from '@signalk/server-api'
+import { lonLatToTileXY, tileToBBox, getSubTiles } from '../tiles/tile-utils'
+import type { ChartProvider } from '../types'
 
 export interface Tile {
   x: number
@@ -23,9 +24,9 @@ export interface Tile {
   z: number
 }
 
-export enum Status {
-  Stopped,
-  Running
+export const Status = {
+  Stopped: 0,
+  Running: 1
 }
 
 export class ChartSeedingManager {
@@ -57,7 +58,7 @@ export class ChartDownloader {
 
   private id: number = ChartDownloader.nextJobId++
   private maxZoom = 15
-  private status: Status = Status.Stopped
+  private status: number = Status.Stopped
   private totalTiles = 0
   private downloadedTiles = 0
   private failedTiles = 0
@@ -71,10 +72,18 @@ export class ChartDownloader {
   private tilesToDownload: Tile[] = []
 
   constructor(
-    private resourcesApi: ResourcesApi,
-    private chartsPath: string,
-    private provider: ChartProvider
-  ) {}
+    resourcesApi: ResourcesApi,
+    chartsPath: string,
+    provider: ChartProvider
+  ) {
+    this.resourcesApi = resourcesApi
+    this.chartsPath = chartsPath
+    this.provider = provider
+  }
+
+  resourcesApi: ResourcesApi
+  chartsPath: string
+  provider: ChartProvider
 
   get ID(): number {
     return this.id
@@ -131,10 +140,6 @@ export class ChartDownloader {
     this.maxZoom = maxZoom
   }
 
-  /**
-   * Download map tiles for a specific area.
-   *
-   */
   async seedCache(): Promise<void> {
     this.cancelRequested = false
     this.status = Status.Running
@@ -142,7 +147,7 @@ export class ChartDownloader {
     this.downloadedTiles = 0
     this.failedTiles = 0
     this.cachedTiles = this.totalTiles - this.tilesToDownload.length
-    const limit = pLimit(this.concurrentDownloadsLimit) // concurrent download limit
+    const limit = pLimit(this.concurrentDownloadsLimit)
     let tileCounter = 0
     this.tilesToDownload = await this.filterCachedTiles(this.tiles)
 
@@ -228,14 +233,14 @@ export class ChartDownloader {
       )
 
       try {
-        await fs.promises.access(tilePath) // file exists
-        return null // filter out cached tile
+        await fs.promises.access(tilePath)
+        return null
       } catch (err: unknown) {
         if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-          return tile // file does not exist → uncached
+          return tile
         }
         console.error('Unexpected fs error:', err)
-        return tile // treat unknown errors as uncached
+        return tile
       }
     })
 
@@ -303,7 +308,6 @@ export class ChartDownloader {
     }
     const url = provider.remoteUrl
       .replace('{z}', tile.z.toString())
-      // To be able to handle NOAA WMTS caching as a tilemap source with -2 offset
       .replace('{z-2}', (tile.z - 2).toString())
       .replace('{x}', tile.x.toString())
       .replace('{y}', tile.y.toString())
@@ -329,36 +333,15 @@ export class ChartDownloader {
   }
 
   getSubTiles(tile: Tile, maxZoom: number): Tile[] {
-    const tiles: Tile[] = [tile]
-
-    for (let z = tile.z + 1; z <= maxZoom; z++) {
-      const zoomDiff = z - tile.z
-      const factor = Math.pow(2, zoomDiff)
-
-      const startX = tile.x * factor
-      const startY = tile.y * factor
-
-      for (let x = startX; x < startX + factor; x++) {
-        for (let y = startY; y < startY + factor; y++) {
-          tiles.push({ x, y, z })
-        }
-      }
-    }
-
-    return tiles
+    return getSubTiles(tile, maxZoom)
   }
 
-  /**
-   * Get all tiles that intersect a bounding box up to a maximum zoom level.
-   * bbox = [minLon, minLat, maxLon, maxLat]
-   */
   getTilesForBBox(bbox: BBox, maxZoom: number): Tile[] {
     const tiles: Tile[] = []
     const [minLon, minLat, maxLon, maxLat] = bbox
 
     const crossesAntiMeridian = minLon > maxLon
 
-    // Helper to process a lon/lat box normally
     const processBBox = (
       lo1: number,
       la1: number,
@@ -366,8 +349,8 @@ export class ChartDownloader {
       la2: number
     ) => {
       for (let z = 0; z <= maxZoom; z++) {
-        const [minX, maxY] = this.lonLatToTileXY(lo1, la1, z)
-        const [maxX, minY] = this.lonLatToTileXY(lo2, la2, z)
+        const [minX, maxY] = lonLatToTileXY(lo1, la1, z)
+        const [maxX, minY] = lonLatToTileXY(lo2, la2, z)
 
         for (let x = minX; x <= maxX; x++) {
           for (let y = minY; y <= maxY; y++) {
@@ -378,11 +361,8 @@ export class ChartDownloader {
     }
 
     if (!crossesAntiMeridian) {
-      // normal
       processBBox(minLon, minLat, maxLon, maxLat)
     } else {
-      // crosses antimeridian — split into two boxes:
-      // [minLon -> 180] and [-180 -> maxLon]
       processBBox(minLon, minLat, 180, maxLat)
       processBBox(-180, minLat, maxLon, maxLat)
     }
@@ -395,6 +375,11 @@ export class ChartDownloader {
     zoomMin = 1,
     zoomMax = 14
   ): Tile[] {
+    if (!geojson || !Array.isArray(geojson.features)) {
+      return []
+    }
+    const minZoom = zoomMin ?? 1
+    const maxZoom = zoomMax ?? 14
     const tiles: Tile[] = []
 
     for (const feature of geojson.features) {
@@ -406,23 +391,19 @@ export class ChartDownloader {
         continue
       }
 
-      const boundingBox = bbox(feature.geometry as Polygon) // [minX, minY, maxX, maxY]
-      for (let z = zoomMin; z <= zoomMax; z++) {
-        const [minX, minY] = this.lonLatToTileXY(
-          boundingBox[0],
-          boundingBox[3],
-          z
-        ) // top-left
-        const [maxX, maxY] = this.lonLatToTileXY(
-          boundingBox[2],
-          boundingBox[1],
-          z
-        ) // bottom-right
+      const boundingBox = bbox(feature.geometry as Polygon)
+      for (let z = minZoom; z <= maxZoom; z++) {
+        const [minX, minY] = lonLatToTileXY(boundingBox[0], boundingBox[3], z)
+        const [maxX, maxY] = lonLatToTileXY(boundingBox[2], boundingBox[1], z)
 
         for (let x = minX; x <= maxX; x++) {
           for (let y = minY; y <= maxY; y++) {
-            const tileBbox = this.tileToBBox(x, y, z)
-            const tilePoly = this.bboxPolygon(tileBbox)
+            const tileBbox = tileToBBox(x, y, z)
+            // bboxPolygon expects a tuple with 4 or 6 numbers; tileBbox is number[]
+            // Cast to [number, number, number, number] as returned by tileToBBox
+            const tilePoly = this.bboxPolygon(
+              tileBbox as [number, number, number, number]
+            )
 
             if (booleanIntersects(feature as Feature, tilePoly)) {
               tiles.push({ x, y, z })
@@ -499,36 +480,6 @@ export class ChartDownloader {
       type: 'FeatureCollection' as const,
       features
     }
-  }
-
-  private lonLatToTileXY(
-    lon: number,
-    lat: number,
-    zoom: number
-  ): [number, number] {
-    const n = 2 ** zoom
-    const x = Math.floor(((lon + 180) / 360) * n)
-    const y = Math.floor(
-      ((1 -
-        Math.log(
-          Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)
-        ) /
-          Math.PI) /
-        2) *
-        n
-    )
-    return [x, y]
-  }
-
-  private tileToBBox(x: number, y: number, z: number): BBox {
-    const n = 2 ** z
-    const lon1 = (x / n) * 360 - 180
-    const lat1 =
-      (Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / n))) * 180) / Math.PI
-    const lon2 = ((x + 1) / n) * 360 - 180
-    const lat2 =
-      (Math.atan(Math.sinh(Math.PI * (1 - (2 * (y + 1)) / n))) * 180) / Math.PI
-    return [lon1, lat2, lon2, lat1]
   }
 
   private bboxPolygon(boundingBox: BBox) {

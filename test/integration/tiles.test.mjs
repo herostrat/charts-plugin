@@ -2,19 +2,24 @@ import fs from 'fs'
 import path from 'path'
 import { expect } from 'chai'
 import { request as chaiRequest } from 'chai-http'
-import express from 'express'
-import bodyParser from 'body-parser'
-import http from 'http'
 import { fileURLToPath } from 'url'
-import Plugin from '../plugin/index.js'
+import plugin from '../../src/index.ts'
 import { PMTiles, tileTypeExt } from 'pmtiles'
 import zlib from 'zlib'
 import { VectorTile } from '@mapbox/vector-tile'
 import Protobuf from 'pbf'
+import { createTestServer } from '../helpers/test-server.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const pmtilesDir = path.resolve(__dirname, 'charts-pmtiles')
+const fixturesRoot = path.resolve(__dirname, '..', 'fixtures')
+const chartPathsDefault = [path.resolve(fixturesRoot, 'mbtiles')]
+const chartPathsWithPmtiles = [path.resolve(fixturesRoot, 'mbtiles'), path.resolve(fixturesRoot, 'pmtiles')]
+const chartPathsWithSecondary = [path.resolve(fixturesRoot, 'mbtiles')]
+const chartPathsWithDirectory = [path.resolve(fixturesRoot, 'directory')]
+const chartPathsWithTms = [path.resolve(fixturesRoot, 'tms')]
+const chartPathsWithCharts = [path.resolve(fixturesRoot, 'charts')]
+const pmtilesDir = path.resolve(fixturesRoot, 'pmtiles')
 const pmtilesValid = path.join(pmtilesDir, 'test_fixture_1.pmtiles')
 const pmtilesEmpty = path.join(pmtilesDir, 'empty.pmtiles')
 const pmtilesInvalid = path.join(pmtilesDir, 'invalid.pmtiles')
@@ -34,32 +39,8 @@ const hasPmtilesFixtures =
  * 4. Y-flipping works correctly for TMS
  */
 
-const createTestApp = () => {
-  let app = express()
-  app.use(bodyParser.json())
-  app.debug = (x) => console.log(x)
-  app.config = {
-    configPath: path.resolve(__dirname),
-    version: '2.0.0',
-    ssl: false,
-    getExternalPort: () => app.get('port')
-  }
-
-  app.statusMessage = () => 'started'
-  app.error = (msg) => undefined
-  app.debug = (...msg) => undefined
-  app.setPluginStatus = (pluginId, status) => undefined
-  app.setPluginError = (pluginId, status) => undefined
-
-  return new Promise((resolve, reject) => {
-    const server = http.createServer(app)
-    server.listen(() => {
-      const { port } = server.address()
-      app.set('port', port)
-      resolve({ app, server })
-    })
-  })
-}
+const createTestApp = () =>
+  createTestServer({ configPath: fixturesRoot })
 
 const getRequest = (server, location) => {
   const baseUrl = `http://localhost:${server.address().port}`
@@ -187,12 +168,12 @@ const getPmtilesDetails = async () => {
 }
 
 describe('Integration Tests: Chart Loading', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -201,7 +182,7 @@ describe('Integration Tests: Chart Loading', () => {
 
   describe('Chart Discovery and Metadata', () => {
     it('loads MBTiles chart metadata correctly', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({chartPaths: [path.resolve(fixturesRoot, 'mbtiles')]}).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts/test')
       ).then((result) => {
         expect(result.status).to.equal(200)
@@ -216,7 +197,7 @@ describe('Integration Tests: Chart Loading', () => {
     })
 
     it('loads directory-based chart metadata correctly', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({chartPaths: [path.resolve(fixturesRoot, 'directory')]}).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts/unpacked-tiles')
       ).then((result) => {
         expect(result.status).to.equal(200)
@@ -229,7 +210,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
         .then(async () => {
           const result = await getRequest(
             testServer,
@@ -261,7 +242,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
         .then(() =>
           getRequest(testServer, '/signalk/v1/api/resources/charts/empty')
         )
@@ -274,7 +255,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
         .then(() =>
           getRequest(testServer, '/signalk/v1/api/resources/charts/invalid')
         )
@@ -287,7 +268,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
         .then(() => getRequest(testServer, '/signalk/v1/api/resources/charts'))
         .then((result) => {
           const charts = result.body
@@ -298,7 +279,7 @@ describe('Integration Tests: Chart Loading', () => {
     })
 
     it('includes all required metadata fields', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({}).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts')
       ).then((result) => {
         const charts = result.body
@@ -313,7 +294,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
         .then(async () => {
           const result = await getRequest(
             testServer,
@@ -331,7 +312,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(plugin, chartPathsWithPmtiles)
       const { expectedFormat } = await getPmtilesDetails()
       if (!isVectorFormat(expectedFormat)) {
         this.skip()
@@ -353,7 +334,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(plugin, chartPathsWithPmtiles)
         .then(async () => {
           const result = await getRequest(
             testServer,
@@ -388,7 +369,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(plugin, chartPathsWithPmtiles)
       const { expectedFormat } = await getPmtilesDetails()
       if (!isVectorFormat(expectedFormat)) {
         this.skip()
@@ -411,7 +392,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(plugin, chartPathsWithPmtiles)
       const { expectedFormat, vectorLayers } = await getPmtilesDetails()
       if (!isVectorFormat(expectedFormat)) {
         this.skip()
@@ -451,7 +432,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(plugin, chartPathsWithPmtiles)
         .then(async () => {
           const result = await getRequest(
             testServer,
@@ -474,7 +455,7 @@ describe('Integration Tests: Chart Loading', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      return startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      return startPluginWithChartPaths(plugin, chartPathsWithPmtiles)
         .then(async () => {
           const result = await getRequest(
             testServer,
@@ -493,12 +474,12 @@ describe('Integration Tests: Chart Loading', () => {
 })
 
 describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -507,7 +488,7 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
 
   describe('Cache-Control Headers', () => {
     it('sets correct Cache-Control header for MBTiles tile', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/test/4/5/6')
       ).then((response) => {
         expect(response.headers).to.have.property('cache-control')
@@ -517,7 +498,7 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
     })
 
     it('sets correct Cache-Control header for directory tile', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithDirectory }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/unpacked-tiles/4/4/6')
       ).then((response) => {
         expect(response.headers).to.have.property('cache-control')
@@ -528,7 +509,7 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
 
   describe('Content-Type Headers', () => {
     it('returns png content-type for PNG tiles', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/test/4/5/6')
       ).then((response) => {
         expect(response.headers['content-type']).to.equal('image/png')
@@ -536,7 +517,7 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
     })
 
     it('returns image/png for unpacked PNG directory', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithDirectory }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/unpacked-tiles/4/4/6')
       ).then((response) => {
         expect(response.headers['content-type']).to.equal('image/png')
@@ -547,7 +528,7 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
       const { pmtilesHandle, header, expectedFormat } =
         await getPmtilesDetails()
       const result = await findFirstTile(pmtilesHandle, header)
@@ -568,7 +549,7 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
       const { pmtilesHandle, header, expectedFormat } =
         await getPmtilesDetails()
       if (!isVectorFormat(expectedFormat)) {
@@ -595,12 +576,12 @@ describe('Integration Tests: Tile Serving - Headers & Content Type', () => {
 })
 
 describe('Integration Tests: Tile Serving - Content Integrity', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -609,14 +590,14 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
 
   describe('Tile Content Verification', () => {
     it('mbtiles tile content matches expected file', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/test/4/5/6')
       ).then((response) => {
         expect(response.status).to.equal(200)
         
         // unpacked-tiles contains same tiles as the test.mbtiles file
         const expectedTile = fs.readFileSync(
-          path.resolve(__dirname, 'charts/unpacked-tiles/4/5/6.png')
+          path.resolve(fixturesRoot, 'directory/unpacked-tiles/4/5/6.png')
         )
         expect(response.body.toString('hex')).to.deep.equal(
           expectedTile.toString('hex')
@@ -625,13 +606,13 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
     })
 
     it('directory tile content matches file exactly', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithDirectory }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/unpacked-tiles/4/4/6')
       ).then((response) => {
         expect(response.status).to.equal(200)
         
         const expectedTile = fs.readFileSync(
-          path.resolve(__dirname, 'charts/unpacked-tiles/4/4/6.png')
+          path.resolve(fixturesRoot, 'directory/unpacked-tiles/4/4/6.png')
         )
         expect(response.body.toString('hex')).to.deep.equal(
           expectedTile.toString('hex')
@@ -643,7 +624,7 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
 
       const pmtilesHandle = new PMTiles(new NodeFileSource(pmtilesValid))
       const header = await pmtilesHandle.getHeader()
@@ -667,7 +648,7 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
       const { pmtilesHandle, header, expectedFormat } =
         await getPmtilesDetails()
       if (!isVectorFormat(expectedFormat)) {
@@ -695,7 +676,7 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
 
   describe('Response Body Characteristics', () => {
     it('returns non-empty buffer for valid tile', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/test/4/5/6')
       ).then((response) => {
         expect(response.status).to.equal(200)
@@ -704,7 +685,7 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
     })
 
     it('returns consistent content on multiple requests', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/test/4/5/6')
       ).then((response1) => {
         const hex1 = response1.body.toString('hex')
@@ -721,7 +702,7 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
       const { header } = await getPmtilesDetails()
       const z = header.maxZoom + 5
       const response = await getRequest(
@@ -735,7 +716,7 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
       if (!hasPmtilesFixtures) {
         this.skip()
       }
-      await startPluginWithChartPaths(plugin, ['charts', 'charts-pmtiles'])
+      await startPluginWithChartPaths(pluginInstance, chartPathsWithPmtiles)
       const { pmtilesHandle, header } = await getPmtilesDetails()
       const result = await findFirstTile(pmtilesHandle, header)
       if (!result) {
@@ -753,12 +734,12 @@ describe('Integration Tests: Tile Serving - Content Integrity', () => {
 })
 
 describe('Integration Tests: Y-Coordinate Flipping (TMS Critical)', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -768,14 +749,14 @@ describe('Integration Tests: Y-Coordinate Flipping (TMS Critical)', () => {
   describe('TMS Y-flip Correctness', () => {
     it('flips Y correctly for TMS tiles - boundary at z=5', () => {
       // The test expects: y_requested = 10 → file at y_flipped = 2^5 - 1 - 10 = 21
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithTms }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/tms-tiles/5/17/10')
       ).then((response) => {
         expect(response.status).to.equal(200)
         
         // Should match the file at tms-tiles/5/17/21.png
         const expectedTile = fs.readFileSync(
-          path.resolve(__dirname, 'charts/tms-tiles/5/17/21.png')
+          path.resolve(fixturesRoot, 'tms/tms-tiles/5/17/21.png')
         )
         expect(response.body.toString('hex')).to.equal(
           expectedTile.toString('hex')
@@ -784,7 +765,7 @@ describe('Integration Tests: Y-Coordinate Flipping (TMS Critical)', () => {
     })
 
     it('TMS flipping preserves image integrity', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithTms }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/tms-tiles/5/17/10')
       ).then((response) => {
         expect(response.status).to.equal(200)
@@ -794,7 +775,7 @@ describe('Integration Tests: Y-Coordinate Flipping (TMS Critical)', () => {
     })
 
     it('correctly identifies TMS format from chart metadata', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithTms }).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts/tms-tiles')
       ).then((response) => {
         expect(response.status).to.equal(200)
@@ -807,7 +788,7 @@ describe('Integration Tests: Y-Coordinate Flipping (TMS Critical)', () => {
   describe('Y-flip Boundary Conditions', () => {
     it('handles Y at 0 (bottom of TMS grid)', () => {
       // At z=4: y_flipped = 2^4 - 1 - 0 = 15 (top of grid)
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithTms }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/tms-tiles/5/16/31')
       ).catch((e) => e.response)
       .then((response) => {
@@ -819,12 +800,12 @@ describe('Integration Tests: Y-Coordinate Flipping (TMS Critical)', () => {
 })
 
 describe('Integration Tests: Error Handling', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -833,7 +814,7 @@ describe('Integration Tests: Error Handling', () => {
 
   describe('404 Error Responses', () => {
     it('returns 404 for missing tile from valid chart', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/test/99/99/99')
       ).catch((e) => e.response)
       .then((response) => {
@@ -842,7 +823,7 @@ describe('Integration Tests: Error Handling', () => {
     })
 
     it('returns 404 for invalid chart identifier', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/nonexistent/4/5/6')
       ).catch((e) => e.response)
       .then((response) => {
@@ -851,7 +832,7 @@ describe('Integration Tests: Error Handling', () => {
     })
 
     it('returns 404 for unknown chart in resources API', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts/missing-chart')
       ).catch((e) => e.response)
       .then((response) => {
@@ -862,12 +843,12 @@ describe('Integration Tests: Error Handling', () => {
 })
 
 describe('Integration Tests: Multiple Chart Sources', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -876,7 +857,7 @@ describe('Integration Tests: Multiple Chart Sources', () => {
 
   describe('Multi-path configuration', () => {
     it('loads charts from multiple paths', () => {
-      return plugin.start({ chartPaths: ['charts', 'charts-2'] }).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsWithSecondary }).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts')
       ).then((result) => {
         expect(result.status).to.equal(200)
@@ -890,7 +871,7 @@ describe('Integration Tests: Multiple Chart Sources', () => {
 
     it('handles duplicate chart names (later path wins)', () => {
       // If test exists in both paths, second should override
-      return plugin.start({ chartPaths: ['charts', 'charts'] }).then(() =>
+      return pluginInstance.start({ chartPaths: [path.resolve(fixturesRoot, 'mbtiles'), path.resolve(fixturesRoot, 'mbtiles')] }).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts')
       ).then((result) => {
         const charts = result.body
@@ -901,12 +882,12 @@ describe('Integration Tests: Multiple Chart Sources', () => {
 })
 
 describe('Integration Tests: Response Format Consistency', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -915,7 +896,7 @@ describe('Integration Tests: Response Format Consistency', () => {
 
   describe('API Response Structure', () => {
     it('chart list returns object of charts', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts')
       ).then((result) => {
         expect(result.body).to.be.an('object')
@@ -924,7 +905,7 @@ describe('Integration Tests: Response Format Consistency', () => {
     })
 
     it('individual chart response includes all required fields', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/v1/api/resources/charts/test')
       ).then((result) => {
         const chart = result.body
@@ -942,7 +923,7 @@ describe('Integration Tests: Response Format Consistency', () => {
     })
 
     it('tile response sets content headers consistently', () => {
-      return plugin.start({}).then(() =>
+      return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
         getRequest(testServer, '/signalk/chart-tiles/test/4/5/6')
       ).then((response) => {
         expect(response.headers).to.have.property('content-type')
@@ -954,15 +935,15 @@ describe('Integration Tests: Response Format Consistency', () => {
 
 
 // --- Additional Chart Material Integration Tests ---
-const charts2Path = path.resolve(__dirname, 'charts-2')
+const charts2Path = path.resolve(fixturesRoot, 'charts-2')
 
 describe('Integration Tests: Additional Chart Material Scenarios', () => {
-  let plugin
+  let pluginInstance
   let testServer
 
   beforeEach(() =>
     createTestApp().then(({ app, server }) => {
-      plugin = Plugin(app)
+      pluginInstance = plugin(app)
       testServer = server
     })
   )
@@ -970,7 +951,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   afterEach((done) => testServer.close(() => done()))
 
   it('serves tiles from secondary MBTiles file (test2.mbtiles)', () => {
-    return plugin.start({ chartPaths: ['charts', 'charts-2'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsWithSecondary }).then(() =>
       getRequest(testServer, '/signalk/v1/api/resources/charts/test2')
     ).then((result) => {
       expect(result.status).to.equal(200)
@@ -983,7 +964,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for all tiles in empty-test chart directory', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsWithDirectory }).then(() =>
       getRequest(testServer, '/signalk/v1/api/resources/charts/empty-test')
     ).catch((e) => e.response)
     .then((result) => {
@@ -1007,7 +988,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for missing TMS tile and parses tilemapresource.xml', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsWithTms }).then(() =>
       getRequest(testServer, '/signalk/v1/api/resources/charts/tms-tiles')
     ).then((result) => {
       expect(result.status).to.equal(200)
@@ -1022,7 +1003,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
 
   it('returns 500 or 404 for directory chart with missing metadata.json', () => {
     // Simulate by pointing to a directory without metadata.json (empty-test)
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsWithDirectory }).then(() =>
       getRequest(testServer, '/signalk/v1/api/resources/charts/empty-test')
     ).catch(e => e.response)
     .then((response) => {
@@ -1032,7 +1013,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('rejects tiles for unsupported format charts', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsWithDirectory }).then(() =>
       getRequest(testServer, '/signalk/v1/api/resources/charts/invalid-format')
     ).then((result) => {
       expect(result.status).to.equal(200)
@@ -1045,12 +1026,12 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for unreadable tile files', async () => {
-    const chartDir = path.resolve(__dirname, 'charts/unreadable-tiles')
+    const chartDir = path.resolve(fixturesRoot, 'charts/unreadable-tiles')
     const tileDir = path.resolve(chartDir, '4/5')
     const tilePath = path.resolve(tileDir, '6.png')
     fs.mkdirSync(tileDir, { recursive: true })
     fs.copyFileSync(
-      path.resolve(__dirname, 'charts/unpacked-tiles/4/5/6.png'),
+      path.resolve(fixturesRoot, 'directory/unpacked-tiles/4/5/6.png'),
       tilePath
     )
     fs.writeFileSync(
@@ -1070,7 +1051,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
     fs.chmodSync(tilePath, 0)
 
     try {
-      await plugin.start({ chartPaths: ['charts'] })
+      await pluginInstance.start({ chartPaths: chartPathsWithCharts })
       const response = await getRequest(
         testServer,
         '/signalk/chart-tiles/unreadable-tiles/4/5/6'
@@ -1087,7 +1068,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for invalid tile parameters', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
       getRequest(testServer, '/signalk/chart-tiles/test/a/b/c')
     ).catch(e => e.response)
     .then((response) => {
@@ -1096,7 +1077,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for mixed invalid tile parameters', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
       getRequest(testServer, '/signalk/chart-tiles/test/4/5/x')
     ).catch(e => e.response)
     .then((response) => {
@@ -1109,7 +1090,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for negative or decimal tile parameters', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
       getRequest(testServer, '/signalk/chart-tiles/test/-1/0/0')
     ).catch(e => e.response)
     .then((response) => {
@@ -1122,7 +1103,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for whitespace-padded tile parameters', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
       getRequest(testServer, '/signalk/chart-tiles/test/4/5/%206')
     ).catch(e => e.response)
     .then((response) => {
@@ -1131,7 +1112,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for out-of-range zoom levels', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
       getRequest(testServer, '/signalk/chart-tiles/test/0/0/0')
     ).catch(e => e.response)
     .then((response) => {
@@ -1144,7 +1125,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('returns 404 for out-of-range tile coordinates', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
       // At z=4 valid x/y are 0..15, so 16 is out of range
       getRequest(testServer, '/signalk/chart-tiles/test/4/16/0')
     ).catch(e => e.response)
@@ -1158,7 +1139,7 @@ describe('Integration Tests: Additional Chart Material Scenarios', () => {
   })
 
   it('MBTiles and unpacked directory tiles match for same coordinates', () => {
-    return plugin.start({ chartPaths: ['charts'] }).then(() =>
+    return pluginInstance.start({ chartPaths: chartPathsDefault }).then(() =>
       Promise.all([
         getRequest(testServer, '/signalk/chart-tiles/test/4/5/6'),
         getRequest(testServer, '/signalk/chart-tiles/unpacked-tiles/4/5/6')

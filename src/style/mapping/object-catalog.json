@@ -672,7 +672,12 @@
     },
     {
       "id": "CTSARE",
-      "aliases": ["CTSARE", "cargo_transshipment_area", "ctsare", "transhipment-dock"],
+      "aliases": [
+        "CTSARE",
+        "cargo_transshipment_area",
+        "ctsare",
+        "transhipment-dock"
+      ],
       "symbolId": "s52_ctsare",
       "sprite": "circle",
       "prettyName": "CTSARE",
@@ -1191,7 +1196,13 @@
     },
     {
       "id": "HRBARE",
-      "aliases": ["HRBARE", "harbour_area_administrative", "hrbare", "turning-basin", "turning_basin"],
+      "aliases": [
+        "HRBARE",
+        "harbour_area_administrative",
+        "hrbare",
+        "turning-basin",
+        "turning_basin"
+      ],
       "symbolId": "s52_hrbare",
       "sprite": "circle",
       "prettyName": "Harbour Area",
@@ -2029,7 +2040,12 @@
     },
     {
       "id": "RDOCAL",
-      "aliases": ["RDOCAL", "radio_calling_in_point", "rdocal", "radio-call-point"],
+      "aliases": [
+        "RDOCAL",
+        "radio_calling_in_point",
+        "rdocal",
+        "radio-call-point"
+      ],
       "symbolId": "s52_rdocal",
       "sprite": "circle",
       "prettyName": "RDOCAL",
@@ -2289,7 +2305,12 @@
     },
     {
       "id": "SISTAW",
-      "aliases": ["SISTAW", "signal_station_warning", "sistaw", "notice-to-mariners"],
+      "aliases": [
+        "SISTAW",
+        "signal_station_warning",
+        "sistaw",
+        "notice-to-mariners"
+      ],
       "symbolId": "s52_sistaw",
       "sprite": "circle",
       "prettyName": "SISTAW",
@@ -2364,7 +2385,13 @@
     },
     {
       "id": "SMCFAC",
-      "aliases": ["SMCFAC", "small_craft_facility", "smcfac", "boatramp", "marina"],
+      "aliases": [
+        "SMCFAC",
+        "small_craft_facility",
+        "smcfac",
+        "boatramp",
+        "marina"
+      ],
       "symbolId": "s52_smcfac",
       "sprite": "circle",
       "prettyName": "SMCFAC",
@@ -2531,7 +2558,13 @@
     },
     {
       "id": "TIDEWY",
-      "aliases": ["TIDEWY", "tideway", "tidewy", "waterway-guage", "waterway_gauge"],
+      "aliases": [
+        "TIDEWY",
+        "tideway",
+        "tidewy",
+        "waterway-guage",
+        "waterway_gauge"
+      ],
       "symbolId": "s52_tidewy",
       "sprite": "circle",
       "prettyName": "TIDEWY",

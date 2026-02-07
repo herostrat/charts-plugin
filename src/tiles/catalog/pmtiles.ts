@@ -6,10 +6,13 @@ import {
   type RangeResponse,
   type Source
 } from 'pmtiles'
-import type { ChartProvider } from './types'
+import type { ChartProvider } from '../../types'
 
 class NodeFileSource implements Source {
-  constructor(private filePath: string) {}
+  private filePath: string
+  constructor(filePath: string) {
+    this.filePath = filePath
+  }
 
   getKey(): string {
     return this.filePath
@@ -109,6 +112,23 @@ export const openPmtilesFile = async (
     const format = tileTypeToFormat(header.tileType)
     const layers = parseLayers(metaData)
 
+    // Defensive checks for header values
+    const bounds = [header.minLon, header.minLat, header.maxLon, header.maxLat]
+    if (bounds.some((v) => typeof v !== 'number' || isNaN(v))) {
+      return null
+    }
+    if (
+      typeof header.minZoom !== 'number' ||
+      typeof header.maxZoom !== 'number' ||
+      isNaN(header.minZoom) ||
+      isNaN(header.maxZoom)
+    ) {
+      return null
+    }
+    if (typeof format !== 'string' || !format.length) {
+      return null
+    }
+
     return {
       _fileFormat: 'pmtiles',
       _filePath: filePath,
@@ -117,7 +137,7 @@ export const openPmtilesFile = async (
       identifier,
       name: parseName(metaData, identifier),
       description: parseDescription(metaData),
-      bounds: [header.minLon, header.minLat, header.maxLon, header.maxLat],
+      bounds,
       minzoom: header.minZoom,
       maxzoom: header.maxZoom,
       format,

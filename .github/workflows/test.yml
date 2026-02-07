@@ -19,6 +19,8 @@ jobs:
             latest: false
           - node-version: 24.x
             latest: true
+          - node-version: 25.x
+            latest: false
 
     steps:
     - uses: actions/checkout@v4

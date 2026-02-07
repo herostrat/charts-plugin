@@ -1,18 +1,26 @@
 import path from 'path'
 import fs from 'fs'
-import * as _ from 'lodash'
-import { findCharts } from './charts'
+
+import { fileURLToPath } from 'url'
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+import isEmpty from 'lodash/isEmpty.js'
+import _ from 'lodash'
+
+import { findCharts } from './tiles/catalog/scanner'
 import { apiRoutePrefix } from './constants'
-import { ChartProvider, OnlineChartProvider } from './types'
-import { ChartSeedingManager, ChartDownloader, Tile } from './chartDownloader'
+import type { ChartProvider, OnlineChartProvider } from './types'
+import { convertOnlineProviderConfig } from './tiles/catalog/online'
+import { registerTileRoutes } from './tiles/router'
+import { registerStyleRoutes } from './resources/style-routes'
 import {
-  buildNauticalVectorStyle,
-  type ThemeId
-} from './style/nautical-style-generator'
-import type { S52ObjectDefinition } from './style/nautical-catalog'
-import express, { Request, Response, Application } from 'express'
-import { OutgoingHttpHeaders } from 'http'
-import {
+  registerResourcesProvider,
+  sanitizeProvider,
+  validateVectorProviders
+} from './resources/registry'
+import express from 'express'
+import type { Request, Response, Application } from 'express'
+import type {
   Plugin,
   ServerAPI,
   ResourceProviderRegistry
@@ -40,12 +48,10 @@ interface ChartProviderApp
 
 const MIN_ZOOM = 1
 const MAX_ZOOM = 24
-const chartTilesPath = '/signalk/chart-tiles'
-const chartStylePath = '/signalk/chart-style'
 const defaultCatalogId = 's52'
 type VectorCatalogChoice = 's52' | 'none'
 
-module.exports = (app: ChartProviderApp): Plugin => {
+const plugin = (app: ChartProviderApp): Plugin => {
   let chartProviders: { [key: string]: ChartProvider } = {}
   let pluginStarted = false
   let vectorCatalogById = new Map<string, VectorCatalogChoice>()
@@ -146,7 +152,6 @@ module.exports = (app: ChartProviderApp): Plugin => {
             format: {
               type: 'string',
               title: 'Format',
-              default: 'png',
               enum: ['png', 'jpg', 'pbf'],
               description:
                 'Format of map tiles: raster (png, jpg, etc.) / vector (pbf).'
@@ -260,7 +265,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
     }`
     app.debug(`**urlBase** ${urlBase}`)
 
-    const chartPaths = _.isEmpty(props.chartPaths)
+    const chartPaths = isEmpty(props.chartPaths)
       ? [defaultChartsPath]
       : resolveUniqueChartPaths(props.chartPaths, configBasePath)
     cachePath = props.cachePath || defaultChartsPath
@@ -301,7 +306,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
         list.push(await findCharts(chartPath))
       }
       return list
-    })().then((list: ChartProvider[]) =>
+    })().then((list: Array<{ [key: string]: ChartProvider }>) =>
       _.reduce(list, (result, charts) => _.merge({}, result, charts), {})
     )
 
@@ -337,136 +342,19 @@ module.exports = (app: ChartProviderApp): Plugin => {
       return value ?? ''
     }
 
-    const isValidTileParam = (value: string) => /^\d+$/.test(value)
-
-    app.get(
-      `${chartTilesPath}/:identifier/:z/:x/:y`,
-      async (req: Request, res: Response) => {
-        const identifier = normalizeParam(req.params.identifier)
-        const z = normalizeParam(req.params.z)
-        const x = normalizeParam(req.params.x)
-        const y = normalizeParam(req.params.y)
-        if (
-          !isValidTileParam(z) ||
-          !isValidTileParam(x) ||
-          !isValidTileParam(y)
-        ) {
-          return res.sendStatus(404)
-        }
-        const ix = parseInt(x)
-        const iy = parseInt(y)
-        const iz = parseInt(z)
-        const provider = chartProviders[identifier]
-        if (!provider) {
-          return res.sendStatus(404)
-        }
-        if (provider.proxy === true) {
-          return serveTileFromCacheOrRemote(res, provider, iz, ix, iy)
-        } else {
-          switch (provider._fileFormat) {
-            case 'directory':
-              return serveTileFromFilesystem(res, provider, iz, ix, iy)
-            case 'mbtiles':
-              return serveTileFromMbtiles(res, provider, iz, ix, iy)
-            case 'pmtiles':
-              return serveTileFromPmtiles(res, provider, iz, ix, iy)
-            default:
-              console.log(
-                `Unknown chart provider fileformat ${provider._fileFormat}`
-              )
-              res.status(500).send()
-          }
-        }
-      }
-    )
-
-    app.get(`${chartStylePath}/:identifier`, (req: Request, res: Response) => {
-      const identifier = normalizeParam(req.params.identifier)
-      const theme: ThemeId = 'day'
-      const provider = chartProviders[identifier]
-      if (!provider || !shouldUseVectorStyle(provider)) {
-        return res.sendStatus(404)
-      }
-      const catalogChoice =
-        vectorCatalogById.get(identifier) ?? defaultCatalogId
-      const mapping = loadS52Mapping()
-      const catalogObjects =
-        catalogChoice === 'none' ? [] : mapping.objects || []
-      return res.json(buildNauticalVectorStyle(provider, catalogObjects, theme))
+    registerTileRoutes({
+      app,
+      getProviders: () => chartProviders,
+      getCachePath: () => cachePath
     })
 
-    app.post(
-      `${chartTilesPath}/cache/:identifier`,
-      async (req: Request, res: Response) => {
-        const identifier = normalizeParam(req.params.identifier)
-        const { regionGUID, tile, bbox, maxZoom } = req.body as {
-          regionGUID?: string
-          tile?: Tile // query params come in as strings
-          bbox?: {
-            minLon: number
-            minLat: number
-            maxLon: number
-            maxLat: number
-          }
-          maxZoom?: string
-        }
-        const provider = chartProviders[identifier]
-        if (!provider) {
-          return res.sendStatus(500).send('Provider not found')
-        }
-        if (!maxZoom) {
-          return res.status(400).send('maxZoom parameter is required')
-        }
-        const maxZoomParsed = parseInt(maxZoom)
-        await ChartSeedingManager.createJob(
-          app.resourcesApi,
-          cachePath,
-          provider,
-          maxZoomParsed,
-          regionGUID,
-          bbox
-            ? [bbox.minLon, bbox.minLat, bbox.maxLon, bbox.maxLat]
-            : undefined,
-          tile
-        )
-        return res.status(200).json({
-          state: 'COMPLETED',
-          statusCode: 200,
-          message: 'OK'
-        })
-      }
-    )
-
-    app.get(`${chartTilesPath}/cache/jobs`, (req: Request, res: Response) => {
-      const jobs = Object.values(ChartSeedingManager.ActiveJobs).map((job) => {
-        return job.info()
-      })
-      return res.status(200).json(jobs)
+    registerStyleRoutes({
+      app,
+      getProviders: () => chartProviders,
+      getCatalogChoice: (identifier) =>
+        vectorCatalogById.get(identifier) ?? defaultCatalogId,
+      defaultCatalogId
     })
-
-    app.post(
-      `${chartTilesPath}/cache/jobs/:id`,
-      (req: Request, res: Response) => {
-        const id = normalizeParam(req.params.id)
-        const { action } = req.body as { action: string }
-        const parsedId = parseInt(id)
-        const job = ChartSeedingManager.ActiveJobs[parsedId]
-        if (job && action) {
-          if (action === 'start') {
-            job.seedCache()
-          } else if (action === 'stop') {
-            job.cancelJob()
-          } else if (action === 'delete') {
-            job.deleteCache()
-          } else if (action === 'remove') {
-            delete ChartSeedingManager.ActiveJobs[parsedId]
-          } else {
-            return res.status(404).send(`Job ${parsedId} not found`)
-          }
-          return res.status(200).send(`Job ${parsedId} ${action}ed`)
-        }
-      }
-    )
 
     app.debug('** Registering v1 API paths **')
 
@@ -493,167 +381,13 @@ module.exports = (app: ChartProviderApp): Plugin => {
 
   // Resources API provider registration
   const registerAsProvider = () => {
-    app.debug('** Registering as Resource Provider for `charts` **')
-    try {
-      app.registerResourceProvider({
-        type: 'charts',
-        methods: {
-          listResources: (params: {
-            [key: string]: number | string | object | null
-          }) => {
-            app.debug(`** listResources() ${params}`)
-            return Promise.resolve(
-              _.mapValues(chartProviders, (provider) =>
-                sanitizeProvider(provider, 2)
-              )
-            )
-          },
-          getResource: (id: string) => {
-            app.debug(`** getResource() ${id}`)
-            const provider = chartProviders[id]
-            if (provider) {
-              return Promise.resolve(sanitizeProvider(provider, 2))
-            } else {
-              throw new Error('Chart not found!')
-            }
-          },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setResource: (id: string, value: any) => {
-            throw new Error(`Not implemented!\n Cannot set ${id} to ${value}`)
-          },
-          deleteResource: (id: string) => {
-            throw new Error(`Not implemented!\n Cannot delete ${id}`)
-          }
-        }
-      })
-    } catch (error) {
-      app.debug('Failed Provider Registration!', error)
-    }
-  }
-
-  const serveTileFromCacheOrRemote = async (
-    res: Response,
-    provider: ChartProvider,
-    z: number,
-    x: number,
-    y: number
-  ) => {
-    const buffer = await ChartDownloader.getTileFromCacheOrRemote(
-      cachePath,
-      provider,
-      { x, y, z }
-    )
-    if (!buffer) {
-      res.sendStatus(502)
-      return
-    }
-    res.set('Content-Type', `image/${provider.format}`)
-    res.send(buffer)
+    registerResourcesProvider(app, () => chartProviders)
   }
 
   return plugin
 }
 
-const responseHttpOptions = {
-  headers: {
-    'Cache-Control': 'public, max-age=7776000' // 90 days
-  }
-}
-
-const isAllowedTileFormat = (format?: string) => {
-  const allowedFormats = new Set([
-    'png',
-    'jpg',
-    'jpeg',
-    'pbf',
-    'mvt',
-    'webp',
-    'avif'
-  ])
-  const normalized = format ? format.toLowerCase() : ''
-  return normalized !== '' && allowedFormats.has(normalized)
-}
-
-const resolveTileContentType = (format?: string) => {
-  const normalized = format ? format.toLowerCase() : ''
-  switch (normalized) {
-    case 'png':
-    case 'jpg':
-    case 'jpeg':
-    case 'webp':
-    case 'avif':
-      return `image/${normalized === 'jpg' ? 'jpeg' : normalized}`
-    case 'pbf':
-    case 'mvt':
-      return 'application/vnd.mapbox-vector-tile'
-    default:
-      return 'application/octet-stream'
-  }
-}
-
-const isGzipBuffer = (buffer: Buffer) => {
-  return buffer.length > 2 && buffer[0] === 0x1f && buffer[1] === 0x8b
-}
-
-const validateVectorProviders = (
-  providers: { [key: string]: ChartProvider },
-  app: ChartProviderApp
-) => {
-  Object.values(providers).forEach((provider) => {
-    if (!isVectorFormat(provider.format)) {
-      return
-    }
-    const layerIds =
-      provider.v2?.layers || provider.v1?.chartLayers || ([] as string[])
-    if (!layerIds || layerIds.length === 0) {
-      app.debug(
-        `Vector chart "${provider.identifier}" has no vector_layers metadata; style will render empty.`
-      )
-    }
-  })
-}
-
-const isVectorFormat = (format?: string) => {
-  if (!format) {
-    return false
-  }
-  const normalized = format.toLowerCase()
-  return normalized === 'pbf' || normalized === 'mvt'
-}
-
-const shouldUseVectorStyle = (provider: ChartProvider) => {
-  return isVectorFormat(provider.format)
-}
-
-type S52Mapping = {
-  version?: string
-  objects?: S52ObjectDefinition[]
-}
-
-let cachedS52Mapping: S52Mapping | null = null
-
-const loadS52Mapping = (): S52Mapping => {
-  if (cachedS52Mapping) {
-    return cachedS52Mapping
-  }
-  const candidates = [
-    path.resolve(__dirname, '../src/style/mapping/object-catalog.json'),
-    path.resolve(__dirname, '../style/mapping/object-catalog.json')
-  ]
-  for (const candidate of candidates) {
-    if (fs.existsSync(candidate)) {
-      try {
-        const raw = fs.readFileSync(candidate, 'utf8')
-        cachedS52Mapping = JSON.parse(raw) as S52Mapping
-        return cachedS52Mapping
-      } catch {
-        break
-      }
-    }
-  }
-  cachedS52Mapping = { objects: [] }
-  return cachedS52Mapping
-}
+export default plugin
 
 const resolveUniqueChartPaths = (
   chartPaths: string[],
@@ -682,199 +416,8 @@ const buildVectorCatalogMap = (
   return map
 }
 
-const convertOnlineProviderConfig = (provider: OnlineChartProvider) => {
-  const id = _.kebabCase(_.deburr(provider.name))
-
-  const parseHeaders = (
-    arr: string[] | undefined
-  ): { [key: string]: string } => {
-    if (arr === undefined) {
-      return {}
-    }
-    return arr.reduce<{ [key: string]: string }>((acc, entry) => {
-      if (typeof entry == 'string') {
-        const idx = entry.indexOf(':')
-        const key = entry.slice(0, idx).trim()
-        const value = entry.slice(idx + 1).trim()
-        if (key && value) {
-          acc[key] = value
-        }
-      }
-      return acc
-    }, {})
-  }
-
-  const data = {
-    identifier: id,
-    name: provider.name,
-    description: provider.description,
-    bounds: [-180, -90, 180, 90],
-    minzoom: Math.min(Math.max(1, provider.minzoom), 24),
-    maxzoom: Math.min(Math.max(1, provider.maxzoom), 24),
-    format: provider.format,
-    scale: 250000,
-    type: provider.serverType ? provider.serverType : 'tilelayer',
-    style: provider.style ? provider.style : null,
-    v1: {
-      tilemapUrl: provider.proxy
-        ? `~tilePath~/${id}/{z}/{x}/{y}`
-        : provider.url,
-      chartLayers: provider.layers ? provider.layers : null
-    },
-    v2: {
-      url: provider.proxy ? `~tilePath~/${id}/{z}/{x}/{y}` : provider.url,
-      layers: provider.layers ? provider.layers : null
-    },
-    proxy: provider.proxy ? provider.proxy : false,
-    remoteUrl: provider.proxy ? provider.url : null,
-    headers: parseHeaders(provider.headers)
-  }
-  return data
-}
-
-const sanitizeProvider = (provider: ChartProvider, version = 1) => {
-  let v
-  if (version === 1) {
-    v = _.merge({}, provider.v1)
-    v.tilemapUrl = v.tilemapUrl.replace('~tilePath~', chartTilesPath)
-  } else if (version === 2) {
-    v = _.merge({}, provider.v2)
-    v.url = v.url ? v.url.replace('~tilePath~', chartTilesPath) : ''
-  }
-  provider = _.omit(provider, [
-    '_filePath',
-    '_fileFormat',
-    '_mbtilesHandle',
-    '_flipY',
-    'v1',
-    'v2'
-  ]) as ChartProvider
-  const merged = _.merge({}, provider, v) as ChartProvider & {
-    url?: string
-    tilemapUrl?: string
-    style?: string
-  }
-  if (version === 2 && shouldUseVectorStyle(provider)) {
-    merged.type = 'mapstyleJSON'
-    merged.url = `${chartStylePath}/${provider.identifier}`
-    merged.style = merged.url
-  }
-  return merged
-}
-
 const ensureDirectoryExists = (path: string) => {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path)
-  }
-}
-
-const serveTileFromFilesystem = (
-  res: Response,
-  provider: ChartProvider,
-  z: number,
-  x: number,
-  y: number
-) => {
-  const { format, _flipY, _filePath } = provider
-  const normalizedFormat = format ? format.toLowerCase() : ''
-  if (!isAllowedTileFormat(normalizedFormat)) {
-    res.status(404).send('Tile not found')
-    return
-  }
-  const flippedY = Math.pow(2, z) - 1 - y
-  const tileFile = `${z}/${x}/${_flipY ? flippedY : y}.${normalizedFormat}`
-  const file = _filePath ? path.resolve(_filePath, tileFile) : ''
-  try {
-    if (!file) {
-      res.status(404).send('Tile not found')
-      return
-    }
-    const stats = fs.statSync(file)
-    if (!stats.isFile()) {
-      res.status(404).send('Tile not found')
-      return
-    }
-    fs.accessSync(file, fs.constants.R_OK)
-  } catch {
-    res.status(404).send('Tile not found')
-    return
-  }
-  res.sendFile(file, responseHttpOptions)
-}
-
-const serveTileFromMbtiles = (
-  res: Response,
-  provider: ChartProvider,
-  z: number,
-  x: number,
-  y: number
-) => {
-  if (!isAllowedTileFormat(provider.format)) {
-    res.status(404).send('Tile not found')
-    return
-  }
-  provider._mbtilesHandle.getTile(
-    z,
-    x,
-    y,
-    (err: Error, tile: Buffer, headers: OutgoingHttpHeaders) => {
-      if (err && err.message && err.message === 'Tile does not exist') {
-        res.sendStatus(404)
-      } else if (err) {
-        console.error(
-          `Error fetching tile ${provider.identifier}/${z}/${x}/${y}:`,
-          err
-        )
-        res.sendStatus(500)
-      } else {
-        headers['Cache-Control'] = responseHttpOptions.headers['Cache-Control']
-        res.writeHead(200, headers)
-        res.end(tile)
-      }
-    }
-  )
-}
-
-const serveTileFromPmtiles = async (
-  res: Response,
-  provider: ChartProvider,
-  z: number,
-  x: number,
-  y: number
-) => {
-  if (!isAllowedTileFormat(provider.format)) {
-    res.status(404).send('Tile not found')
-    return
-  }
-  if (!provider._pmtilesHandle) {
-    res.status(500).send('PMTiles handle not available')
-    return
-  }
-  try {
-    const tile = await provider._pmtilesHandle.getZxy(z, x, y)
-    if (!tile) {
-      res.sendStatus(404)
-      return
-    }
-    const payload = Buffer.from(tile.data)
-    res.set('Content-Type', resolveTileContentType(provider.format))
-    if (isGzipBuffer(payload)) {
-      res.set('Content-Encoding', 'gzip')
-    }
-    if (tile.cacheControl) {
-      res.set('Cache-Control', tile.cacheControl)
-    } else {
-      res.set('Cache-Control', responseHttpOptions.headers['Cache-Control'])
-    }
-    if (tile.expires) {
-      res.set('Expires', tile.expires)
-    }
-    res.status(200).send(payload)
-  } catch (err) {
-    console.error(
-      `Error fetching PMTiles tile ${provider.identifier}/${z}/${x}/${y}:`,
-      err
-    )
-    res.sendStatus(500)
   }
 }
