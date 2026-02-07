@@ -132,23 +132,27 @@ export const registerTileRoutes = ({
     `${CHART_TILES_PATH}/cache/jobs/:id`,
     (req: Request, res: Response) => {
       const id = normalizeParam(req.params.id)
-      const { action } = req.body as { action: string }
+      const { action } = req.body as { action?: string }
       const parsedId = parseInt(id)
-      const job = ChartSeedingManager.ActiveJobs[parsedId]
-      if (job && action) {
-        if (action === 'start') {
-          job.seedCache()
-        } else if (action === 'stop') {
-          job.cancelJob()
-        } else if (action === 'delete') {
-          job.deleteCache()
-        } else if (action === 'remove') {
-          delete ChartSeedingManager.ActiveJobs[parsedId]
-        } else {
-          return res.status(404).send(`Job ${parsedId} not found`)
-        }
-        return res.status(200).send(`Job ${parsedId} ${action}ed`)
+      if (!action) {
+        return res.status(400).send('action parameter is required')
       }
+      const job = ChartSeedingManager.ActiveJobs[parsedId]
+      if (!job) {
+        return res.status(404).send(`Job ${parsedId} not found`)
+      }
+      if (action === 'start') {
+        job.seedCache()
+      } else if (action === 'stop') {
+        job.cancelJob()
+      } else if (action === 'delete') {
+        job.deleteCache()
+      } else if (action === 'remove') {
+        delete ChartSeedingManager.ActiveJobs[parsedId]
+      } else {
+        return res.status(404).send(`Job ${parsedId} not found`)
+      }
+      return res.status(200).send(`Job ${parsedId} ${action}ed`)
     }
   )
 }

@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..');
 const outputDir = path.resolve(repoRoot, 'plugin/public/styles/sprites');
 const outputBase = path.join(outputDir, 's52');
-const iconDir = path.resolve(repoRoot, 'src/assets/charts/icons');
+const iconDir = path.resolve(repoRoot, 'scripts/assets/charts/icons');
 
 fs.mkdirSync(outputDir, { recursive: true });
 

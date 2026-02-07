@@ -81,7 +81,7 @@ A proxy for online charts can be created using the "Proxy through SignalK server
 
 ### Vector sprites demo
 
-This repo includes placeholder SVG icons under `src/assets/charts/icons` and a sprite build script.
+This repo includes placeholder SVG icons under `scripts/assets/charts/icons` and a sprite build script.
 To generate the sprite sheets used by the vector Mapbox style:
 
 ```bash

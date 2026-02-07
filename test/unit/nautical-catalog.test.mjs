@@ -4,7 +4,7 @@ import * as chai from 'chai'
 
 const { expect } = chai
 
-const catalogPath = path.resolve('src/style/mapping/object-catalog.json')
+const catalogPath = path.resolve('src/assets/s52/object-catalog.json')
 const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'))
 
 const coreIds = [

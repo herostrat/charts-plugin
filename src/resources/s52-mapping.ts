@@ -17,7 +17,7 @@ export const loadS52Mapping = (): S52Mapping => {
     return cachedS52Mapping
   }
   const candidates = [
-    path.resolve(__dirname, '../src/style/mapping/object-catalog.json'),
+    path.resolve(__dirname, '../src/assets/s52/object-catalog.json'),
     path.resolve(__dirname, '../style/mapping/object-catalog.json')
   ]
   for (const candidate of candidates) {

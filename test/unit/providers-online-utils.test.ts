@@ -62,4 +62,50 @@ describe('providers/online convertOnlineProviderConfig', () => {
     expect(result.style).to.equal('http://style.json')
     expect(result.layers).to.deep.equal(['foo'])
   })
+
+  it('defaults to tilelayer when serverType is missing', () => {
+    const provider = { ...baseProvider, serverType: undefined }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.type).to.equal('tilelayer')
+  })
+
+  it('wraps single layer value into array', () => {
+    const provider = {
+      ...baseProvider,
+      layers: 'layer-1' as unknown as string[]
+    }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.layers).to.deep.equal(['layer-1'])
+  })
+
+  it('defaults headers when missing', () => {
+    const provider = { ...baseProvider, headers: undefined }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.headers).to.deep.equal({})
+  })
+
+  it('uses tile proxy url when proxy is enabled', () => {
+    const provider = {
+      ...baseProvider,
+      name: 'Proxy Provider',
+      url: 'http://tiles.example.com/{z}/{x}/{y}',
+      proxy: true
+    }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.v1.tilemapUrl).to.equal('~tilePath~/proxy-provider/{z}/{x}/{y}')
+    expect(result.v2.url).to.equal('~tilePath~/proxy-provider/{z}/{x}/{y}')
+    expect(result.remoteUrl).to.equal('http://tiles.example.com/{z}/{x}/{y}')
+    expect(result.proxy).to.equal(true)
+  })
+
+  it('sets chart layers to null when layers are missing', () => {
+    const provider = {
+      ...baseProvider,
+      layers: undefined as unknown as string[]
+    }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.layers).to.equal(undefined)
+    expect(result.v1.chartLayers).to.equal(null)
+    expect(result.v2.layers).to.equal(null)
+  })
 })

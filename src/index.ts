@@ -236,8 +236,7 @@ const plugin = (app: ChartProviderApp): Plugin => {
     name: 'Signal K Charts',
     schema: () => CONFIG_SCHEMA,
     uiSchema: () => CONFIG_UISCHEMA,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    start: (settings: any) => {
+    start: (settings: Config) => {
       return doStartup(settings) // return required for tests
     },
     stop: () => {

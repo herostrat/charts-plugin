@@ -16,7 +16,21 @@ export const serveTileFromMbtiles = (
     res.status(404).send('Tile not found')
     return
   }
-  provider._mbtilesHandle.getTile(
+  const handle = provider._mbtilesHandle as
+    | {
+        getTile: (
+          z: number,
+          x: number,
+          y: number,
+          cb: (err: Error, tile: Buffer, headers: OutgoingHttpHeaders) => void
+        ) => void
+      }
+    | undefined
+  if (!handle?.getTile) {
+    res.status(500).send('Tile not found')
+    return
+  }
+  handle.getTile(
     z,
     x,
     y,

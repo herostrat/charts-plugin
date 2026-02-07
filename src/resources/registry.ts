@@ -37,9 +37,10 @@ export const registerResourcesProvider = (
           }
           throw new Error('Chart not found!')
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setResource: (id: string, value: any) => {
-          throw new Error(`Not implemented!\n Cannot set ${id} to ${value}`)
+        setResource: (id: string, value: unknown) => {
+          throw new Error(
+            `Not implemented!\n Cannot set ${id} to ${String(value)}`
+          )
         },
         deleteResource: (id: string) => {
           throw new Error(`Not implemented!\n Cannot delete ${id}`)
@@ -61,9 +62,14 @@ export const sanitizeProvider = (provider: ChartProvider, version = 1) => {
     v.url = v.url ? v.url.replace('~tilePath~', CHART_TILES_PATH) : ''
   }
   // Remove internal fields and v1/v2
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _filePath, _fileFormat, _mbtilesHandle, _flipY, v1, v2, ...rest } =
     provider as ChartProvider
+  void _filePath
+  void _fileFormat
+  void _mbtilesHandle
+  void _flipY
+  void v1
+  void v2
   const merged = merge({}, rest, v) as ChartProvider & {
     url?: string
     tilemapUrl?: string

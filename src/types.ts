@@ -11,8 +11,7 @@ type MapSourceType =
 export interface ChartProvider {
   _fileFormat?: 'mbtiles' | 'directory' | 'pmtiles' | 'geotiff'
   _filePath: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _mbtilesHandle?: any
+  _mbtilesHandle?: unknown
   _pmtilesHandle?: PMTiles
   _flipY?: boolean
   identifier: string
@@ -44,11 +43,11 @@ export interface OnlineChartProvider {
   description: string
   minzoom: number
   maxzoom: number
-  serverType: MapSourceType
+  serverType?: MapSourceType
   format: 'png' | 'jpg'
   url: string
   proxy: boolean
   headers?: string[]
-  style: string
-  layers: string[]
+  style?: string
+  layers?: string[]
 }

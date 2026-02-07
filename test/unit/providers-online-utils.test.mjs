@@ -35,4 +35,46 @@ describe('providers/online convertOnlineProviderConfig', () => {
     expect(result.style).to.equal('http://style.json')
     expect(result.layers).to.deep.equal(['foo'])
   })
+
+  it('defaults missing headers and layers', () => {
+    const provider = { name: 'Test', minzoom: 2, maxzoom: 10, format: 'png', url: 'http://example.com' }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.headers).to.deep.equal({})
+    expect(result.layers).to.equal(undefined)
+  })
+
+  it('wraps single layer string into array', () => {
+    const provider = { name: 'Test', minzoom: 2, maxzoom: 10, format: 'png', url: 'http://example.com', layers: 'layer-1' }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.layers).to.deep.equal(['layer-1'])
+  })
+
+  it('uses proxy tile path when proxy is enabled', () => {
+    const provider = {
+      name: 'Proxy Chart',
+      minzoom: 2,
+      maxzoom: 10,
+      format: 'png',
+      url: 'http://tiles.example.com/{z}/{x}/{y}',
+      proxy: true
+    }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.v1.tilemapUrl).to.equal('~tilePath~/proxy-chart/{z}/{x}/{y}')
+    expect(result.v2.url).to.equal('~tilePath~/proxy-chart/{z}/{x}/{y}')
+    expect(result.remoteUrl).to.equal('http://tiles.example.com/{z}/{x}/{y}')
+    expect(result.proxy).to.equal(true)
+  })
+
+  it('keeps serverType when provided', () => {
+    const provider = {
+      name: 'Custom Type',
+      minzoom: 2,
+      maxzoom: 10,
+      format: 'png',
+      url: 'http://example.com',
+      serverType: 'mapstyleJSON'
+    }
+    const result = convertOnlineProviderConfig(provider)
+    expect(result.type).to.equal('mapstyleJSON')
+  })
 })
