@@ -209,7 +209,8 @@ module.exports = (app: ChartProviderApp): Plugin => {
             identifier: {
               type: 'string',
               title: 'Chart identifier',
-              description: 'Matches the chart identifier returned by the resources API.'
+              description:
+                'Matches the chart identifier returned by the resources API.'
             },
             catalog: {
               type: 'string',
@@ -386,7 +387,8 @@ module.exports = (app: ChartProviderApp): Plugin => {
       if (!provider || !shouldUseVectorStyle(provider)) {
         return res.sendStatus(404)
       }
-      const catalogChoice = vectorCatalogById.get(identifier) ?? defaultCatalogId
+      const catalogChoice =
+        vectorCatalogById.get(identifier) ?? defaultCatalogId
       const mapping = loadS52Mapping()
       const catalogObjects =
         catalogChoice === 'none' ? [] : mapping.objects || []
@@ -559,7 +561,15 @@ const responseHttpOptions = {
 }
 
 const isAllowedTileFormat = (format?: string) => {
-  const allowedFormats = new Set(['png', 'jpg', 'jpeg', 'pbf', 'mvt', 'webp', 'avif'])
+  const allowedFormats = new Set([
+    'png',
+    'jpg',
+    'jpeg',
+    'pbf',
+    'mvt',
+    'webp',
+    'avif'
+  ])
   const normalized = format ? format.toLowerCase() : ''
   return normalized !== '' && allowedFormats.has(normalized)
 }
@@ -644,7 +654,6 @@ const loadS52Mapping = (): S52Mapping => {
   cachedS52Mapping = { objects: [] }
   return cachedS52Mapping
 }
-
 
 const resolveUniqueChartPaths = (
   chartPaths: string[],

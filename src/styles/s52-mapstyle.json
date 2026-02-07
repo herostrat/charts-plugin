@@ -5,7 +5,9 @@
   "sources": {
     "charts": {
       "type": "vector",
-      "tiles": ["http://localhost:3000/signalk/chart-tiles/REPLACE/{z}/{x}/{y}"],
+      "tiles": [
+        "http://localhost:3000/signalk/chart-tiles/REPLACE/{z}/{x}/{y}"
+      ],
       "minzoom": 0,
       "maxzoom": 16
     }

@@ -1,9 +1,9 @@
 /**
  * Nautischer Mapbox-Style Generator
- * 
+ *
  * Ersetzt das alte `buildBasicVectorStyle()` mit einer flexibleren,
  * S-52 konformen Implementierung für Vector Tiles.
- * 
+ *
  * Wird progressiv eingeführt, kann als Feature-Flag neben dem alten
  * "basic" Modus koexistieren.
  */
@@ -80,7 +80,8 @@ function getNauticalBaseStyle(theme: ThemeId) {
     version: 8,
     name: `Nautical Charts (S-52 Based, ${theme})`,
     metadata: {
-      description: 'IHO S-52 compliant vector chart style for maritime navigation'
+      description:
+        'IHO S-52 compliant vector chart style for maritime navigation'
     },
     center: [0, 50] as [number, number],
     zoom: 4,
@@ -116,7 +117,7 @@ function buildWaterAndDepthLayers(
     id: 'water-base',
     type: 'background',
     paint: {
-        'background-color': colors.water
+      'background-color': colors.water
     }
   })
 
@@ -133,9 +134,12 @@ function buildWaterAndDepthLayers(
           'interpolate',
           ['linear'],
           ['zoom'],
-          6, 0.5,
-          12, 1.0,
-          16, 1.5
+          6,
+          0.5,
+          12,
+          1.0,
+          16,
+          1.5
         ],
         'line-opacity': 0.6
       }
@@ -214,7 +218,9 @@ function buildLineLayers(
   colors: S52ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
-  const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
+  const catalogMap = catalog
+    ? new Map(catalog.map((obj) => [obj.id, obj]))
+    : new Map()
 
   for (const layerId of lineLayerIds) {
     const normalized = layerId.toUpperCase()
@@ -222,8 +228,7 @@ function buildLineLayers(
 
     // Standard-Linie
     const lineColor = catalogEntry?.s52ColorScheme?.default || colors.navLine
-    const linePattern =
-      normalized === 'NAVLNE' ? [4, 2] : undefined // Dashed für Navigationslinie
+    const linePattern = normalized === 'NAVLNE' ? [4, 2] : undefined // Dashed für Navigationslinie
 
     layers.push({
       id: `line-${sanitizeId(layerId)}`,
@@ -236,9 +241,12 @@ function buildLineLayers(
           'interpolate',
           ['linear'],
           ['zoom'],
-          5, 0.5,
-          10, 1.0,
-          16, 2.0
+          5,
+          0.5,
+          10,
+          1.0,
+          16,
+          2.0
         ],
         ...(linePattern && { 'line-dasharray': linePattern })
       }
@@ -257,7 +265,9 @@ function buildAreaLayers(
   colors: S52ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
-  const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
+  const catalogMap = catalog
+    ? new Map(catalog.map((obj) => [obj.id, obj]))
+    : new Map()
 
   for (const layerId of areaLayerIds) {
     const normalized = layerId.toUpperCase()
@@ -303,7 +313,9 @@ function buildPOILayers(
   colors: S52ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
-  const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
+  const catalogMap = catalog
+    ? new Map(catalog.map((obj) => [obj.id, obj]))
+    : new Map()
 
   for (const layerId of poiLayerIds) {
     const normalized = layerId.toUpperCase()
@@ -312,9 +324,8 @@ function buildPOILayers(
     const hints = catalogEntry?.mapboxRenderingHints || {}
     const minZoom = hints.minZoom ?? 8
     const maxZoom = hints.maxZoom ?? 24
-    const labelField = hints.labelField && hints.labelField.trim()
-      ? hints.labelField
-      : 'name'
+    const labelField =
+      hints.labelField && hints.labelField.trim() ? hints.labelField : 'name'
     const defaultIconId = hints.iconId || getDefaultPoiIconId(layerId)
 
     // Haupt-Symbol Layer
@@ -337,20 +348,18 @@ function buildPOILayers(
           'interpolate',
           ['linear'],
           ['zoom'],
-          8, hints.iconSizeByZoom?.z8 ?? 0.8,
-          12, hints.iconSizeByZoom?.z12 ?? 1.0,
-          16, hints.iconSizeByZoom?.z16 ?? 1.4
+          8,
+          hints.iconSizeByZoom?.z8 ?? 0.8,
+          12,
+          hints.iconSizeByZoom?.z12 ?? 1.0,
+          16,
+          hints.iconSizeByZoom?.z16 ?? 1.4
         ],
         'icon-allow-overlap': true,
         'icon-optional': true,
 
         // Labels
-        'text-field': [
-          'case',
-          ['has', labelField],
-          ['get', labelField],
-          ''
-        ],
+        'text-field': ['case', ['has', labelField], ['get', labelField], ''],
         'text-offset': [0, 1.5],
         'text-size': 10,
         'text-font': ['OpenSans Regular'],
@@ -377,14 +386,18 @@ function buildHazardLayers(
   colors: S52ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
-  const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
+  const catalogMap = catalog
+    ? new Map(catalog.map((obj) => [obj.id, obj]))
+    : new Map()
 
   for (const layerId of hazardLayerIds) {
     const normalized = layerId.toUpperCase()
     const catalogEntry = catalogMap.get(normalized)
 
     const hazardColor = catalogEntry?.s52ColorScheme?.default || colors.hazard
-    const iconId = catalogEntry?.mapboxRenderingHints?.iconId || getDefaultHazardIconId(layerId)
+    const iconId =
+      catalogEntry?.mapboxRenderingHints?.iconId ||
+      getDefaultHazardIconId(layerId)
 
     // Hazard-Symbol (höhere Priorität als normale POIs)
     layers.push({
@@ -433,7 +446,7 @@ function buildHazardLayers(
 
 /**
  * Generiere einen vollständigen nautischen Mapbox-Style für Vektor-Tiles
- * 
+ *
  * Diese Funktion sollte das alte `buildBasicVectorStyle()` ersetzen.
  * Sie ist modular und unterstützt verschiedene Layer-Typen
  * mit automatischer Klassifikation.
@@ -466,9 +479,7 @@ export function buildNauticalVectorStyle(
 
     // Areas/zones (z.B. Ankerbereiche)
     ...buildAreaLayers(
-      classified.areas.filter(
-        (id) => !/LNDARE|BUAARE|LAND|URBAN/i.test(id)
-      ),
+      classified.areas.filter((id) => !/LNDARE|BUAARE|LAND|URBAN/i.test(id)),
       catalog,
       colors
     ),

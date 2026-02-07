@@ -33,6 +33,7 @@ jobs:
       with:
         mode: firewall-free
     - run: sfw npm ci
+    - run: npm run ci-lint
     - run: npm run build
     - run: npm test
       env:
@@ -48,5 +49,3 @@ jobs:
       with:
         files: coverage/lcov.info
         fail_ci_if_error: false
-    - name: Lint
-      run: npm run ci-lint

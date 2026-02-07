@@ -3,12 +3,7 @@
   "objects": [
     {
       "id": "ACHARE",
-      "aliases": [
-        "anchorage",
-        "ACHARE",
-        "achare",
-        "anchorage_area"
-      ],
+      "aliases": ["anchorage", "ACHARE", "achare", "anchorage_area"],
       "symbolId": "s52_achare",
       "sprite": "circle",
       "prettyName": "Anchorage Area",
@@ -28,11 +23,7 @@
     },
     {
       "id": "ACHBRT",
-      "aliases": [
-        "anchor_berth",
-        "ACHBRT",
-        "achbrt"
-      ],
+      "aliases": ["anchor_berth", "ACHBRT", "achbrt"],
       "symbolId": "s52_achbrt",
       "sprite": "circle",
       "prettyName": "Anchor Berth",
@@ -53,11 +44,7 @@
     },
     {
       "id": "ADMARE",
-      "aliases": [
-        "ADMARE",
-        "admare",
-        "administration_area_named"
-      ],
+      "aliases": ["ADMARE", "admare", "administration_area_named"],
       "symbolId": "s52_admare",
       "sprite": "circle",
       "prettyName": "Administration Area",
@@ -75,11 +62,7 @@
     },
     {
       "id": "AIRARE",
-      "aliases": [
-        "AIRARE",
-        "airare",
-        "airport_airfield"
-      ],
+      "aliases": ["AIRARE", "airare", "airport_airfield"],
       "symbolId": "s52_airare",
       "sprite": "circle",
       "prettyName": "Airfield Area",
@@ -111,11 +94,7 @@
     },
     {
       "id": "BCNCAR",
-      "aliases": [
-        "BCNCAR",
-        "bcncar",
-        "beacon_cardinal"
-      ],
+      "aliases": ["BCNCAR", "bcncar", "beacon_cardinal"],
       "symbolId": "s52_bcncar",
       "sprite": "circle",
       "prettyName": "Beacon Cardinal",
@@ -137,11 +116,7 @@
     },
     {
       "id": "BCNISD",
-      "aliases": [
-        "BCNISD",
-        "bcnisd",
-        "beacon_isolated_danger"
-      ],
+      "aliases": ["BCNISD", "bcnisd", "beacon_isolated_danger"],
       "symbolId": "s52_bcnisd",
       "sprite": "circle",
       "prettyName": "Beacon Isolated Danger",
@@ -163,11 +138,7 @@
     },
     {
       "id": "BCNLAT",
-      "aliases": [
-        "BCNLAT",
-        "bcnlat",
-        "beacon_lateral"
-      ],
+      "aliases": ["BCNLAT", "bcnlat", "beacon_lateral"],
       "symbolId": "s52_bcnlat",
       "sprite": "circle",
       "prettyName": "Beacon Lateral",
@@ -189,11 +160,7 @@
     },
     {
       "id": "BCNSAW",
-      "aliases": [
-        "BCNSAW",
-        "bcnsaw",
-        "beacon_safe_water"
-      ],
+      "aliases": ["BCNSAW", "bcnsaw", "beacon_safe_water"],
       "symbolId": "s52_bcnsaw",
       "sprite": "circle",
       "prettyName": "Beacon Safe Water",
@@ -241,11 +208,7 @@
     },
     {
       "id": "BERTHS",
-      "aliases": [
-        "BERTHS",
-        "berth",
-        "berths"
-      ],
+      "aliases": ["BERTHS", "berth", "berths"],
       "symbolId": "s52_berths",
       "sprite": "circle",
       "prettyName": "Berths",
@@ -266,11 +229,7 @@
     },
     {
       "id": "BOYCAR",
-      "aliases": [
-        "BOYCAR",
-        "boycar",
-        "buoy_cardinal"
-      ],
+      "aliases": ["BOYCAR", "boycar", "buoy_cardinal"],
       "symbolId": "s52_boycar",
       "sprite": "circle",
       "prettyName": "Buoy Cardinal",
@@ -292,11 +251,7 @@
     },
     {
       "id": "BOYINB",
-      "aliases": [
-        "BOYINB",
-        "boyinb",
-        "buoy_installation"
-      ],
+      "aliases": ["BOYINB", "boyinb", "buoy_installation"],
       "symbolId": "s52_boyinb",
       "sprite": "circle",
       "prettyName": "Buoy Installation",
@@ -317,11 +272,7 @@
     },
     {
       "id": "BOYISD",
-      "aliases": [
-        "BOYISD",
-        "boyisd",
-        "buoy_isolated_danger"
-      ],
+      "aliases": ["BOYISD", "boyisd", "buoy_isolated_danger"],
       "symbolId": "s52_boyisd",
       "sprite": "circle",
       "prettyName": "Buoy Isolated Danger",
@@ -343,11 +294,7 @@
     },
     {
       "id": "BOYLAT",
-      "aliases": [
-        "BOYLAT",
-        "boylat",
-        "buoy_lateral"
-      ],
+      "aliases": ["BOYLAT", "boylat", "buoy_lateral"],
       "symbolId": "s52_boylat",
       "sprite": "circle",
       "prettyName": "Buoy Lateral",
@@ -369,11 +316,7 @@
     },
     {
       "id": "BOYSAW",
-      "aliases": [
-        "BOYSAW",
-        "boysaw",
-        "buoy_safe_water"
-      ],
+      "aliases": ["BOYSAW", "boysaw", "buoy_safe_water"],
       "symbolId": "s52_boysaw",
       "sprite": "circle",
       "prettyName": "Buoy Safe Water",
@@ -395,12 +338,7 @@
     },
     {
       "id": "BOYSPP",
-      "aliases": [
-        "buoy",
-        "BOYSPP",
-        "boyspp",
-        "buoy_special_purpose_general"
-      ],
+      "aliases": ["buoy", "BOYSPP", "boyspp", "buoy_special_purpose_general"],
       "symbolId": "s52_boyspp",
       "sprite": "circle",
       "prettyName": "Buoy Special Purpose",
@@ -422,10 +360,7 @@
     },
     {
       "id": "BRIDGE",
-      "aliases": [
-        "bridge",
-        "BRIDGE"
-      ],
+      "aliases": ["bridge", "BRIDGE"],
       "symbolId": "s52_bridge",
       "sprite": "circle",
       "prettyName": "Bridge",
@@ -442,11 +377,7 @@
     },
     {
       "id": "BUAARE",
-      "aliases": [
-        "BUAARE",
-        "buaare",
-        "built_up_area"
-      ],
+      "aliases": ["BUAARE", "buaare", "built_up_area"],
       "symbolId": "s52_buaare",
       "sprite": "circle",
       "prettyName": "Built-Up Area",
@@ -466,11 +397,7 @@
     },
     {
       "id": "BUISGL",
-      "aliases": [
-        "BUISGL",
-        "building_single",
-        "buisgl"
-      ],
+      "aliases": ["BUISGL", "building_single", "buisgl"],
       "symbolId": "s52_buisgl",
       "sprite": "circle",
       "prettyName": "Building Single",
@@ -488,11 +415,7 @@
     },
     {
       "id": "CANALS",
-      "aliases": [
-        "CANALS",
-        "canal",
-        "canals"
-      ],
+      "aliases": ["CANALS", "canal", "canals"],
       "symbolId": "s52_canals",
       "sprite": "circle",
       "prettyName": "Canals",
@@ -510,11 +433,7 @@
     },
     {
       "id": "CAUSWY",
-      "aliases": [
-        "CAUSWY",
-        "causeway",
-        "causwy"
-      ],
+      "aliases": ["CAUSWY", "causeway", "causwy"],
       "symbolId": "s52_causwy",
       "sprite": "circle",
       "prettyName": "Causeway",
@@ -531,11 +450,7 @@
     },
     {
       "id": "CBLARE",
-      "aliases": [
-        "CBLARE",
-        "cable_area",
-        "cblare"
-      ],
+      "aliases": ["CBLARE", "cable_area", "cblare"],
       "symbolId": "s52_cblare",
       "sprite": "circle",
       "prettyName": "Cable Area",
@@ -554,11 +469,7 @@
     },
     {
       "id": "CBLOHD",
-      "aliases": [
-        "CBLOHD",
-        "cable_overhead",
-        "cblohd"
-      ],
+      "aliases": ["CBLOHD", "cable_overhead", "cblohd"],
       "symbolId": "s52_cblohd",
       "sprite": "circle",
       "prettyName": "Cable Overhead",
@@ -576,12 +487,7 @@
     },
     {
       "id": "CBLSUB",
-      "aliases": [
-        "cable",
-        "CBLSUB",
-        "cable_submarine",
-        "cblsub"
-      ],
+      "aliases": ["cable", "CBLSUB", "cable_submarine", "cblsub"],
       "symbolId": "s52_cblsub",
       "sprite": "circle",
       "prettyName": "Cable Submarine",
@@ -600,11 +506,7 @@
     },
     {
       "id": "CGUSTA",
-      "aliases": [
-        "CGUSTA",
-        "cgusta",
-        "coastguard_station"
-      ],
+      "aliases": ["CGUSTA", "cgusta", "coastguard_station"],
       "symbolId": "s52_cgusta",
       "sprite": "circle",
       "prettyName": "Coast Guard Station",
@@ -624,11 +526,7 @@
     },
     {
       "id": "CHKPNT",
-      "aliases": [
-        "CHKPNT",
-        "checkpoint",
-        "chkpnt"
-      ],
+      "aliases": ["CHKPNT", "checkpoint", "chkpnt"],
       "symbolId": "s52_chkpnt",
       "sprite": "circle",
       "prettyName": "Checkpoint",
@@ -645,11 +543,7 @@
     },
     {
       "id": "COALNE",
-      "aliases": [
-        "COALNE",
-        "coalne",
-        "coastline"
-      ],
+      "aliases": ["COALNE", "coalne", "coastline"],
       "symbolId": "s52_coalne",
       "sprite": "circle",
       "prettyName": "Coastline",
@@ -668,11 +562,7 @@
     },
     {
       "id": "CONVYR",
-      "aliases": [
-        "CONVYR",
-        "conveyor",
-        "convyr"
-      ],
+      "aliases": ["CONVYR", "conveyor", "convyr"],
       "symbolId": "s52_convyr",
       "sprite": "circle",
       "prettyName": "Conveyor",
@@ -691,11 +581,7 @@
     },
     {
       "id": "CONZNE",
-      "aliases": [
-        "CONZNE",
-        "contiguous_zone",
-        "conzne"
-      ],
+      "aliases": ["CONZNE", "contiguous_zone", "conzne"],
       "symbolId": "s52_conzne",
       "sprite": "circle",
       "prettyName": "Contiguous Zone",
@@ -713,11 +599,7 @@
     },
     {
       "id": "COSARE",
-      "aliases": [
-        "COSARE",
-        "continental_shelf_area",
-        "cosare"
-      ],
+      "aliases": ["COSARE", "continental_shelf_area", "cosare"],
       "symbolId": "s52_cosare",
       "sprite": "circle",
       "prettyName": "COSARE",
@@ -735,11 +617,7 @@
     },
     {
       "id": "CRANES",
-      "aliases": [
-        "CRANES",
-        "crane",
-        "cranes"
-      ],
+      "aliases": ["CRANES", "crane", "cranes"],
       "symbolId": "s52_cranes",
       "sprite": "circle",
       "prettyName": "CRANES",
@@ -757,11 +635,7 @@
     },
     {
       "id": "CTNARE",
-      "aliases": [
-        "CTNARE",
-        "caution_area",
-        "ctnare"
-      ],
+      "aliases": ["CTNARE", "caution_area", "ctnare"],
       "symbolId": "s52_ctnare",
       "sprite": "circle",
       "prettyName": "Caution Area",
@@ -780,11 +654,7 @@
     },
     {
       "id": "CTRPNT",
-      "aliases": [
-        "CTRPNT",
-        "control_point",
-        "ctrpnt"
-      ],
+      "aliases": ["CTRPNT", "control_point", "ctrpnt"],
       "symbolId": "s52_ctrpnt",
       "sprite": "circle",
       "prettyName": "Control Point",
@@ -804,11 +674,7 @@
     },
     {
       "id": "CTSARE",
-      "aliases": [
-        "CTSARE",
-        "cargo_transshipment_area",
-        "ctsare"
-      ],
+      "aliases": ["CTSARE", "cargo_transshipment_area", "ctsare"],
       "symbolId": "s52_ctsare",
       "sprite": "circle",
       "prettyName": "CTSARE",
@@ -827,11 +693,7 @@
     },
     {
       "id": "CURENT",
-      "aliases": [
-        "CURENT",
-        "curent",
-        "current_non_gravitational"
-      ],
+      "aliases": ["CURENT", "curent", "current_non_gravitational"],
       "symbolId": "s52_curent",
       "sprite": "circle",
       "prettyName": "CURENT",
@@ -848,11 +710,7 @@
     },
     {
       "id": "CUSZNE",
-      "aliases": [
-        "CUSZNE",
-        "custom_zone",
-        "cuszne"
-      ],
+      "aliases": ["CUSZNE", "custom_zone", "cuszne"],
       "symbolId": "s52_cuszne",
       "sprite": "circle",
       "prettyName": "CUSZNE",
@@ -870,11 +728,7 @@
     },
     {
       "id": "DAMCON",
-      "aliases": [
-        "DAMCON",
-        "dam",
-        "damcon"
-      ],
+      "aliases": ["DAMCON", "dam", "damcon"],
       "symbolId": "s52_damcon",
       "sprite": "circle",
       "prettyName": "Dam",
@@ -891,11 +745,7 @@
     },
     {
       "id": "DAYMAR",
-      "aliases": [
-        "DAYMAR",
-        "daymar",
-        "daymark"
-      ],
+      "aliases": ["DAYMAR", "daymar", "daymark"],
       "symbolId": "s52_daymar",
       "sprite": "circle",
       "prettyName": "Daymark",
@@ -917,11 +767,7 @@
     },
     {
       "id": "DEPARE",
-      "aliases": [
-        "DEPARE",
-        "depare",
-        "depth_area"
-      ],
+      "aliases": ["DEPARE", "depare", "depth_area"],
       "symbolId": "s52_depare",
       "sprite": "circle",
       "prettyName": "Depth Area",
@@ -940,11 +786,7 @@
     },
     {
       "id": "DEPCNT",
-      "aliases": [
-        "DEPCNT",
-        "depcnt",
-        "depth_contour"
-      ],
+      "aliases": ["DEPCNT", "depcnt", "depth_contour"],
       "symbolId": "s52_depcnt",
       "sprite": "circle",
       "prettyName": "Depth Contour",
@@ -964,11 +806,7 @@
     },
     {
       "id": "DISMAR",
-      "aliases": [
-        "DISMAR",
-        "dismar",
-        "distance_mark"
-      ],
+      "aliases": ["DISMAR", "dismar", "distance_mark"],
       "symbolId": "s52_dismar",
       "sprite": "circle",
       "prettyName": "Distance Mark",
@@ -987,11 +825,7 @@
     },
     {
       "id": "DMPGRD",
-      "aliases": [
-        "DMPGRD",
-        "dmpgrd",
-        "dumping_ground"
-      ],
+      "aliases": ["DMPGRD", "dmpgrd", "dumping_ground"],
       "symbolId": "s52_dmpgrd",
       "sprite": "circle",
       "prettyName": "Dumping Ground",
@@ -1010,11 +844,7 @@
     },
     {
       "id": "DOCARE",
-      "aliases": [
-        "DOCARE",
-        "docare",
-        "dock_area"
-      ],
+      "aliases": ["DOCARE", "docare", "dock_area"],
       "symbolId": "s52_docare",
       "sprite": "circle",
       "prettyName": "DOCARE",
@@ -1034,11 +864,7 @@
     },
     {
       "id": "DRGARE",
-      "aliases": [
-        "DRGARE",
-        "dredged_area",
-        "drgare"
-      ],
+      "aliases": ["DRGARE", "dredged_area", "drgare"],
       "symbolId": "s52_drgare",
       "sprite": "circle",
       "prettyName": "Dredged Area",
@@ -1057,11 +883,7 @@
     },
     {
       "id": "DRYDOC",
-      "aliases": [
-        "DRYDOC",
-        "dry_dock",
-        "drydoc"
-      ],
+      "aliases": ["DRYDOC", "dry_dock", "drydoc"],
       "symbolId": "s52_drydoc",
       "sprite": "circle",
       "prettyName": "Dry Dock",
@@ -1079,11 +901,7 @@
     },
     {
       "id": "DWRTCL",
-      "aliases": [
-        "DWRTCL",
-        "deep_water_route_centerline",
-        "dwrtcl"
-      ],
+      "aliases": ["DWRTCL", "deep_water_route_centerline", "dwrtcl"],
       "symbolId": "s52_dwrtcl",
       "sprite": "circle",
       "prettyName": "DWRTCL",
@@ -1104,11 +922,7 @@
     },
     {
       "id": "DWRTPT",
-      "aliases": [
-        "DWRTPT",
-        "deep_water_route_part",
-        "dwrtpt"
-      ],
+      "aliases": ["DWRTPT", "deep_water_route_part", "dwrtpt"],
       "symbolId": "s52_dwrtpt",
       "sprite": "circle",
       "prettyName": "DWRTPT",
@@ -1127,11 +941,7 @@
     },
     {
       "id": "DYKCON",
-      "aliases": [
-        "DYKCON",
-        "dykcon",
-        "dyke"
-      ],
+      "aliases": ["DYKCON", "dykcon", "dyke"],
       "symbolId": "s52_dykcon",
       "sprite": "circle",
       "prettyName": "DYKCON",
@@ -1148,11 +958,7 @@
     },
     {
       "id": "EXEZNE",
-      "aliases": [
-        "EXEZNE",
-        "exclusive_economic_zone",
-        "exezne"
-      ],
+      "aliases": ["EXEZNE", "exclusive_economic_zone", "exezne"],
       "symbolId": "s52_exezne",
       "sprite": "circle",
       "prettyName": "EXEZNE",
@@ -1170,11 +976,7 @@
     },
     {
       "id": "FAIRWY",
-      "aliases": [
-        "FAIRWY",
-        "fairway",
-        "fairwy"
-      ],
+      "aliases": ["FAIRWY", "fairway", "fairwy"],
       "symbolId": "s52_fairwy",
       "sprite": "circle",
       "prettyName": "Fairway",
@@ -1193,11 +995,7 @@
     },
     {
       "id": "FERYRT",
-      "aliases": [
-        "ferry_route",
-        "FERYRT",
-        "feryrt"
-      ],
+      "aliases": ["ferry_route", "FERYRT", "feryrt"],
       "symbolId": "s52_feryrt",
       "sprite": "circle",
       "prettyName": "Ferry Route",
@@ -1215,11 +1013,7 @@
     },
     {
       "id": "FLODOC",
-      "aliases": [
-        "FLODOC",
-        "floating_dock",
-        "flodoc"
-      ],
+      "aliases": ["FLODOC", "floating_dock", "flodoc"],
       "symbolId": "s52_flodoc",
       "sprite": "circle",
       "prettyName": "FLODOC",
@@ -1236,11 +1030,7 @@
     },
     {
       "id": "FNCLNE",
-      "aliases": [
-        "FNCLNE",
-        "fence_wall",
-        "fnclne"
-      ],
+      "aliases": ["FNCLNE", "fence_wall", "fnclne"],
       "symbolId": "s52_fnclne",
       "sprite": "circle",
       "prettyName": "FNCLNE",
@@ -1258,11 +1048,7 @@
     },
     {
       "id": "FOGSIG",
-      "aliases": [
-        "FOGSIG",
-        "fog_signal",
-        "fogsig"
-      ],
+      "aliases": ["FOGSIG", "fog_signal", "fogsig"],
       "symbolId": "s52_fogsig",
       "sprite": "circle",
       "prettyName": "Fog Signal",
@@ -1281,11 +1067,7 @@
     },
     {
       "id": "FORSTC",
-      "aliases": [
-        "FORSTC",
-        "forstc",
-        "fortified_structure"
-      ],
+      "aliases": ["FORSTC", "forstc", "fortified_structure"],
       "symbolId": "s52_forstc",
       "sprite": "circle",
       "prettyName": "Fortified Structure",
@@ -1303,11 +1085,7 @@
     },
     {
       "id": "FRPARE",
-      "aliases": [
-        "FRPARE",
-        "free_port_area",
-        "frpare"
-      ],
+      "aliases": ["FRPARE", "free_port_area", "frpare"],
       "symbolId": "s52_frpare",
       "sprite": "circle",
       "prettyName": "Free Port Area",
@@ -1325,11 +1103,7 @@
     },
     {
       "id": "FSHFAC",
-      "aliases": [
-        "FSHFAC",
-        "fishing_facility",
-        "fshfac"
-      ],
+      "aliases": ["FSHFAC", "fishing_facility", "fshfac"],
       "symbolId": "s52_fshfac",
       "sprite": "circle",
       "prettyName": "FSHFAC",
@@ -1347,11 +1121,7 @@
     },
     {
       "id": "FSHGRD",
-      "aliases": [
-        "FSHGRD",
-        "fishing_ground",
-        "fshgrd"
-      ],
+      "aliases": ["FSHGRD", "fishing_ground", "fshgrd"],
       "symbolId": "s52_fshgrd",
       "sprite": "circle",
       "prettyName": "FSHGRD",
@@ -1369,11 +1139,7 @@
     },
     {
       "id": "FSHZNE",
-      "aliases": [
-        "FSHZNE",
-        "fishery_zone",
-        "fshzne"
-      ],
+      "aliases": ["FSHZNE", "fishery_zone", "fshzne"],
       "symbolId": "s52_fshzne",
       "sprite": "circle",
       "prettyName": "FSHZNE",
@@ -1391,11 +1157,7 @@
     },
     {
       "id": "GATCON",
-      "aliases": [
-        "GATCON",
-        "gatcon",
-        "gate"
-      ],
+      "aliases": ["GATCON", "gatcon", "gate"],
       "symbolId": "s52_gatcon",
       "sprite": "circle",
       "prettyName": "Gate",
@@ -1414,11 +1176,7 @@
     },
     {
       "id": "GRIDRN",
-      "aliases": [
-        "GRIDRN",
-        "gridiron",
-        "gridrn"
-      ],
+      "aliases": ["GRIDRN", "gridiron", "gridrn"],
       "symbolId": "s52_gridrn",
       "sprite": "circle",
       "prettyName": "Gridiron",
@@ -1435,11 +1193,7 @@
     },
     {
       "id": "HRBARE",
-      "aliases": [
-        "HRBARE",
-        "harbour_area_administrative",
-        "hrbare"
-      ],
+      "aliases": ["HRBARE", "harbour_area_administrative", "hrbare"],
       "symbolId": "s52_hrbare",
       "sprite": "circle",
       "prettyName": "Harbour Area",
@@ -1457,11 +1211,7 @@
     },
     {
       "id": "HRBFAC",
-      "aliases": [
-        "HRBFAC",
-        "harbour_facility",
-        "hrbfac"
-      ],
+      "aliases": ["HRBFAC", "harbour_facility", "hrbfac"],
       "symbolId": "s52_hrbfac",
       "sprite": "circle",
       "prettyName": "Harbour Facility",
@@ -1480,11 +1230,7 @@
     },
     {
       "id": "HULKES",
-      "aliases": [
-        "HULKES",
-        "hulk",
-        "hulkes"
-      ],
+      "aliases": ["HULKES", "hulk", "hulkes"],
       "symbolId": "s52_hulkes",
       "sprite": "circle",
       "prettyName": "Hulk",
@@ -1503,11 +1249,7 @@
     },
     {
       "id": "ICEARE",
-      "aliases": [
-        "ICEARE",
-        "ice_area",
-        "iceare"
-      ],
+      "aliases": ["ICEARE", "ice_area", "iceare"],
       "symbolId": "s52_iceare",
       "sprite": "circle",
       "prettyName": "ICEARE",
@@ -1525,11 +1267,7 @@
     },
     {
       "id": "ICNARE",
-      "aliases": [
-        "ICNARE",
-        "icnare",
-        "incineration_area"
-      ],
+      "aliases": ["ICNARE", "icnare", "incineration_area"],
       "symbolId": "s52_icnare",
       "sprite": "circle",
       "prettyName": "ICNARE",
@@ -1548,11 +1286,7 @@
     },
     {
       "id": "ISTZNE",
-      "aliases": [
-        "ISTZNE",
-        "inshore_traffic_zone",
-        "istzne"
-      ],
+      "aliases": ["ISTZNE", "inshore_traffic_zone", "istzne"],
       "symbolId": "s52_istzne",
       "sprite": "circle",
       "prettyName": "ISTZNE",
@@ -1571,11 +1305,7 @@
     },
     {
       "id": "LAKARE",
-      "aliases": [
-        "LAKARE",
-        "lakare",
-        "lake"
-      ],
+      "aliases": ["LAKARE", "lakare", "lake"],
       "symbolId": "s52_lakare",
       "sprite": "circle",
       "prettyName": "LAKARE",
@@ -1595,11 +1325,7 @@
     },
     {
       "id": "LIGHTS",
-      "aliases": [
-        "light",
-        "LIGHTS",
-        "lights"
-      ],
+      "aliases": ["light", "LIGHTS", "lights"],
       "symbolId": "s52_lights",
       "sprite": "circle",
       "prettyName": "Lights",
@@ -1619,11 +1345,7 @@
     },
     {
       "id": "LITFLT",
-      "aliases": [
-        "LITFLT",
-        "light_float",
-        "litflt"
-      ],
+      "aliases": ["LITFLT", "light_float", "litflt"],
       "symbolId": "s52_litflt",
       "sprite": "circle",
       "prettyName": "Light Float",
@@ -1643,11 +1365,7 @@
     },
     {
       "id": "LITVES",
-      "aliases": [
-        "LITVES",
-        "light_vessel",
-        "litves"
-      ],
+      "aliases": ["LITVES", "light_vessel", "litves"],
       "symbolId": "s52_litves",
       "sprite": "circle",
       "prettyName": "Light Vessel",
@@ -1667,11 +1385,7 @@
     },
     {
       "id": "LNDARE",
-      "aliases": [
-        "LNDARE",
-        "land_area",
-        "lndare"
-      ],
+      "aliases": ["LNDARE", "land_area", "lndare"],
       "symbolId": "s52_lndare",
       "sprite": "circle",
       "prettyName": "Land Area",
@@ -1690,11 +1404,7 @@
     },
     {
       "id": "LNDELV",
-      "aliases": [
-        "LNDELV",
-        "land_elevation",
-        "lndelv"
-      ],
+      "aliases": ["LNDELV", "land_elevation", "lndelv"],
       "symbolId": "s52_lndelv",
       "sprite": "circle",
       "prettyName": "LNDELV",
@@ -1713,11 +1423,7 @@
     },
     {
       "id": "LNDMRK",
-      "aliases": [
-        "landmark",
-        "LNDMRK",
-        "lndmrk"
-      ],
+      "aliases": ["landmark", "LNDMRK", "lndmrk"],
       "symbolId": "s52_lndmrk",
       "sprite": "circle",
       "prettyName": "Landmark",
@@ -1735,11 +1441,7 @@
     },
     {
       "id": "LNDRGN",
-      "aliases": [
-        "LNDRGN",
-        "land_region",
-        "lndrgn"
-      ],
+      "aliases": ["LNDRGN", "land_region", "lndrgn"],
       "symbolId": "s52_lndrgn",
       "sprite": "circle",
       "prettyName": "LNDRGN",
@@ -1758,11 +1460,7 @@
     },
     {
       "id": "LOCMAG",
-      "aliases": [
-        "LOCMAG",
-        "local_magnetic_anomaly",
-        "locmag"
-      ],
+      "aliases": ["LOCMAG", "local_magnetic_anomaly", "locmag"],
       "symbolId": "s52_locmag",
       "sprite": "circle",
       "prettyName": "LOCMAG",
@@ -1781,11 +1479,7 @@
     },
     {
       "id": "LOGPON",
-      "aliases": [
-        "LOGPON",
-        "log_pond",
-        "logpon"
-      ],
+      "aliases": ["LOGPON", "log_pond", "logpon"],
       "symbolId": "s52_logpon",
       "sprite": "circle",
       "prettyName": "LOGPON",
@@ -1802,11 +1496,7 @@
     },
     {
       "id": "LOKBSN",
-      "aliases": [
-        "LOKBSN",
-        "lock_basin",
-        "lokbsn"
-      ],
+      "aliases": ["LOKBSN", "lock_basin", "lokbsn"],
       "symbolId": "s52_lokbsn",
       "sprite": "circle",
       "prettyName": "Lock Basin",
@@ -1826,11 +1516,7 @@
     },
     {
       "id": "MAGVAR",
-      "aliases": [
-        "MAGVAR",
-        "magnetic_variation",
-        "magvar"
-      ],
+      "aliases": ["MAGVAR", "magnetic_variation", "magvar"],
       "symbolId": "s52_magvar",
       "sprite": "circle",
       "prettyName": "MAGVAR",
@@ -1850,11 +1536,7 @@
     },
     {
       "id": "MARCUL",
-      "aliases": [
-        "MARCUL",
-        "marcul",
-        "marine_farm_culture"
-      ],
+      "aliases": ["MARCUL", "marcul", "marine_farm_culture"],
       "symbolId": "s52_marcul",
       "sprite": "circle",
       "prettyName": "Marine Culture",
@@ -1872,11 +1554,7 @@
     },
     {
       "id": "MIPARE",
-      "aliases": [
-        "MIPARE",
-        "military_practice_area",
-        "mipare"
-      ],
+      "aliases": ["MIPARE", "military_practice_area", "mipare"],
       "symbolId": "s52_mipare",
       "sprite": "circle",
       "prettyName": "Military Practice Area",
@@ -1895,11 +1573,7 @@
     },
     {
       "id": "MORFAC",
-      "aliases": [
-        "MORFAC",
-        "mooring_warping_facility",
-        "morfac"
-      ],
+      "aliases": ["MORFAC", "mooring_warping_facility", "morfac"],
       "symbolId": "s52_morfac",
       "sprite": "circle",
       "prettyName": "Mooring Facility",
@@ -1918,11 +1592,7 @@
     },
     {
       "id": "NAVLNE",
-      "aliases": [
-        "NAVLNE",
-        "navigation_line",
-        "navlne"
-      ],
+      "aliases": ["NAVLNE", "navigation_line", "navlne"],
       "symbolId": "s52_navlne",
       "sprite": "circle",
       "prettyName": "Navigation Line",
@@ -1941,11 +1611,7 @@
     },
     {
       "id": "NEWOBJ",
-      "aliases": [
-        "NEWOBJ",
-        "new_object",
-        "newobj"
-      ],
+      "aliases": ["NEWOBJ", "new_object", "newobj"],
       "symbolId": "s52_newobj",
       "sprite": "circle",
       "prettyName": "NEWOBJ",
@@ -1962,11 +1628,7 @@
     },
     {
       "id": "OBSTRN",
-      "aliases": [
-        "obstruction",
-        "OBSTRN",
-        "obstrn"
-      ],
+      "aliases": ["obstruction", "OBSTRN", "obstrn"],
       "symbolId": "s52_obstrn",
       "sprite": "cross",
       "prettyName": "Obstruction",
@@ -1985,11 +1647,7 @@
     },
     {
       "id": "OFSPLF",
-      "aliases": [
-        "OFSPLF",
-        "offshore_platform",
-        "ofsplf"
-      ],
+      "aliases": ["OFSPLF", "offshore_platform", "ofsplf"],
       "symbolId": "s52_ofsplf",
       "sprite": "circle",
       "prettyName": "OFSPLF",
@@ -2009,11 +1667,7 @@
     },
     {
       "id": "OILBAR",
-      "aliases": [
-        "OILBAR",
-        "oil_barrier",
-        "oilbar"
-      ],
+      "aliases": ["OILBAR", "oil_barrier", "oilbar"],
       "symbolId": "s52_oilbar",
       "sprite": "circle",
       "prettyName": "Oil Barrier",
@@ -2032,11 +1686,7 @@
     },
     {
       "id": "OSPARE",
-      "aliases": [
-        "OSPARE",
-        "offshore_production_area",
-        "ospare"
-      ],
+      "aliases": ["OSPARE", "offshore_production_area", "ospare"],
       "symbolId": "s52_ospare",
       "sprite": "circle",
       "prettyName": "OSPARE",
@@ -2055,12 +1705,7 @@
     },
     {
       "id": "PILBOP",
-      "aliases": [
-        "pilot_boarding",
-        "PILBOP",
-        "pilbop",
-        "pilot_boarding_place"
-      ],
+      "aliases": ["pilot_boarding", "PILBOP", "pilbop", "pilot_boarding_place"],
       "symbolId": "s52_pilbop",
       "sprite": "circle",
       "prettyName": "Pilot Boarding Place",
@@ -2083,11 +1728,7 @@
     },
     {
       "id": "PILPNT",
-      "aliases": [
-        "PILPNT",
-        "pile",
-        "pilpnt"
-      ],
+      "aliases": ["PILPNT", "pile", "pilpnt"],
       "symbolId": "s52_pilpnt",
       "sprite": "circle",
       "prettyName": "PILPNT",
@@ -2106,11 +1747,7 @@
     },
     {
       "id": "PIPARE",
-      "aliases": [
-        "pipeline_area",
-        "PIPARE",
-        "pipare"
-      ],
+      "aliases": ["pipeline_area", "PIPARE", "pipare"],
       "symbolId": "s52_pipare",
       "sprite": "circle",
       "prettyName": "Pipeline Area",
@@ -2129,11 +1766,7 @@
     },
     {
       "id": "PIPOHD",
-      "aliases": [
-        "PIPOHD",
-        "pipeline_overhead",
-        "pipohd"
-      ],
+      "aliases": ["PIPOHD", "pipeline_overhead", "pipohd"],
       "symbolId": "s52_pipohd",
       "sprite": "circle",
       "prettyName": "PIPOHD",
@@ -2153,11 +1786,7 @@
     },
     {
       "id": "PIPSOL",
-      "aliases": [
-        "PIPSOL",
-        "pipeline_submarine_on_land",
-        "pipsol"
-      ],
+      "aliases": ["PIPSOL", "pipeline_submarine_on_land", "pipsol"],
       "symbolId": "s52_pipsol",
       "sprite": "circle",
       "prettyName": "PIPSOL",
@@ -2174,11 +1803,7 @@
     },
     {
       "id": "PONTON",
-      "aliases": [
-        "PONTON",
-        "ponton",
-        "pontoon"
-      ],
+      "aliases": ["PONTON", "ponton", "pontoon"],
       "symbolId": "s52_ponton",
       "sprite": "circle",
       "prettyName": "Pontoon",
@@ -2195,11 +1820,7 @@
     },
     {
       "id": "PRCARE",
-      "aliases": [
-        "PRCARE",
-        "prcare",
-        "precautionary_area"
-      ],
+      "aliases": ["PRCARE", "prcare", "precautionary_area"],
       "symbolId": "s52_prcare",
       "sprite": "circle",
       "prettyName": "Precautionary Area",
@@ -2218,11 +1839,7 @@
     },
     {
       "id": "PRDARE",
-      "aliases": [
-        "PRDARE",
-        "prdare",
-        "production_storage_area"
-      ],
+      "aliases": ["PRDARE", "prdare", "production_storage_area"],
       "symbolId": "s52_prdare",
       "sprite": "circle",
       "prettyName": "PRDARE",
@@ -2239,11 +1856,7 @@
     },
     {
       "id": "PYLONS",
-      "aliases": [
-        "PYLONS",
-        "pylon_bridge_support",
-        "pylons"
-      ],
+      "aliases": ["PYLONS", "pylon_bridge_support", "pylons"],
       "symbolId": "s52_pylons",
       "sprite": "circle",
       "prettyName": "Pylon",
@@ -2262,11 +1875,7 @@
     },
     {
       "id": "RADLNE",
-      "aliases": [
-        "RADLNE",
-        "radar_line",
-        "radlne"
-      ],
+      "aliases": ["RADLNE", "radar_line", "radlne"],
       "symbolId": "s52_radlne",
       "sprite": "circle",
       "prettyName": "Radar Line",
@@ -2287,11 +1896,7 @@
     },
     {
       "id": "RADRFL",
-      "aliases": [
-        "RADRFL",
-        "radar_reflector",
-        "radrfl"
-      ],
+      "aliases": ["RADRFL", "radar_reflector", "radrfl"],
       "symbolId": "s52_radrfl",
       "sprite": "circle",
       "prettyName": "Radar Reflector",
@@ -2310,11 +1915,7 @@
     },
     {
       "id": "RADRNG",
-      "aliases": [
-        "RADRNG",
-        "radar_range",
-        "radrng"
-      ],
+      "aliases": ["RADRNG", "radar_range", "radrng"],
       "symbolId": "s52_radrng",
       "sprite": "circle",
       "prettyName": "Radar Range",
@@ -2333,12 +1934,7 @@
     },
     {
       "id": "RADSTA",
-      "aliases": [
-        "radar_station",
-        "radio_station",
-        "RADSTA",
-        "radsta"
-      ],
+      "aliases": ["radar_station", "radio_station", "RADSTA", "radsta"],
       "symbolId": "s52_radsta",
       "sprite": "circle",
       "prettyName": "Radar Station",
@@ -2356,11 +1952,7 @@
     },
     {
       "id": "RAILWY",
-      "aliases": [
-        "RAILWY",
-        "railway",
-        "railwy"
-      ],
+      "aliases": ["RAILWY", "railway", "railwy"],
       "symbolId": "s52_railwy",
       "sprite": "circle",
       "prettyName": "RAILWY",
@@ -2378,10 +1970,7 @@
     },
     {
       "id": "RAPIDS",
-      "aliases": [
-        "RAPIDS",
-        "rapids"
-      ],
+      "aliases": ["RAPIDS", "rapids"],
       "symbolId": "s52_rapids",
       "sprite": "circle",
       "prettyName": "Rapids",
@@ -2425,11 +2014,7 @@
     },
     {
       "id": "RCTLPT",
-      "aliases": [
-        "RCTLPT",
-        "rctlpt",
-        "recommended_traffic_lane_part"
-      ],
+      "aliases": ["RCTLPT", "rctlpt", "recommended_traffic_lane_part"],
       "symbolId": "s52_rctlpt",
       "sprite": "circle",
       "prettyName": "Recommended Track",
@@ -2448,11 +2033,7 @@
     },
     {
       "id": "RDOCAL",
-      "aliases": [
-        "RDOCAL",
-        "radio_calling_in_point",
-        "rdocal"
-      ],
+      "aliases": ["RDOCAL", "radio_calling_in_point", "rdocal"],
       "symbolId": "s52_rdocal",
       "sprite": "circle",
       "prettyName": "RDOCAL",
@@ -2473,11 +2054,7 @@
     },
     {
       "id": "RDOSTA",
-      "aliases": [
-        "RDOSTA",
-        "radio_station",
-        "rdosta"
-      ],
+      "aliases": ["RDOSTA", "radio_station", "rdosta"],
       "symbolId": "s52_rdosta",
       "sprite": "circle",
       "prettyName": "RDOSTA",
@@ -2496,11 +2073,7 @@
     },
     {
       "id": "RECTRC",
-      "aliases": [
-        "RECTRC",
-        "recommended_track",
-        "rectrc"
-      ],
+      "aliases": ["RECTRC", "recommended_track", "rectrc"],
       "symbolId": "s52_rectrc",
       "sprite": "circle",
       "prettyName": "RECTRC",
@@ -2519,11 +2092,7 @@
     },
     {
       "id": "RESARE",
-      "aliases": [
-        "RESARE",
-        "resare",
-        "restricted_area"
-      ],
+      "aliases": ["RESARE", "resare", "restricted_area"],
       "symbolId": "s52_resare",
       "sprite": "circle",
       "prettyName": "Restricted Area",
@@ -2541,11 +2110,7 @@
     },
     {
       "id": "RETRFL",
-      "aliases": [
-        "RETRFL",
-        "retrfl",
-        "retro_reflector"
-      ],
+      "aliases": ["RETRFL", "retrfl", "retro_reflector"],
       "symbolId": "s52_retrfl",
       "sprite": "circle",
       "prettyName": "RETRFL",
@@ -2564,11 +2129,7 @@
     },
     {
       "id": "RIVERS",
-      "aliases": [
-        "RIVERS",
-        "river",
-        "rivers"
-      ],
+      "aliases": ["RIVERS", "river", "rivers"],
       "symbolId": "s52_rivers",
       "sprite": "circle",
       "prettyName": "RIVERS",
@@ -2586,11 +2147,7 @@
     },
     {
       "id": "ROADWY",
-      "aliases": [
-        "ROADWY",
-        "road",
-        "roadwy"
-      ],
+      "aliases": ["ROADWY", "road", "roadwy"],
       "symbolId": "s52_roadwy",
       "sprite": "circle",
       "prettyName": "ROADWY",
@@ -2607,11 +2164,7 @@
     },
     {
       "id": "RSCSTA",
-      "aliases": [
-        "RSCSTA",
-        "rescue_station",
-        "rscsta"
-      ],
+      "aliases": ["RSCSTA", "rescue_station", "rscsta"],
       "symbolId": "s52_rscsta",
       "sprite": "circle",
       "prettyName": "Rescue Station",
@@ -2630,11 +2183,7 @@
     },
     {
       "id": "RTPBCN",
-      "aliases": [
-        "RTPBCN",
-        "radar_transponder_beacon",
-        "rtpbcn"
-      ],
+      "aliases": ["RTPBCN", "radar_transponder_beacon", "rtpbcn"],
       "symbolId": "s52_rtpbcn",
       "sprite": "circle",
       "prettyName": "Radar Transponder Beacon",
@@ -2653,10 +2202,7 @@
     },
     {
       "id": "RUNWAY",
-      "aliases": [
-        "RUNWAY",
-        "runway"
-      ],
+      "aliases": ["RUNWAY", "runway"],
       "symbolId": "s52_runway",
       "sprite": "circle",
       "prettyName": "RUNWAY",
@@ -2673,11 +2219,7 @@
     },
     {
       "id": "SBDARE",
-      "aliases": [
-        "SBDARE",
-        "sbdare",
-        "seabed_area"
-      ],
+      "aliases": ["SBDARE", "sbdare", "seabed_area"],
       "symbolId": "s52_sbdare",
       "sprite": "circle",
       "prettyName": "SBDARE",
@@ -2695,11 +2237,7 @@
     },
     {
       "id": "SEAARE",
-      "aliases": [
-        "SEAARE",
-        "sea_area_named_water_area",
-        "seaare"
-      ],
+      "aliases": ["SEAARE", "sea_area_named_water_area", "seaare"],
       "symbolId": "s52_seaare",
       "sprite": "circle",
       "prettyName": "Sea Area",
@@ -2717,11 +2255,7 @@
     },
     {
       "id": "SILTNK",
-      "aliases": [
-        "SILTNK",
-        "silo_tank",
-        "siltnk"
-      ],
+      "aliases": ["SILTNK", "silo_tank", "siltnk"],
       "symbolId": "s52_siltnk",
       "sprite": "circle",
       "prettyName": "Tank",
@@ -2739,11 +2273,7 @@
     },
     {
       "id": "SISTAT",
-      "aliases": [
-        "SISTAT",
-        "signal_station_traffic",
-        "sistat"
-      ],
+      "aliases": ["SISTAT", "signal_station_traffic", "sistat"],
       "symbolId": "s52_sistat",
       "sprite": "circle",
       "prettyName": "SISTAT",
@@ -2763,11 +2293,7 @@
     },
     {
       "id": "SISTAW",
-      "aliases": [
-        "SISTAW",
-        "signal_station_warning",
-        "sistaw"
-      ],
+      "aliases": ["SISTAW", "signal_station_warning", "sistaw"],
       "symbolId": "s52_sistaw",
       "sprite": "circle",
       "prettyName": "SISTAW",
@@ -2787,11 +2313,7 @@
     },
     {
       "id": "SLCONS",
-      "aliases": [
-        "SLCONS",
-        "shoreline_construction",
-        "slcons"
-      ],
+      "aliases": ["SLCONS", "shoreline_construction", "slcons"],
       "symbolId": "s52_slcons",
       "sprite": "circle",
       "prettyName": "Shoreline Construction",
@@ -2810,11 +2332,7 @@
     },
     {
       "id": "SLOGRD",
-      "aliases": [
-        "SLOGRD",
-        "slogrd",
-        "sloping_ground"
-      ],
+      "aliases": ["SLOGRD", "slogrd", "sloping_ground"],
       "symbolId": "s52_slogrd",
       "sprite": "circle",
       "prettyName": "SLOGRD",
@@ -2832,11 +2350,7 @@
     },
     {
       "id": "SLOTOP",
-      "aliases": [
-        "SLOTOP",
-        "slope_topline",
-        "slotop"
-      ],
+      "aliases": ["SLOTOP", "slope_topline", "slotop"],
       "symbolId": "s52_slotop",
       "sprite": "circle",
       "prettyName": "SLOTOP",
@@ -2854,11 +2368,7 @@
     },
     {
       "id": "SMCFAC",
-      "aliases": [
-        "SMCFAC",
-        "small_craft_facility",
-        "smcfac"
-      ],
+      "aliases": ["SMCFAC", "small_craft_facility", "smcfac"],
       "symbolId": "s52_smcfac",
       "sprite": "circle",
       "prettyName": "SMCFAC",
@@ -2875,11 +2385,7 @@
     },
     {
       "id": "SNDWAV",
-      "aliases": [
-        "SNDWAV",
-        "sand_waves",
-        "sndwav"
-      ],
+      "aliases": ["SNDWAV", "sand_waves", "sndwav"],
       "symbolId": "s52_sndwav",
       "sprite": "circle",
       "prettyName": "SNDWAV",
@@ -2897,11 +2403,7 @@
     },
     {
       "id": "SOUNDG",
-      "aliases": [
-        "SOUNDG",
-        "soundg",
-        "sounding"
-      ],
+      "aliases": ["SOUNDG", "soundg", "sounding"],
       "symbolId": "s52_soundg",
       "sprite": "circle",
       "prettyName": "Sounding",
@@ -2921,11 +2423,7 @@
     },
     {
       "id": "SPLARE",
-      "aliases": [
-        "SPLARE",
-        "sea_plane_landing_area",
-        "splare"
-      ],
+      "aliases": ["SPLARE", "sea_plane_landing_area", "splare"],
       "symbolId": "s52_splare",
       "sprite": "circle",
       "prettyName": "Separation Area",
@@ -2944,10 +2442,7 @@
     },
     {
       "id": "SPRING",
-      "aliases": [
-        "spring",
-        "SPRING"
-      ],
+      "aliases": ["spring", "SPRING"],
       "symbolId": "s52_spring",
       "sprite": "circle",
       "prettyName": "SPRING",
@@ -2965,11 +2460,7 @@
     },
     {
       "id": "STSLNE",
-      "aliases": [
-        "STSLNE",
-        "straight_territorial_sea_baseline",
-        "stslne"
-      ],
+      "aliases": ["STSLNE", "straight_territorial_sea_baseline", "stslne"],
       "symbolId": "s52_stslne",
       "sprite": "circle",
       "prettyName": "STSLNE",
@@ -2987,11 +2478,7 @@
     },
     {
       "id": "SUBTLN",
-      "aliases": [
-        "SUBTLN",
-        "submarine_transit_lane",
-        "subtln"
-      ],
+      "aliases": ["SUBTLN", "submarine_transit_lane", "subtln"],
       "symbolId": "s52_subtln",
       "sprite": "circle",
       "prettyName": "SUBTLN",
@@ -3010,11 +2497,7 @@
     },
     {
       "id": "SWPARE",
-      "aliases": [
-        "SWPARE",
-        "swept_area",
-        "swpare"
-      ],
+      "aliases": ["SWPARE", "swept_area", "swpare"],
       "symbolId": "s52_swpare",
       "sprite": "circle",
       "prettyName": "SWPARE",
@@ -3034,11 +2517,7 @@
     },
     {
       "id": "TESARE",
-      "aliases": [
-        "TESARE",
-        "territorial_sea_area",
-        "tesare"
-      ],
+      "aliases": ["TESARE", "territorial_sea_area", "tesare"],
       "symbolId": "s52_tesare",
       "sprite": "circle",
       "prettyName": "TESARE",
@@ -3056,11 +2535,7 @@
     },
     {
       "id": "TIDEWY",
-      "aliases": [
-        "TIDEWY",
-        "tideway",
-        "tidewy"
-      ],
+      "aliases": ["TIDEWY", "tideway", "tidewy"],
       "symbolId": "s52_tidewy",
       "sprite": "circle",
       "prettyName": "TIDEWY",
@@ -3077,11 +2552,7 @@
     },
     {
       "id": "TOPMAR",
-      "aliases": [
-        "TOPMAR",
-        "topmar",
-        "topmark"
-      ],
+      "aliases": ["TOPMAR", "topmar", "topmark"],
       "symbolId": "s52_topmar",
       "sprite": "circle",
       "prettyName": "Topmark",
@@ -3098,11 +2569,7 @@
     },
     {
       "id": "TSELNE",
-      "aliases": [
-        "TSELNE",
-        "traffic_separation_line",
-        "tselne"
-      ],
+      "aliases": ["TSELNE", "traffic_separation_line", "tselne"],
       "symbolId": "s52_tselne",
       "sprite": "circle",
       "prettyName": "TSELNE",
@@ -3121,11 +2588,7 @@
     },
     {
       "id": "TSEZNE",
-      "aliases": [
-        "TSEZNE",
-        "traffic_separation_zone",
-        "tsezne"
-      ],
+      "aliases": ["TSEZNE", "traffic_separation_zone", "tsezne"],
       "symbolId": "s52_tsezne",
       "sprite": "circle",
       "prettyName": "TSEZNE",
@@ -3192,11 +2655,7 @@
     },
     {
       "id": "TSSLPT",
-      "aliases": [
-        "TSSLPT",
-        "traffic_separation_scheme_lane_part",
-        "tsslpt"
-      ],
+      "aliases": ["TSSLPT", "traffic_separation_scheme_lane_part", "tsslpt"],
       "symbolId": "s52_tsslpt",
       "sprite": "circle",
       "prettyName": "TSSLPT",
@@ -3240,10 +2699,7 @@
     },
     {
       "id": "TUNNEL",
-      "aliases": [
-        "TUNNEL",
-        "tunnel"
-      ],
+      "aliases": ["TUNNEL", "tunnel"],
       "symbolId": "s52_tunnel",
       "sprite": "circle",
       "prettyName": "TUNNEL",
@@ -3260,11 +2716,7 @@
     },
     {
       "id": "TWRTPT",
-      "aliases": [
-        "TWRTPT",
-        "two_way_route_part",
-        "twrtpt"
-      ],
+      "aliases": ["TWRTPT", "two_way_route_part", "twrtpt"],
       "symbolId": "s52_twrtpt",
       "sprite": "circle",
       "prettyName": "Two-Way Route",
@@ -3283,11 +2735,7 @@
     },
     {
       "id": "UNSARE",
-      "aliases": [
-        "UNSARE",
-        "unsare",
-        "unsurveyed_area"
-      ],
+      "aliases": ["UNSARE", "unsare", "unsurveyed_area"],
       "symbolId": "s52_unsare",
       "sprite": "circle",
       "prettyName": "UNSARE",
@@ -3305,11 +2753,7 @@
     },
     {
       "id": "UWTROC",
-      "aliases": [
-        "UWTROC",
-        "underwater_rock_awash_rock",
-        "uwtroc"
-      ],
+      "aliases": ["UWTROC", "underwater_rock_awash_rock", "uwtroc"],
       "symbolId": "s52_uwtroc",
       "sprite": "circle",
       "prettyName": "UWTROC",
@@ -3327,11 +2771,7 @@
     },
     {
       "id": "VEGATN",
-      "aliases": [
-        "VEGATN",
-        "vegatn",
-        "vegetation"
-      ],
+      "aliases": ["VEGATN", "vegatn", "vegetation"],
       "symbolId": "s52_vegatn",
       "sprite": "circle",
       "prettyName": "Vegetation",
@@ -3348,11 +2788,7 @@
     },
     {
       "id": "WATFAL",
-      "aliases": [
-        "WATFAL",
-        "waterfall",
-        "watfal"
-      ],
+      "aliases": ["WATFAL", "waterfall", "watfal"],
       "symbolId": "s52_watfal",
       "sprite": "circle",
       "prettyName": "Waterfall",
@@ -3369,11 +2805,7 @@
     },
     {
       "id": "WATTUR",
-      "aliases": [
-        "WATTUR",
-        "water_turbulence",
-        "wattur"
-      ],
+      "aliases": ["WATTUR", "water_turbulence", "wattur"],
       "symbolId": "s52_wattur",
       "sprite": "circle",
       "prettyName": "WATTUR",
@@ -3391,11 +2823,7 @@
     },
     {
       "id": "WEDKLP",
-      "aliases": [
-        "WEDKLP",
-        "wedklp",
-        "weed_kelp"
-      ],
+      "aliases": ["WEDKLP", "wedklp", "weed_kelp"],
       "symbolId": "s52_wedklp",
       "sprite": "circle",
       "prettyName": "WEDKLP",
@@ -3413,11 +2841,7 @@
     },
     {
       "id": "WRECKS",
-      "aliases": [
-        "wreck",
-        "WRECKS",
-        "wrecks"
-      ],
+      "aliases": ["wreck", "WRECKS", "wrecks"],
       "symbolId": "s52_wrecks",
       "sprite": "cross",
       "prettyName": "Wreck",
@@ -3437,11 +2861,7 @@
     },
     {
       "id": "ACHPNT",
-      "aliases": [
-        "ACHPNT",
-        "achpnt",
-        "anchor"
-      ],
+      "aliases": ["ACHPNT", "achpnt", "anchor"],
       "symbolId": "s52_achpnt",
       "sprite": "circle",
       "prettyName": "ACHPNT",
@@ -3460,11 +2880,7 @@
     },
     {
       "id": "BUIREL",
-      "aliases": [
-        "BUIREL",
-        "building_religous",
-        "buirel"
-      ],
+      "aliases": ["BUIREL", "building_religous", "buirel"],
       "symbolId": "s52_buirel",
       "sprite": "circle",
       "prettyName": "BUIREL",
@@ -3483,11 +2899,7 @@
     },
     {
       "id": "CANBNK",
-      "aliases": [
-        "CANBNK",
-        "canal_bank",
-        "canbnk"
-      ],
+      "aliases": ["CANBNK", "canal_bank", "canbnk"],
       "symbolId": "s52_canbnk",
       "sprite": "circle",
       "prettyName": "CANBNK",
@@ -3504,11 +2916,7 @@
     },
     {
       "id": "CHNWIR",
-      "aliases": [
-        "CHNWIR",
-        "chain_wire",
-        "chnwir"
-      ],
+      "aliases": ["CHNWIR", "chain_wire", "chnwir"],
       "symbolId": "s52_chnwir",
       "sprite": "circle",
       "prettyName": "CHNWIR",
@@ -3526,11 +2934,7 @@
     },
     {
       "id": "LAKSHR",
-      "aliases": [
-        "LAKSHR",
-        "lake_shore",
-        "lakshr"
-      ],
+      "aliases": ["LAKSHR", "lake_shore", "lakshr"],
       "symbolId": "s52_lakshr",
       "sprite": "circle",
       "prettyName": "LAKSHR",
@@ -3547,11 +2951,7 @@
     },
     {
       "id": "MONUMT",
-      "aliases": [
-        "MONUMT",
-        "monument",
-        "monumt"
-      ],
+      "aliases": ["MONUMT", "monument", "monumt"],
       "symbolId": "s52_monumt",
       "sprite": "circle",
       "prettyName": "MONUMT",
@@ -3570,11 +2970,7 @@
     },
     {
       "id": "RIVBNK",
-      "aliases": [
-        "RIVBNK",
-        "rivbnk",
-        "river_bank"
-      ],
+      "aliases": ["RIVBNK", "rivbnk", "river_bank"],
       "symbolId": "s52_rivbnk",
       "sprite": "circle",
       "prettyName": "RIVBNK",
@@ -3591,10 +2987,7 @@
     },
     {
       "id": "SQUARE",
-      "aliases": [
-        "SQUARE",
-        "square"
-      ],
+      "aliases": ["SQUARE", "square"],
       "symbolId": "s52_square",
       "sprite": "circle",
       "prettyName": "SQUARE",
@@ -3611,11 +3004,7 @@
     },
     {
       "id": "TOWERS",
-      "aliases": [
-        "TOWERS",
-        "tower",
-        "towers"
-      ],
+      "aliases": ["TOWERS", "tower", "towers"],
       "symbolId": "s52_towers",
       "sprite": "circle",
       "prettyName": "TOWERS",
@@ -3635,11 +3024,7 @@
     },
     {
       "id": "ZEMCNT",
-      "aliases": [
-        "ZEMCNT",
-        "zemcnt",
-        "zero_meter_contour"
-      ],
+      "aliases": ["ZEMCNT", "zemcnt", "zero_meter_contour"],
       "symbolId": "s52_zemcnt",
       "sprite": "circle",
       "prettyName": "ZEMCNT",
@@ -3657,11 +3042,7 @@
     },
     {
       "id": "ANNOTA",
-      "aliases": [
-        "ANNOTA",
-        "annota",
-        "annotation"
-      ],
+      "aliases": ["ANNOTA", "annota", "annotation"],
       "symbolId": "s52_annota",
       "sprite": "circle",
       "prettyName": "ANNOTA",
@@ -3678,11 +3059,7 @@
     },
     {
       "id": "RESTRC",
-      "aliases": [
-        "RESTRC",
-        "generic_boundary",
-        "restrc"
-      ],
+      "aliases": ["RESTRC", "generic_boundary", "restrc"],
       "symbolId": "s52_restrc",
       "sprite": "circle",
       "prettyName": "RESTRC",
@@ -3700,11 +3077,7 @@
     },
     {
       "id": "TRFLNE",
-      "aliases": [
-        "TRFLNE",
-        "traffic_line",
-        "trflne"
-      ],
+      "aliases": ["TRFLNE", "traffic_line", "trflne"],
       "symbolId": "s52_trflne",
       "sprite": "circle",
       "prettyName": "TRFLNE",
@@ -3722,11 +3095,7 @@
     },
     {
       "id": "GENNAV",
-      "aliases": [
-        "GENNAV",
-        "generic_navaid",
-        "gennav"
-      ],
+      "aliases": ["GENNAV", "generic_navaid", "gennav"],
       "symbolId": "s52_gennav",
       "sprite": "circle",
       "prettyName": "GENNAV",

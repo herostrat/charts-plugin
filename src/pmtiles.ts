@@ -29,7 +29,10 @@ class NodeFileSource implements Source {
       const { bytesRead } = await handle.read(buffer, 0, length, offset)
       const view = buffer.subarray(0, bytesRead)
       return {
-        data: view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength)
+        data: view.buffer.slice(
+          view.byteOffset,
+          view.byteOffset + view.byteLength
+        )
       }
     } finally {
       await handle.close()

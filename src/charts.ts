@@ -94,18 +94,18 @@ function openMbtilesFile(file: string, filename: string) {
   const MbtilesCtor = MBTiles
   return (
     new Promise((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       new MbtilesCtor(file, (err: Error | null, mbtiles: MbtilesInstance) => {
         if (err) {
           return reject(err)
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        mbtiles.getInfo((err: Error | null, metadata: Record<string, unknown>) => {
-          if (err) {
-            return reject(err)
+        mbtiles.getInfo(
+          (err: Error | null, metadata: Record<string, unknown>) => {
+            if (err) {
+              return reject(err)
+            }
+            return resolve({ mbtiles, metadata })
           }
-          return resolve({ mbtiles, metadata })
-        })
+        )
       })
     })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
