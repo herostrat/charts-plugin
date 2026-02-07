@@ -277,8 +277,8 @@ export class ChartDownloader {
     try {
       const data = await fs.promises.readFile(tilePath)
       return data
-    } catch (err) {
-      //Cache miss, proceed to fetch from remote
+    } catch {
+      // Cache miss, proceed to fetch from remote
     }
     const buffer = await this.fetchTileFromRemote(provider, tile)
     if (buffer) {
@@ -321,7 +321,7 @@ export class ChartDownloader {
       const arrayBuffer = await response.arrayBuffer()
       const buffer = Buffer.from(arrayBuffer)
       return buffer
-    } catch (err) {
+    } catch {
       return null
     } finally {
       clearTimeout(id)

@@ -289,6 +289,14 @@ export function classifyLayers(
   };
 
   const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map();
+  const aliasMap = new Map<string, S52ObjectDefinition>();
+  if (catalog) {
+    for (const obj of catalog) {
+      for (const alias of obj.aliases || []) {
+        aliasMap.set(alias.toUpperCase(), obj);
+      }
+    }
+  }
 
   for (const layerId of layerIds) {
     const normalized = layerId.toUpperCase();
@@ -307,17 +315,31 @@ export function classifyLayers(
       continue
     }
 
+    // Priorität 1b: Alias Look-up
+    if (aliasMap.has(normalized)) {
+      const feature = aliasMap.get(normalized)!
+      const rawType = feature.featureType || 'unknown'
+      const type =
+        rawType === 'line'
+          ? 'lines'
+          : rawType === 'area'
+            ? 'areas'
+            : rawType
+      result[type as keyof ClassifiedLayers].push(layerId)
+      continue
+    }
+
     // Priorität 2: Regex Pattern
-    if (/^(points|poi|buoy|bcn|light|beacon)./i.test(layerId)) {
-      result.poi.push(layerId);
-    } else if (/^(lines|lineage|edge)./i.test(layerId)) {
-      result.lines.push(layerId);
-    } else if (/^(areas|zones|poly|polygon)./i.test(layerId)) {
-      result.areas.push(layerId);
-    } else if (/^(depth|soundg|contour|depare)./i.test(layerId)) {
+    if (/(depth|soundg|contour|depare|dredged|sounding)/i.test(layerId)) {
       result.depth.push(layerId);
-    } else if (/^(hazard|wreck|rock|obstru|rock)./i.test(layerId)) {
+    } else if (/(hazard|wreck|rock|obstruct|danger)/i.test(layerId)) {
       result.hazard.push(layerId);
+    } else if (/(^|_)(area|zone|basin|ground|lane|roundabout|crossing|scheme|junction)(_|$)/i.test(layerId)) {
+      result.areas.push(layerId);
+    } else if (/(^|_)(line|route|centreline|centerline|boundary|bank|shore|range|track|pipeline|cable|wall|fence|railway)(_|$)/i.test(layerId)) {
+      result.lines.push(layerId);
+    } else if (/(^|_)(points|poi|buoy|bcn|light|beacon|daymark|landmark|radar|radio|signal|pilot|pile|pontoon|platform|crane|building|tower|gate|checkpoint|gridiron|tank|spring|bridge|station|facility|mark)(_|$)/i.test(layerId)) {
+      result.poi.push(layerId);
     } else {
       result.unknown.push(layerId);
     }

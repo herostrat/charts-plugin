@@ -1,20 +1,31 @@
 import path from 'path'
 import * as xml2js from 'xml2js'
-import { Dirent, promises as fs } from 'fs'
+import { promises as fs } from 'fs'
 import * as _ from 'lodash'
 import { ChartProvider } from './types'
 import { promisify } from 'util'
 import { openPmtilesFile } from './pmtiles'
 
+type MbtilesInstance = {
+  getInfo: (
+    callback: (err: Error | null, metadata: Record<string, unknown>) => void
+  ) => void
+}
+
+type MbtilesConstructor = new (
+  file: string,
+  callback: (err: Error | null, mbtiles: MbtilesInstance) => void
+) => void
+
 // Dynamically load MBTiles to prevent module load failure
-let MBTiles: any = null
+let MBTiles: MbtilesConstructor | null = null
 let mbtilesLoadError: Error | null = null
 
 async function loadMBTiles() {
   if (MBTiles === null && mbtilesLoadError === null) {
     try {
       const module = await import('@signalk/mbtiles')
-      MBTiles = module.default || module
+      MBTiles = (module.default || module) as MbtilesConstructor
     } catch (err) {
       mbtilesLoadError = err as Error
       console.error(
@@ -77,15 +88,19 @@ export function findCharts(chartBaseDir: string) {
 }
 
 function openMbtilesFile(file: string, filename: string) {
+  if (!MBTiles) {
+    return Promise.reject(new Error('MBTiles module not loaded'))
+  }
+  const MbtilesCtor = MBTiles
   return (
     new Promise((resolve, reject) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      new MBTiles(file, (err: Error, mbtiles: any) => {
+      new MbtilesCtor(file, (err: Error | null, mbtiles: MbtilesInstance) => {
         if (err) {
           return reject(err)
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        mbtiles.getInfo((err: Error, metadata: any) => {
+        mbtiles.getInfo((err: Error | null, metadata: Record<string, unknown>) => {
           if (err) {
             return reject(err)
           }

@@ -12,7 +12,6 @@ import type { ChartProvider } from '../types'
 import {
   EXTENDED_CATALOG_EXAMPLES,
   classifyLayers,
-  ClassifiedLayers,
   S52ObjectDefinition
 } from './nautical-catalog'
 
@@ -35,6 +34,8 @@ type S52ThemeColors = {
   symbolBlack: string
   symbolWhite: string
 }
+
+type StyleLayer = Record<string, unknown>
 
 const S52_THEMES: Record<ThemeId, S52ThemeColors> = {
   day: {
@@ -104,10 +105,9 @@ function getNauticalBaseStyle(theme: ThemeId) {
  */
 function buildWaterAndDepthLayers(
   depthLayerIds: string[],
-  sources: string[],
   colors: S52ThemeColors
-): any[] {
-  const layers: any[] = []
+): StyleLayer[] {
+  const layers: StyleLayer[] = []
 
   // Base water (hinter anderen Elementen)
   // Hinweis: In realer Impl. könnte dies auch ein explizites "water" Feature sein
@@ -173,8 +173,8 @@ function buildWaterAndDepthLayers(
 function buildLandLayers(
   areaLayerIds: string[],
   colors: S52ThemeColors
-): any[] {
-  const layers: any[] = []
+): StyleLayer[] {
+  const layers: StyleLayer[] = []
 
   for (const layerId of areaLayerIds) {
     // Basis Land-Fläche
@@ -212,8 +212,8 @@ function buildLineLayers(
   lineLayerIds: string[],
   catalog: S52ObjectDefinition[] | undefined,
   colors: S52ThemeColors
-): any[] {
-  const layers: any[] = []
+): StyleLayer[] {
+  const layers: StyleLayer[] = []
   const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
 
   for (const layerId of lineLayerIds) {
@@ -255,8 +255,8 @@ function buildAreaLayers(
   areaLayerIds: string[],
   catalog: S52ObjectDefinition[] | undefined,
   colors: S52ThemeColors
-): any[] {
-  const layers: any[] = []
+): StyleLayer[] {
+  const layers: StyleLayer[] = []
   const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
 
   for (const layerId of areaLayerIds) {
@@ -301,8 +301,8 @@ function buildPOILayers(
   poiLayerIds: string[],
   catalog: S52ObjectDefinition[] | undefined,
   colors: S52ThemeColors
-): any[] {
-  const layers: any[] = []
+): StyleLayer[] {
+  const layers: StyleLayer[] = []
   const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
 
   for (const layerId of poiLayerIds) {
@@ -312,7 +312,10 @@ function buildPOILayers(
     const hints = catalogEntry?.mapboxRenderingHints || {}
     const minZoom = hints.minZoom ?? 8
     const maxZoom = hints.maxZoom ?? 24
-    const priority = hints.priority ?? 50
+    const labelField = hints.labelField && hints.labelField.trim()
+      ? hints.labelField
+      : 'name'
+    const defaultIconId = hints.iconId || getDefaultPoiIconId(layerId)
 
     // Haupt-Symbol Layer
     layers.push({
@@ -328,7 +331,7 @@ function buildPOILayers(
           'case',
           ['has', 'symbol_id'],
           ['get', 'symbol_id'], // Feature-spezifisch
-          hints.iconId || 'circle' // Fallback
+          defaultIconId // Fallback
         ],
         'icon-size': [
           'interpolate',
@@ -344,8 +347,8 @@ function buildPOILayers(
         // Labels
         'text-field': [
           'case',
-          ['has', hints.labelField || 'name'],
-          ['get', hints.labelField || 'name'],
+          ['has', labelField],
+          ['get', labelField],
           ''
         ],
         'text-offset': [0, 1.5],
@@ -372,8 +375,8 @@ function buildHazardLayers(
   hazardLayerIds: string[],
   catalog: S52ObjectDefinition[] | undefined,
   colors: S52ThemeColors
-): any[] {
-  const layers: any[] = []
+): StyleLayer[] {
+  const layers: StyleLayer[] = []
   const catalogMap = catalog ? new Map(catalog.map(obj => [obj.id, obj])) : new Map()
 
   for (const layerId of hazardLayerIds) {
@@ -381,7 +384,7 @@ function buildHazardLayers(
     const catalogEntry = catalogMap.get(normalized)
 
     const hazardColor = catalogEntry?.s52ColorScheme?.default || colors.hazard
-    const iconId = catalogEntry?.mapboxRenderingHints?.iconId || 'cross'
+    const iconId = catalogEntry?.mapboxRenderingHints?.iconId || getDefaultHazardIconId(layerId)
 
     // Hazard-Symbol (höhere Priorität als normale POIs)
     layers.push({
@@ -450,7 +453,7 @@ export function buildNauticalVectorStyle(
   // 3. Baue Layer-Array auf (Reihenfolge wichtig!)
   const generatedLayers = [
     // Background (Wasser)
-    ...buildWaterAndDepthLayers(classified.depth, layerIds, colors),
+    ...buildWaterAndDepthLayers(classified.depth, colors),
 
     // Land under everything
     ...buildLandLayers(
@@ -503,6 +506,25 @@ export function buildNauticalVectorStyle(
  */
 function sanitizeId(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9_-]/g, '_')
+}
+
+function getDefaultPoiIconId(layerId: string): string {
+  const normalized = layerId.toLowerCase()
+  if (normalized.includes('light')) {
+    return 'light_major'
+  }
+  return 'circle'
+}
+
+function getDefaultHazardIconId(layerId: string): string {
+  const normalized = layerId.toLowerCase()
+  if (normalized.includes('wreck')) {
+    return 'wreck'
+  }
+  if (normalized.includes('rock') || normalized.includes('obstruction')) {
+    return 'obstruction'
+  }
+  return 'cross'
 }
 
 /**

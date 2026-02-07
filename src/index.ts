@@ -281,7 +281,9 @@ module.exports = (app: ChartProviderApp): Plugin => {
     )
 
     // Do not register routes if plugin has been started once already
-    pluginStarted === false && registerRoutes()
+    if (!pluginStarted) {
+      registerRoutes()
+    }
     pluginStarted = true
 
     // v2 routes - register as Resource Provider, this needs to be always on startup
@@ -523,7 +525,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
         }
       })
     } catch (error) {
-      app.debug('Failed Provider Registration!')
+      app.debug('Failed Provider Registration!', error)
     }
   }
 
