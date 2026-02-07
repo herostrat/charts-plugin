@@ -74,9 +74,31 @@ A proxy for online charts can be created using the "Proxy through SignalK server
 ### Supported chart formats
 
 - [MBTiles](https://github.com/mapbox/mbtiles-spec) files
+- [PMTiles](https://protomaps.com/docs/pmtiles) files
 - Directory with cached [TMS](https://wiki.osgeo.org/wiki/Tile_Map_Service_Specification) tiles and `tilemapresource.xml`
 - Directory with XYZ tiles and `metadata.json`
 - Online [TMS](https://wiki.osgeo.org/wiki/Tile_Map_Service_Specification)
+
+### Vector sprites demo
+
+This repo includes placeholder SVG icons under `src/assets/charts/icons` and a sprite build script.
+To generate the sprite sheets used by the vector Mapbox style:
+
+```bash
+npm run build:sprites
+```
+
+Generated files:
+- `plugin/public/styles/sprites/s52.png`
+- `plugin/public/styles/sprites/s52@2x.png`
+- `plugin/public/styles/sprites/s52.json`
+- `plugin/public/styles/sprites/s52@2x.json`
+
+The vector style endpoint uses this sprite base URL:
+
+```
+/@signalk/charts-plugin/styles/sprites/s52
+```
 
 Publicly available MBTiles charts can be found from:
 - [NOAA Nautical charts](https://distribution.charts.noaa.gov/ncds/index.html)
@@ -112,9 +134,24 @@ For local chart files located in the Chart Path(s) defined in the plugin configu
 /signalk/chart-tiles/${identifier}/${z}/${x}/${y}
 ```
 
+#### Vector chart style (v2 only)
+
+For vector charts, the plugin serves a Mapbox style JSON endpoint.
+
+```bash
+GET /signalk/chart-style/${identifier}?theme=day|night
+```
+
+Notes:
+- `theme` is optional and defaults to `day`.
+- Experimental: `theme` is reserved and currently ignored (server always returns day).
+- This endpoint is not yet in the Signal K spec; we plan to propose it.
+
 License
 -------
 Copyright 2018 Mikko Vesikkala
+
+Third-party notices for bundled fixtures are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
