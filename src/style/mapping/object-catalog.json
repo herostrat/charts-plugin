@@ -397,7 +397,7 @@
     },
     {
       "id": "BUISGL",
-      "aliases": ["BUISGL", "building_single", "buisgl"],
+      "aliases": ["BUISGL", "building_single", "buisgl", "business"],
       "symbolId": "s52_buisgl",
       "sprite": "circle",
       "prettyName": "Building Single",
@@ -674,7 +674,7 @@
     },
     {
       "id": "CTSARE",
-      "aliases": ["CTSARE", "cargo_transshipment_area", "ctsare"],
+      "aliases": ["CTSARE", "cargo_transshipment_area", "ctsare", "transhipment-dock"],
       "symbolId": "s52_ctsare",
       "sprite": "circle",
       "prettyName": "CTSARE",
@@ -844,7 +844,7 @@
     },
     {
       "id": "DOCARE",
-      "aliases": ["DOCARE", "docare", "dock_area"],
+      "aliases": ["DOCARE", "docare", "dock_area", "dock"],
       "symbolId": "s52_docare",
       "sprite": "circle",
       "prettyName": "DOCARE",
@@ -995,7 +995,7 @@
     },
     {
       "id": "FERYRT",
-      "aliases": ["ferry_route", "FERYRT", "feryrt"],
+      "aliases": ["ferry_route", "FERYRT", "feryrt", "ferry"],
       "symbolId": "s52_feryrt",
       "sprite": "circle",
       "prettyName": "Ferry Route",
@@ -1193,7 +1193,7 @@
     },
     {
       "id": "HRBARE",
-      "aliases": ["HRBARE", "harbour_area_administrative", "hrbare"],
+      "aliases": ["HRBARE", "harbour_area_administrative", "hrbare", "turning-basin", "turning_basin"],
       "symbolId": "s52_hrbare",
       "sprite": "circle",
       "prettyName": "Harbour Area",
@@ -1211,7 +1211,7 @@
     },
     {
       "id": "HRBFAC",
-      "aliases": ["HRBFAC", "harbour_facility", "hrbfac"],
+      "aliases": ["HRBFAC", "harbour_facility", "hrbfac", "fuel"],
       "symbolId": "s52_hrbfac",
       "sprite": "circle",
       "prettyName": "Harbour Facility",
@@ -1423,7 +1423,7 @@
     },
     {
       "id": "LNDMRK",
-      "aliases": ["landmark", "LNDMRK", "lndmrk"],
+      "aliases": ["landmark", "LNDMRK", "lndmrk", "navigation-structure"],
       "symbolId": "s52_lndmrk",
       "sprite": "circle",
       "prettyName": "Landmark",
@@ -1496,7 +1496,7 @@
     },
     {
       "id": "LOKBSN",
-      "aliases": ["LOKBSN", "lock_basin", "lokbsn"],
+      "aliases": ["LOKBSN", "lock_basin", "lokbsn", "lock"],
       "symbolId": "s52_lokbsn",
       "sprite": "circle",
       "prettyName": "Lock Basin",
@@ -1628,7 +1628,7 @@
     },
     {
       "id": "OBSTRN",
-      "aliases": ["obstruction", "OBSTRN", "obstrn"],
+      "aliases": ["obstruction", "OBSTRN", "obstrn", "hazard"],
       "symbolId": "s52_obstrn",
       "sprite": "cross",
       "prettyName": "Obstruction",
@@ -2033,7 +2033,7 @@
     },
     {
       "id": "RDOCAL",
-      "aliases": ["RDOCAL", "radio_calling_in_point", "rdocal"],
+      "aliases": ["RDOCAL", "radio_calling_in_point", "rdocal", "radio-call-point"],
       "symbolId": "s52_rdocal",
       "sprite": "circle",
       "prettyName": "RDOCAL",
@@ -2237,7 +2237,7 @@
     },
     {
       "id": "SEAARE",
-      "aliases": ["SEAARE", "sea_area_named_water_area", "seaare"],
+      "aliases": ["SEAARE", "sea_area_named_water_area", "seaare", "inlet"],
       "symbolId": "s52_seaare",
       "sprite": "circle",
       "prettyName": "Sea Area",
@@ -2293,7 +2293,7 @@
     },
     {
       "id": "SISTAW",
-      "aliases": ["SISTAW", "signal_station_warning", "sistaw"],
+      "aliases": ["SISTAW", "signal_station_warning", "sistaw", "notice-to-mariners"],
       "symbolId": "s52_sistaw",
       "sprite": "circle",
       "prettyName": "SISTAW",
@@ -2368,7 +2368,7 @@
     },
     {
       "id": "SMCFAC",
-      "aliases": ["SMCFAC", "small_craft_facility", "smcfac"],
+      "aliases": ["SMCFAC", "small_craft_facility", "smcfac", "boatramp", "marina"],
       "symbolId": "s52_smcfac",
       "sprite": "circle",
       "prettyName": "SMCFAC",
@@ -2535,7 +2535,7 @@
     },
     {
       "id": "TIDEWY",
-      "aliases": ["TIDEWY", "tideway", "tidewy"],
+      "aliases": ["TIDEWY", "tideway", "tidewy", "waterway-guage", "waterway_gauge"],
       "symbolId": "s52_tidewy",
       "sprite": "circle",
       "prettyName": "TIDEWY",
@@ -3138,12 +3138,10 @@
     "separation_zone",
     "signal_station",
     "tank",
-    "turning_basin",
     "two-way_route",
     "vehicle_transfer",
     "virtual_aton",
     "wall",
-    "waterway_gauge",
     "weed"
   ]
 }

@@ -9,11 +9,7 @@
  */
 
 import type { ChartProvider } from '../types'
-import {
-  EXTENDED_CATALOG_EXAMPLES,
-  classifyLayers,
-  S52ObjectDefinition
-} from './nautical-catalog'
+import { classifyLayers, S52ObjectDefinition } from './nautical-catalog'
 
 // ============================================================================
 // BASE STYLES (S-52 FARB-PALETTE)
@@ -453,7 +449,7 @@ function buildHazardLayers(
  */
 export function buildNauticalVectorStyle(
   provider: ChartProvider,
-  catalog: S52ObjectDefinition[] = EXTENDED_CATALOG_EXAMPLES,
+  catalog: S52ObjectDefinition[],
   theme: ThemeId = 'day'
 ) {
   const colors = getThemeColors(theme)
@@ -520,22 +516,103 @@ function sanitizeId(value: string): string {
 }
 
 function getDefaultPoiIconId(layerId: string): string {
-  const normalized = layerId.toLowerCase()
+  const normalized = normalizeIconKey(layerId)
   if (normalized.includes('light')) {
     return 'light_major'
+  }
+  const freeboardIcon = getFreeboardPoiIconId(normalized)
+  if (freeboardIcon) {
+    return freeboardIcon
   }
   return 'circle'
 }
 
 function getDefaultHazardIconId(layerId: string): string {
-  const normalized = layerId.toLowerCase()
+  const normalized = normalizeIconKey(layerId)
   if (normalized.includes('wreck')) {
     return 'wreck'
   }
   if (normalized.includes('rock') || normalized.includes('obstruction')) {
     return 'obstruction'
   }
+  if (normalized.includes('hazard')) {
+    return 'obstrn'
+  }
   return 'cross'
+}
+
+const FREEBOARD_POI_ICON_MAP = new Map<string, string>([
+  ['anchorage', 'achare'],
+  ['basestation', 'basestation'],
+  ['boatramp', 'smcfac'],
+  ['business', 'buisgl'],
+  ['dam', 'damcon'],
+  ['dock', 'docare'],
+  ['ferry', 'feryrt'],
+  ['fuel', 'hrbfac'],
+  ['hazard', 'obstrn'],
+  ['inlet', 'seaare'],
+  ['lock', 'lokbsn'],
+  ['marina', 'smcfac'],
+  ['navigation-structure', 'lndmrk'],
+  ['notice-to-mariners', 'sistaw'],
+  ['radio-call-point', 'rdocal'],
+  ['transhipment-dock', 'ctsare'],
+  ['turning-basin', 'hrbare'],
+  ['waterway-guage', 'tidewy']
+])
+
+const FREEBOARD_ATON_VARIANTS: Array<{ pattern: RegExp; icon: string }> = [
+  { pattern: /virtual.*north|north.*virtual/, icon: 'virtual-north' },
+  { pattern: /virtual.*east|east.*virtual/, icon: 'virtual-east' },
+  { pattern: /virtual.*south|south.*virtual/, icon: 'virtual-south' },
+  { pattern: /virtual.*west|west.*virtual/, icon: 'virtual-west' },
+  { pattern: /virtual.*danger|danger.*virtual/, icon: 'virtual-danger' },
+  { pattern: /virtual.*safe|safe.*virtual/, icon: 'virtual-safe' },
+  { pattern: /virtual.*special|special.*virtual/, icon: 'virtual-special' },
+  { pattern: /virtual.*port|port.*virtual/, icon: 'virtual-port' },
+  { pattern: /virtual.*starboard|starboard.*virtual/, icon: 'virtual-starboard' },
+  { pattern: /real.*north|north.*real/, icon: 'real-north' },
+  { pattern: /real.*east|east.*real/, icon: 'real-east' },
+  { pattern: /real.*south|south.*real/, icon: 'real-south' },
+  { pattern: /real.*west|west.*real/, icon: 'real-west' },
+  { pattern: /real.*danger|danger.*real/, icon: 'real-danger' },
+  { pattern: /real.*safe|safe.*real/, icon: 'real-safe' },
+  { pattern: /real.*special|special.*real/, icon: 'real-special' },
+  { pattern: /real.*port|port.*real/, icon: 'real-port' },
+  { pattern: /real.*starboard|starboard.*real/, icon: 'real-starboard' }
+]
+
+function getFreeboardPoiIconId(normalizedLayerId: string): string | null {
+  for (const [key, icon] of FREEBOARD_POI_ICON_MAP.entries()) {
+    if (normalizedLayerId === key || normalizedLayerId.includes(key)) {
+      return icon
+    }
+  }
+
+  for (const variant of FREEBOARD_ATON_VARIANTS) {
+    if (variant.pattern.test(normalizedLayerId)) {
+      return variant.icon
+    }
+  }
+
+  if (normalizedLayerId.includes('virtual') && normalizedLayerId.includes('aton')) {
+    return 'virtual-aton'
+  }
+
+  if (
+    normalizedLayerId.includes('aton') ||
+    normalizedLayerId.includes('beacon') ||
+    normalizedLayerId.includes('buoy')
+  ) {
+    return 'real-aton'
+  }
+
+  return null
+}
+
+function normalizeIconKey(value: string): string {
+  return value.toLowerCase().replace(/_/g, '-')
 }
 
 /**

@@ -42,18 +42,26 @@ const iconSvgs = iconNames.map((name) => ({
 
 const renderIcon = (svgPath, size) => {
   const svg = fs.readFileSync(svgPath, 'utf8')
-  const resvg = new Resvg(svg, {
-    fitTo: {
-      mode: 'width',
-      value: size
-    }
-  })
-  const rendered = resvg.render()
-  const pngData = rendered.asPng()
-  const decoded = PNG.sync.read(pngData)
+
+  const renderWithFit = (fitTo) => {
+    const resvg = new Resvg(svg, { fitTo })
+    const rendered = resvg.render()
+    return PNG.sync.read(rendered.asPng())
+  }
+
+  let decoded = renderWithFit({ mode: 'width', value: size })
+  if (decoded.width > size || decoded.height > size) {
+    decoded = renderWithFit({ mode: 'height', value: size })
+  }
+  if (decoded.width > size || decoded.height > size) {
+    const scale = size / Math.max(decoded.width, decoded.height)
+    decoded = renderWithFit({ mode: 'zoom', value: scale })
+  }
+
   if (decoded.width === size && decoded.height === size) {
     return decoded
   }
+
   const padded = new PNG({ width: size, height: size })
   const offsetX = Math.max(0, Math.floor((size - decoded.width) / 2))
   const offsetY = Math.max(0, Math.floor((size - decoded.height) / 2))

@@ -1,0 +1,53 @@
+Third-Party Notices
+====================
+
+This project includes third-party files. The following notices are provided
+for attribution and compliance.
+
+PMTiles Test Fixtures
+---------------------
+Source: https://github.com/protomaps/PMTiles
+Files:
+- test/charts-pmtiles/test_fixture_1.pmtiles
+- test/charts-pmtiles/empty.pmtiles
+- test/charts-pmtiles/invalid.pmtiles
+Note: reference URL is also listed in test/charts-pmtiles/source.md.
+License: BSD-3-Clause
+
+The below license (BSD-3) applies to the reference implementations in this
+repository.
+
+The PMTiles specification itself is public domain, or CC0 where
+applicable.
+
+Sample tilesets available in this repository are subject to their own
+license terms.
+
+---
+
+Copyright 2021 Protomaps LLC
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+   may be used to endorse or promote products derived from this software without
+   specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
