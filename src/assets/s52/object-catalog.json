@@ -44,7 +44,13 @@
     },
     {
       "id": "ADMARE",
-      "aliases": ["ADMARE", "admare", "administration_area_named"],
+      "aliases": [
+        "ADMARE",
+        "admare",
+        "administration_area_named",
+        "administrative",
+        "admin"
+      ],
       "symbolId": "s52_admare",
       "sprite": "circle",
       "prettyName": "Administration Area",
@@ -360,7 +366,7 @@
     },
     {
       "id": "BRIDGE",
-      "aliases": ["bridge", "BRIDGE"],
+      "aliases": ["bridge", "bridges", "BRIDGE"],
       "symbolId": "s52_bridge",
       "sprite": "circle",
       "prettyName": "Bridge",
@@ -377,7 +383,7 @@
     },
     {
       "id": "BUAARE",
-      "aliases": ["BUAARE", "buaare", "built_up_area"],
+      "aliases": ["BUAARE", "buaare", "built_up_area", "buildings"],
       "symbolId": "s52_buaare",
       "sprite": "circle",
       "prettyName": "Built-Up Area",
@@ -541,7 +547,7 @@
     },
     {
       "id": "COALNE",
-      "aliases": ["COALNE", "coalne", "coastline"],
+      "aliases": ["COALNE", "coalne", "coastline", "boundary", "boundaries"],
       "symbolId": "s52_coalne",
       "sprite": "circle",
       "prettyName": "Coastline",
@@ -731,7 +737,7 @@
     },
     {
       "id": "DAMCON",
-      "aliases": ["DAMCON", "dam", "damcon"],
+      "aliases": ["DAMCON", "dam", "dam_polygons", "damcon"],
       "symbolId": "s52_damcon",
       "sprite": "circle",
       "prettyName": "Dam",
@@ -944,7 +950,7 @@
     },
     {
       "id": "DYKCON",
-      "aliases": ["DYKCON", "dykcon", "dyke"],
+      "aliases": ["DYKCON", "dam_lines", "dykcon", "dyke"],
       "symbolId": "s52_dykcon",
       "sprite": "circle",
       "prettyName": "DYKCON",
@@ -998,7 +1004,7 @@
     },
     {
       "id": "FERYRT",
-      "aliases": ["ferry_route", "FERYRT", "feryrt", "ferry"],
+      "aliases": ["ferry_route", "FERYRT", "feryrt", "ferries", "ferry"],
       "symbolId": "s52_feryrt",
       "sprite": "circle",
       "prettyName": "Ferry Route",
@@ -1394,7 +1400,15 @@
     },
     {
       "id": "LNDARE",
-      "aliases": ["LNDARE", "land_area", "lndare"],
+      "aliases": [
+        "LNDARE",
+        "land_area",
+        "lndare",
+        "earth",
+        "land",
+        "landuse",
+        "landcover"
+      ],
       "symbolId": "s52_lndare",
       "sprite": "circle",
       "prettyName": "Land Area",
@@ -1430,7 +1444,25 @@
     },
     {
       "id": "LNDMRK",
-      "aliases": ["landmark", "LNDMRK", "lndmrk", "navigation-structure"],
+      "aliases": [
+        "addresses",
+        "boundary_labels",
+        "landmark",
+        "LNDMRK",
+        "lndmrk",
+        "navigation-structure",
+        "place",
+        "place_labels",
+        "places",
+        "poi",
+        "pois",
+        "sites",
+        "street_labels",
+        "street_labels_points",
+        "streets_polygons_labels",
+        "water_lines_labels",
+        "water_polygons_labels"
+      ],
       "symbolId": "s52_lndmrk",
       "sprite": "circle",
       "prettyName": "Landmark",
@@ -1810,7 +1842,7 @@
     },
     {
       "id": "PONTON",
-      "aliases": ["PONTON", "ponton", "pontoon"],
+      "aliases": ["PONTON", "pier_lines", "pier_polygons", "ponton", "pontoon"],
       "symbolId": "s52_ponton",
       "sprite": "circle",
       "prettyName": "Pontoon",
@@ -1959,7 +1991,14 @@
     },
     {
       "id": "RAILWY",
-      "aliases": ["RAILWY", "railway", "railwy"],
+      "aliases": [
+        "RAILWY",
+        "aerialways",
+        "public_transport",
+        "railway",
+        "railwy",
+        "transit"
+      ],
       "symbolId": "s52_railwy",
       "sprite": "circle",
       "prettyName": "RAILWY",
@@ -2141,7 +2180,7 @@
     },
     {
       "id": "RIVERS",
-      "aliases": ["RIVERS", "river", "rivers"],
+      "aliases": ["RIVERS", "river", "rivers", "water_lines"],
       "symbolId": "s52_rivers",
       "sprite": "circle",
       "prettyName": "RIVERS",
@@ -2159,16 +2198,16 @@
     },
     {
       "id": "ROADWY",
-      "aliases": ["ROADWY", "road", "roadwy"],
+      "aliases": ["ROADWY", "road", "roadwy", "roads", "street_polygons", "streets"],
       "symbolId": "s52_roadwy",
       "sprite": "circle",
       "prettyName": "ROADWY",
-      "featureType": "poi",
+      "featureType": "line",
       "s52ColorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
+        "layerType": "line",
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "roadwy"
@@ -2249,18 +2288,26 @@
     },
     {
       "id": "SEAARE",
-      "aliases": ["SEAARE", "sea_area_named_water_area", "seaare", "inlet"],
+      "aliases": [
+        "SEAARE",
+        "ocean",
+        "sea_area_named_water_area",
+        "seaare",
+        "inlet",
+        "water",
+        "water_polygons"
+      ],
       "symbolId": "s52_seaare",
       "sprite": "circle",
       "prettyName": "Sea Area",
-      "featureType": "poi",
+      "featureType": "area",
       "s52ColorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
       "mapboxRenderingHints": {
-        "layerType": "poi",
-        "minZoom": 10,
+        "layerType": "area",
+        "minZoom": 0,
         "maxZoom": 24,
         "iconId": "seaare"
       }

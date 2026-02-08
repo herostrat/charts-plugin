@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { Resvg } from '@resvg/resvg-js'
 import { PNG } from 'pngjs'
+import crypto from 'crypto'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,8 +17,10 @@ const outputDir = path.resolve(
 )
 const outputBase = path.join(outputDir, 's52')
 const iconDir = path.resolve(repoRoot, 'scripts/assets/charts/icons')
+const cacheDir = path.resolve(repoRoot, '.cache', 'runtime-assets', 'sprites')
 
 fs.mkdirSync(outputDir, { recursive: true })
+fs.mkdirSync(cacheDir, { recursive: true })
 
 type SpriteEntry = {
   x: number
@@ -77,6 +80,46 @@ const iconSvgs = iconNames.map((name) => ({
   path: path.join(iconDir, `${name}.svg`)
 }))
 
+const hashFile = (filePath: string) => {
+  const content = fs.readFileSync(filePath)
+  return crypto.createHash('sha256').update(content).digest('hex')
+}
+
+const computeSpriteHash = () => {
+  const hash = crypto.createHash('sha256')
+  hash.update(`sprite-size:32,64;ratio:1,2;count:${iconSvgs.length}`)
+  iconSvgs.forEach((icon) => {
+    hash.update(icon.name)
+    hash.update(hashFile(icon.path))
+  })
+  return hash.digest('hex')
+}
+
+const cachePathsFor = (suffix: string) => {
+  return {
+    png: path.join(cacheDir, `s52${suffix}.png`),
+    json: path.join(cacheDir, `s52${suffix}.json`)
+  }
+}
+
+const outputPathsFor = (suffix: string) => {
+  return {
+    png: `${outputBase}${suffix}.png`,
+    json: `${outputBase}${suffix}.json`
+  }
+}
+
+const copyCachedSprites = (suffix: string) => {
+  const cached = cachePathsFor(suffix)
+  const output = outputPathsFor(suffix)
+  if (fs.existsSync(cached.png) && fs.existsSync(cached.json)) {
+    fs.copyFileSync(cached.png, output.png)
+    fs.copyFileSync(cached.json, output.json)
+    return true
+  }
+  return false
+}
+
 const bitblt = (PNG as unknown as { bitblt: PngBitblt }).bitblt
 
 const renderIcon = (svgPath: string, size: number) => {
@@ -109,8 +152,7 @@ const renderIcon = (svgPath: string, size: number) => {
 }
 
 const buildSprite = (size: number, suffix: string, pixelRatio: number) => {
-  const outputPng = `${outputBase}${suffix}.png`
-  const outputJson = `${outputBase}${suffix}.json`
+  const output = outputPathsFor(suffix)
 
   const spriteWidth = size * iconSvgs.length
   const sprite = new PNG({ width: spriteWidth, height: size })
@@ -129,9 +171,33 @@ const buildSprite = (size: number, suffix: string, pixelRatio: number) => {
     )
   })
 
-  fs.writeFileSync(outputPng, PNG.sync.write(sprite))
-  writeSpriteJson(outputJson, iconNames, size, pixelRatio)
+  fs.writeFileSync(output.png, PNG.sync.write(sprite))
+  writeSpriteJson(output.json, iconNames, size, pixelRatio)
+}
+
+const persistCache = (suffix: string) => {
+  const cached = cachePathsFor(suffix)
+  const output = outputPathsFor(suffix)
+  fs.copyFileSync(output.png, cached.png)
+  fs.copyFileSync(output.json, cached.json)
+}
+
+const hash = computeSpriteHash()
+const hashFilePath = path.join(cacheDir, 's52.hash')
+const prevHash = fs.existsSync(hashFilePath)
+  ? fs.readFileSync(hashFilePath, 'utf8').trim()
+  : ''
+
+if (hash === prevHash) {
+  const copied = copyCachedSprites('') && copyCachedSprites('@2x')
+  if (copied) {
+    process.stdout.write('Sprites unchanged; used cached outputs.\n')
+    process.exit(0)
+  }
 }
 
 buildSprite(32, '', 1)
 buildSprite(64, '@2x', 2)
+persistCache('')
+persistCache('@2x')
+fs.writeFileSync(hashFilePath, hash)
