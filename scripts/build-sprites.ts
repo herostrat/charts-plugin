@@ -10,13 +10,9 @@ const __dirname = path.dirname(__filename)
 
 const repoRoot = path.resolve(__dirname, '..')
 const pluginOutDir = process.env.PLUGIN_OUT_DIR || 'plugin'
-const outputDir = path.resolve(
-  repoRoot,
-  pluginOutDir,
-  'public/styles/sprites'
-)
-const outputBase = path.join(outputDir, 's52')
-const iconDir = path.resolve(repoRoot, 'scripts/assets/charts/icons')
+const outputDir = path.resolve(repoRoot, pluginOutDir, 'public/styles/sprites')
+const outputBase = path.join(outputDir, 'nautical')
+const iconDir = path.resolve(repoRoot, 'assets/sprites/icons')
 const cacheDir = path.resolve(repoRoot, '.cache', 'runtime-assets', 'sprites')
 
 fs.mkdirSync(outputDir, { recursive: true })
@@ -97,8 +93,8 @@ const computeSpriteHash = () => {
 
 const cachePathsFor = (suffix: string) => {
   return {
-    png: path.join(cacheDir, `s52${suffix}.png`),
-    json: path.join(cacheDir, `s52${suffix}.json`)
+    png: path.join(cacheDir, `nautical${suffix}.png`),
+    json: path.join(cacheDir, `nautical${suffix}.json`)
   }
 }
 
@@ -183,7 +179,7 @@ const persistCache = (suffix: string) => {
 }
 
 const hash = computeSpriteHash()
-const hashFilePath = path.join(cacheDir, 's52.hash')
+const hashFilePath = path.join(cacheDir, 'nautical.hash')
 const prevHash = fs.existsSync(hashFilePath)
   ? fs.readFileSync(hashFilePath, 'utf8').trim()
   : ''

@@ -29,8 +29,8 @@ describe('registerStyleRoutes', () => {
     registerStyleRoutes({
       app,
       getProviders: () => providers,
-      getCatalogChoice: () => 's52',
-      defaultCatalogId: 's52'
+      getCatalogChoice: () => 'nautical',
+      defaultCatalogId: 'nautical'
     })
 
     const baseUrl = `http://localhost:${server.address().port}`
@@ -60,7 +60,7 @@ describe('registerStyleRoutes', () => {
       app,
       getProviders: () => providers,
       getCatalogChoice: () => 'none',
-      defaultCatalogId: 's52'
+      defaultCatalogId: 'nautical'
     })
 
     const baseUrl = `http://localhost:${server.address().port}`

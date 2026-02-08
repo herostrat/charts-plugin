@@ -8,7 +8,7 @@
       "sprite": "circle",
       "prettyName": "Anchorage Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -19,7 +19,9 @@
         "maxZoom": 24,
         "description": "anchorage area rendered as a filled polygon with an optional anchor symbol",
         "iconId": "achare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ACHBRT",
@@ -28,7 +30,7 @@
       "sprite": "circle",
       "prettyName": "Anchor Berth",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "black": "#000000",
         "magenta": "#D44DE7"
@@ -40,7 +42,9 @@
         "labelField": "name",
         "description": "designated anchor berth for a single vessel",
         "iconId": "achbrt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ADMARE",
@@ -55,7 +59,7 @@
       "sprite": "circle",
       "prettyName": "Administration Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -64,7 +68,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "admare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "AIRARE",
@@ -73,7 +79,7 @@
       "sprite": "circle",
       "prettyName": "Airfield Area",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -82,21 +88,27 @@
         "maxZoom": 24,
         "description": "symbol for airport as a point",
         "iconId": "airare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ARCSLN",
       "aliases": [],
       "symbolId": "s52_arcsln",
       "sprite": "circle",
-      "prettyName": "Archipelagic Sea Lane"
+      "prettyName": "Archipelagic Sea Lane",
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ASLXIS",
       "aliases": [],
       "symbolId": "s52_aslxis",
       "sprite": "circle",
-      "prettyName": "Archipelagic Sea Lane Axis"
+      "prettyName": "Archipelagic Sea Lane Axis",
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BCNCAR",
@@ -105,7 +117,7 @@
       "sprite": "circle",
       "prettyName": "Beacon Cardinal",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FFF559",
         "black": "#000000",
         "yellow": "#FFF559"
@@ -118,7 +130,9 @@
         "priority": 60,
         "maxZoom": 24,
         "description": "cardinal beacon, north, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BCNISD",
@@ -127,7 +141,7 @@
       "sprite": "circle",
       "prettyName": "Beacon Isolated Danger",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FF5E7D",
         "black": "#000000",
         "red": "#FF5E7D"
@@ -140,7 +154,9 @@
         "priority": 70,
         "maxZoom": 24,
         "description": "isolated danger beacon, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BCNLAT",
@@ -149,7 +165,7 @@
       "sprite": "circle",
       "prettyName": "Beacon Lateral",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FF5E7D",
         "black": "#000000",
         "red": "#FF5E7D"
@@ -162,7 +178,9 @@
         "priority": 60,
         "maxZoom": 24,
         "description": "major lateral beacon, red, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BCNSAW",
@@ -171,7 +189,7 @@
       "sprite": "circle",
       "prettyName": "Beacon Safe Water",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF",
         "black": "#000000",
         "blue": "#74CDFF"
@@ -184,7 +202,9 @@
         "priority": 55,
         "maxZoom": 24,
         "description": "major safe water beacon, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BCNSPP",
@@ -198,7 +218,7 @@
       "sprite": "circle",
       "prettyName": "Beacon Special Purpose",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FFF559",
         "black": "#000000",
         "yellow": "#FFF559"
@@ -210,7 +230,9 @@
         "labelField": "name",
         "description": "minor special purpose beacon, simplified",
         "iconId": "bcnspp"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BERTHS",
@@ -219,7 +241,7 @@
       "sprite": "circle",
       "prettyName": "Berths",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "black": "#000000",
         "magenta": "#D44DE7"
@@ -231,7 +253,9 @@
         "labelField": "name",
         "description": "berth number symbol",
         "iconId": "berths"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BOYCAR",
@@ -240,7 +264,7 @@
       "sprite": "circle",
       "prettyName": "Buoy Cardinal",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FFF559",
         "black": "#000000",
         "yellow": "#FFF559"
@@ -253,7 +277,9 @@
         "priority": 55,
         "maxZoom": 24,
         "description": "cardinal buoy, north, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BOYINB",
@@ -262,7 +288,7 @@
       "sprite": "circle",
       "prettyName": "Buoy Installation",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -274,7 +300,9 @@
         "priority": 45,
         "maxZoom": 24,
         "description": "installation buoy and mooring buoy, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BOYISD",
@@ -283,7 +311,7 @@
       "sprite": "circle",
       "prettyName": "Buoy Isolated Danger",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FF5E7D",
         "black": "#000000",
         "red": "#FF5E7D"
@@ -296,7 +324,9 @@
         "priority": 70,
         "maxZoom": 24,
         "description": "isolated danger buoy, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BOYLAT",
@@ -305,7 +335,7 @@
       "sprite": "circle",
       "prettyName": "Buoy Lateral",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FF5E7D",
         "black": "#000000",
         "red": "#FF5E7D"
@@ -318,7 +348,9 @@
         "priority": 50,
         "maxZoom": 24,
         "description": "conical lateral buoy, red, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BOYSAW",
@@ -327,7 +359,7 @@
       "sprite": "circle",
       "prettyName": "Buoy Safe Water",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FF5E7D",
         "black": "#000000",
         "red": "#FF5E7D"
@@ -340,7 +372,9 @@
         "priority": 55,
         "maxZoom": 24,
         "description": "safe water buoy, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BOYSPP",
@@ -349,7 +383,7 @@
       "sprite": "circle",
       "prettyName": "Buoy Special Purpose",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#FFF559",
         "black": "#000000",
         "yellow": "#FFF559"
@@ -362,16 +396,18 @@
         "priority": 45,
         "maxZoom": 24,
         "description": "special purpose buoy, simplified"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BRIDGE",
-      "aliases": ["bridge", "bridges", "BRIDGE"],
+      "aliases": ["BRIDGE"],
       "symbolId": "s52_bridge",
       "sprite": "circle",
       "prettyName": "Bridge",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -379,7 +415,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "bridge"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BUAARE",
@@ -388,7 +426,7 @@
       "sprite": "circle",
       "prettyName": "Built-Up Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322",
         "black": "#000000"
       },
@@ -397,7 +435,9 @@
         "minZoom": 0,
         "maxZoom": 24,
         "description": "built-up area"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BUISGL",
@@ -406,7 +446,7 @@
       "sprite": "circle",
       "prettyName": "Building Single",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#BCA444"
       },
       "mapboxRenderingHints": {
@@ -415,7 +455,9 @@
         "maxZoom": 24,
         "description": "single building",
         "iconId": "buisgl"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CANALS",
@@ -424,7 +466,7 @@
       "sprite": "circle",
       "prettyName": "Canals",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -433,7 +475,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "canals"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CAUSWY",
@@ -442,7 +486,7 @@
       "sprite": "circle",
       "prettyName": "Causeway",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -450,7 +494,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "causwy"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CBLARE",
@@ -459,7 +505,7 @@
       "sprite": "circle",
       "prettyName": "Cable Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -469,7 +515,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "cblare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CBLOHD",
@@ -478,7 +526,7 @@
       "sprite": "circle",
       "prettyName": "Cable Overhead",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -487,7 +535,9 @@
         "maxZoom": 24,
         "description": "S-52 line style DASH",
         "iconId": "cblohd"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CBLSUB",
@@ -496,7 +546,7 @@
       "sprite": "circle",
       "prettyName": "Cable Submarine",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -506,7 +556,9 @@
         "maxZoom": 24,
         "description": "submarine cable",
         "iconId": "cblsub"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CGUSTA",
@@ -515,7 +567,7 @@
       "sprite": "circle",
       "prettyName": "Coast Guard Station",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#DEFFFF",
         "magenta": "#E0BBFF",
         "white": "#DEFFFF"
@@ -526,7 +578,9 @@
         "maxZoom": 24,
         "description": "coastguard station",
         "iconId": "cgusta"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CHKPNT",
@@ -535,7 +589,7 @@
       "sprite": "circle",
       "prettyName": "Checkpoint",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -543,16 +597,18 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "chkpnt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "COALNE",
-      "aliases": ["COALNE", "coalne", "coastline", "boundary", "boundaries"],
+      "aliases": ["COALNE", "coalne", "coastline"],
       "symbolId": "s52_coalne",
       "sprite": "circle",
       "prettyName": "Coastline",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -562,7 +618,9 @@
         "maxZoom": 24,
         "description": "S-52 line portrayal",
         "iconId": "coalne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CONVYR",
@@ -571,7 +629,7 @@
       "sprite": "circle",
       "prettyName": "Conveyor",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7",
         "black": "#000000"
       },
@@ -581,7 +639,9 @@
         "maxZoom": 24,
         "labelField": "verclr",
         "iconId": "convyr"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CONZNE",
@@ -590,7 +650,7 @@
       "sprite": "circle",
       "prettyName": "Contiguous Zone",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -599,7 +659,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "conzne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "COSARE",
@@ -608,7 +670,7 @@
       "sprite": "circle",
       "prettyName": "COSARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -617,7 +679,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "cosare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CRANES",
@@ -626,7 +690,7 @@
       "sprite": "circle",
       "prettyName": "CRANES",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -635,16 +699,18 @@
         "maxZoom": 24,
         "description": "cranes",
         "iconId": "cranes"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CTNARE",
-      "aliases": ["CTNARE", "caution_area", "ctnare"],
+      "aliases": ["CTNARE", "ctnare"],
       "symbolId": "s52_ctnare",
       "sprite": "circle",
       "prettyName": "Caution Area",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -654,7 +720,9 @@
         "maxZoom": 24,
         "description": "HO caution note",
         "iconId": "ctnare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CTRPNT",
@@ -663,7 +731,7 @@
       "sprite": "circle",
       "prettyName": "Control Point",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -674,21 +742,18 @@
         "labelField": "name",
         "description": "position of an elevation or control point",
         "iconId": "ctrpnt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CTSARE",
-      "aliases": [
-        "CTSARE",
-        "cargo_transshipment_area",
-        "ctsare",
-        "transhipment-dock"
-      ],
+      "aliases": ["CTSARE", "ctsare", "transhipment-dock"],
       "symbolId": "s52_ctsare",
       "sprite": "circle",
       "prettyName": "CTSARE",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -698,7 +763,9 @@
         "maxZoom": 24,
         "description": "HO information note",
         "iconId": "ctsare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CURENT",
@@ -707,7 +774,7 @@
       "sprite": "circle",
       "prettyName": "CURENT",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -715,7 +782,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "curent"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CUSZNE",
@@ -724,7 +793,7 @@
       "sprite": "circle",
       "prettyName": "CUSZNE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -733,7 +802,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "cuszne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DAMCON",
@@ -742,7 +813,7 @@
       "sprite": "circle",
       "prettyName": "Dam",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -750,7 +821,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "damcon"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DAYMAR",
@@ -759,7 +832,7 @@
       "sprite": "circle",
       "prettyName": "Daymark",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#C2EFFF",
         "black": "#000000",
         "magenta": "#D44DE7",
@@ -772,16 +845,18 @@
         "labelField": "name",
         "description": "square or rectangular daymark, simplified",
         "iconId": "daymar"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DEPARE",
-      "aliases": ["DEPARE", "depare", "depth_area"],
+      "aliases": ["DEPARE", "depare"],
       "symbolId": "s52_depare",
       "sprite": "circle",
       "prettyName": "Depth Area",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF"
       },
       "mapboxRenderingHints": {
@@ -791,16 +866,18 @@
         "maxZoom": 24,
         "description": "S-52 conditional symbology procedure DEPCNT02",
         "iconId": "depare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DEPCNT",
-      "aliases": ["DEPCNT", "depcnt", "depth_contour"],
+      "aliases": ["DEPCNT", "depcnt"],
       "symbolId": "s52_depcnt",
       "sprite": "circle",
       "prettyName": "Depth Contour",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF"
       },
       "mapboxRenderingHints": {
@@ -811,7 +888,9 @@
         "labelField": "depth",
         "description": "S-52 conditional symbology procedure DEPCNT02",
         "iconId": "depcnt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DISMAR",
@@ -820,7 +899,7 @@
       "sprite": "circle",
       "prettyName": "Distance Mark",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -830,16 +909,18 @@
         "maxZoom": 24,
         "description": "distance mark",
         "iconId": "dismar"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DMPGRD",
-      "aliases": ["DMPGRD", "dmpgrd", "dumping_ground"],
+      "aliases": ["DMPGRD", "dmpgrd"],
       "symbolId": "s52_dmpgrd",
       "sprite": "circle",
       "prettyName": "Dumping Ground",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -849,7 +930,9 @@
         "maxZoom": 24,
         "description": "HO information note",
         "iconId": "dmpgrd"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DOCARE",
@@ -858,7 +941,7 @@
       "sprite": "circle",
       "prettyName": "DOCARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF",
         "black": "#000000",
         "blue": "#74CDFF"
@@ -869,7 +952,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "docare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DRGARE",
@@ -878,7 +963,7 @@
       "sprite": "circle",
       "prettyName": "Dredged Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF"
       },
       "mapboxRenderingHints": {
@@ -888,7 +973,9 @@
         "labelField": "depth",
         "description": "S-52 conditional symbology procedure DEPARE01",
         "iconId": "drgare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DRYDOC",
@@ -897,7 +984,7 @@
       "sprite": "circle",
       "prettyName": "Dry Dock",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D4D094"
       },
       "mapboxRenderingHints": {
@@ -906,7 +993,9 @@
         "maxZoom": 24,
         "labelField": "depth",
         "iconId": "drydoc"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DWRTCL",
@@ -915,7 +1004,7 @@
       "sprite": "circle",
       "prettyName": "DWRTCL",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "black": "#000000",
         "magenta": "#D44DE7"
@@ -927,7 +1016,9 @@
         "labelField": "orient",
         "description": "one-way deep water route centreline, not based on fixed marks",
         "iconId": "dwrtcl"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DWRTPT",
@@ -936,7 +1027,7 @@
       "sprite": "circle",
       "prettyName": "DWRTPT",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -946,7 +1037,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "dwrtpt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "DYKCON",
@@ -955,7 +1048,7 @@
       "sprite": "circle",
       "prettyName": "DYKCON",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -963,7 +1056,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "dykcon"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "EXEZNE",
@@ -972,7 +1067,7 @@
       "sprite": "circle",
       "prettyName": "EXEZNE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -981,7 +1076,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "exezne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FAIRWY",
@@ -990,7 +1087,7 @@
       "sprite": "circle",
       "prettyName": "Fairway",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -1000,7 +1097,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "fairwy"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FERYRT",
@@ -1009,7 +1108,7 @@
       "sprite": "circle",
       "prettyName": "Ferry Route",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1018,7 +1117,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "feryrt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FLODOC",
@@ -1027,7 +1128,7 @@
       "sprite": "circle",
       "prettyName": "FLODOC",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#55666E"
       },
       "mapboxRenderingHints": {
@@ -1035,7 +1136,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "flodoc"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FNCLNE",
@@ -1044,7 +1147,7 @@
       "sprite": "circle",
       "prettyName": "FNCLNE",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -1053,7 +1156,9 @@
         "maxZoom": 24,
         "description": "S-52 line style SOLD",
         "iconId": "fnclne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FOGSIG",
@@ -1062,7 +1167,7 @@
       "sprite": "circle",
       "prettyName": "Fog Signal",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -1072,7 +1177,9 @@
         "maxZoom": 24,
         "description": "fog signal",
         "iconId": "fogsig"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FORSTC",
@@ -1081,7 +1188,7 @@
       "sprite": "circle",
       "prettyName": "Fortified Structure",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -1090,7 +1197,9 @@
         "maxZoom": 24,
         "description": "fortified structure",
         "iconId": "forstc"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FRPARE",
@@ -1099,7 +1208,7 @@
       "sprite": "circle",
       "prettyName": "Free Port Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -1108,7 +1217,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "frpare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FSHFAC",
@@ -1117,7 +1228,7 @@
       "sprite": "circle",
       "prettyName": "FSHFAC",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -1126,7 +1237,9 @@
         "maxZoom": 24,
         "description": "fish stakes",
         "iconId": "fshfac"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FSHGRD",
@@ -1135,7 +1248,7 @@
       "sprite": "circle",
       "prettyName": "FSHGRD",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -1144,7 +1257,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "fshgrd"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "FSHZNE",
@@ -1153,7 +1268,7 @@
       "sprite": "circle",
       "prettyName": "FSHZNE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -1162,7 +1277,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "fshzne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "GATCON",
@@ -1171,7 +1288,7 @@
       "sprite": "circle",
       "prettyName": "Gate",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1181,7 +1298,9 @@
         "maxZoom": 24,
         "description": "non-navigable lock gate",
         "iconId": "gatcon"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "GRIDRN",
@@ -1190,7 +1309,7 @@
       "sprite": "circle",
       "prettyName": "Gridiron",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -1198,7 +1317,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "gridrn"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "HRBARE",
@@ -1213,7 +1334,7 @@
       "sprite": "circle",
       "prettyName": "Harbour Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -1222,7 +1343,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "hrbare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "HRBFAC",
@@ -1231,7 +1354,7 @@
       "sprite": "circle",
       "prettyName": "Harbour Facility",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1241,7 +1364,9 @@
         "maxZoom": 24,
         "description": "fishing harbour",
         "iconId": "hrbfac"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "HULKES",
@@ -1250,7 +1375,7 @@
       "sprite": "circle",
       "prettyName": "Hulk",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#BCA444"
       },
       "mapboxRenderingHints": {
@@ -1260,7 +1385,9 @@
         "labelField": "name",
         "description": "hulk",
         "iconId": "hulkes"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ICEARE",
@@ -1269,7 +1396,7 @@
       "sprite": "circle",
       "prettyName": "ICEARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -1278,16 +1405,18 @@
         "maxZoom": 24,
         "description": "continuous pattern for an ice area (glacier, etc.)",
         "iconId": "iceare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ICNARE",
-      "aliases": ["ICNARE", "icnare", "incineration_area"],
+      "aliases": ["ICNARE", "icnare"],
       "symbolId": "s52_icnare",
       "sprite": "circle",
       "prettyName": "ICNARE",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1297,7 +1426,9 @@
         "maxZoom": 24,
         "description": "HO information note",
         "iconId": "icnare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ISTZNE",
@@ -1306,7 +1437,7 @@
       "sprite": "circle",
       "prettyName": "ISTZNE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -1316,7 +1447,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "istzne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LAKARE",
@@ -1325,7 +1458,7 @@
       "sprite": "circle",
       "prettyName": "LAKARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF",
         "black": "#000000",
         "blue": "#74CDFF"
@@ -1336,7 +1469,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "lakare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LIGHTS",
@@ -1345,7 +1480,7 @@
       "sprite": "circle",
       "prettyName": "Lights",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -1356,7 +1491,9 @@
         "maxZoom": 24,
         "description": "S-52 conditional symbology procedure LIGHTS05",
         "iconId": "lights"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LITFLT",
@@ -1365,7 +1502,7 @@
       "sprite": "circle",
       "prettyName": "Light Float",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1376,7 +1513,9 @@
         "labelField": "name",
         "description": "light float, simplified",
         "iconId": "litflt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LITVES",
@@ -1385,7 +1524,7 @@
       "sprite": "circle",
       "prettyName": "Light Vessel",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1396,7 +1535,9 @@
         "labelField": "name",
         "description": "light vessel, simplified",
         "iconId": "litves"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LNDARE",
@@ -1413,7 +1554,7 @@
       "sprite": "circle",
       "prettyName": "Land Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D4D094"
       },
       "mapboxRenderingHints": {
@@ -1421,7 +1562,9 @@
         "minZoom": 0,
         "maxZoom": 24,
         "description": "land area"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LNDELV",
@@ -1430,7 +1573,7 @@
       "sprite": "circle",
       "prettyName": "LNDELV",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1440,34 +1583,28 @@
         "maxZoom": 24,
         "description": "position of an elevation or control point",
         "iconId": "lndelv"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LNDMRK",
       "aliases": [
-        "addresses",
-        "boundary_labels",
         "landmark",
         "LNDMRK",
         "lndmrk",
         "navigation-structure",
         "place",
-        "place_labels",
         "places",
         "poi",
         "pois",
-        "sites",
-        "street_labels",
-        "street_labels_points",
-        "streets_polygons_labels",
-        "water_lines_labels",
-        "water_polygons_labels"
+        "sites"
       ],
       "symbolId": "s52_lndmrk",
       "sprite": "circle",
       "prettyName": "Landmark",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -1476,7 +1613,9 @@
         "maxZoom": 24,
         "description": "position of a point feature",
         "iconId": "lndmrk"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LNDRGN",
@@ -1485,7 +1624,7 @@
       "sprite": "circle",
       "prettyName": "LNDRGN",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1495,7 +1634,9 @@
         "maxZoom": 24,
         "description": "position of an elevation or control point",
         "iconId": "lndrgn"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LOCMAG",
@@ -1504,7 +1645,7 @@
       "sprite": "circle",
       "prettyName": "LOCMAG",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1514,7 +1655,9 @@
         "maxZoom": 24,
         "description": "cursor pick site for a magnetic anomaly at a point",
         "iconId": "locmag"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LOGPON",
@@ -1523,7 +1666,7 @@
       "sprite": "circle",
       "prettyName": "LOGPON",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -1531,7 +1674,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "logpon"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LOKBSN",
@@ -1540,7 +1685,7 @@
       "sprite": "circle",
       "prettyName": "Lock Basin",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF",
         "black": "#000000",
         "blue": "#74CDFF"
@@ -1551,7 +1696,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "lokbsn"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "MAGVAR",
@@ -1560,7 +1707,7 @@
       "sprite": "circle",
       "prettyName": "MAGVAR",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "black": "#000000",
         "magenta": "#D44DE7"
@@ -1571,7 +1718,9 @@
         "maxZoom": 24,
         "description": "cursor pick site for magnetic variation at a point",
         "iconId": "magvar"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "MARCUL",
@@ -1580,7 +1729,7 @@
       "sprite": "circle",
       "prettyName": "Marine Culture",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -1589,7 +1738,9 @@
         "maxZoom": 24,
         "description": "fish farm",
         "iconId": "marcul"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "MIPARE",
@@ -1598,7 +1749,7 @@
       "sprite": "circle",
       "prettyName": "Military Practice Area",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1608,7 +1759,9 @@
         "maxZoom": 24,
         "description": "HO caution note",
         "iconId": "mipare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "MORFAC",
@@ -1617,7 +1770,7 @@
       "sprite": "circle",
       "prettyName": "Mooring Facility",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D4D094",
         "black": "#000000"
       },
@@ -1627,7 +1780,9 @@
         "maxZoom": 24,
         "description": "mooring dolphin",
         "iconId": "morfac"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "NAVLNE",
@@ -1636,7 +1791,7 @@
       "sprite": "circle",
       "prettyName": "Navigation Line",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -1646,7 +1801,9 @@
         "maxZoom": 24,
         "description": "S-52 line style DASH",
         "iconId": "navlne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "NEWOBJ",
@@ -1655,7 +1812,7 @@
       "sprite": "circle",
       "prettyName": "NEWOBJ",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -1663,7 +1820,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "newobj"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "OBSTRN",
@@ -1672,7 +1831,7 @@
       "sprite": "cross",
       "prettyName": "Obstruction",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -1682,7 +1841,9 @@
         "maxZoom": 24,
         "description": "S-52 conditional symbology procedure OBSTRN04",
         "iconId": "obstrn"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "OFSPLF",
@@ -1691,7 +1852,7 @@
       "sprite": "circle",
       "prettyName": "OFSPLF",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1702,7 +1863,9 @@
         "labelField": "name",
         "description": "offshore platform",
         "iconId": "ofsplf"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "OILBAR",
@@ -1711,7 +1874,7 @@
       "sprite": "circle",
       "prettyName": "Oil Barrier",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1721,7 +1884,9 @@
         "maxZoom": 24,
         "description": "S-52 line style DASH",
         "iconId": "oilbar"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "OSPARE",
@@ -1730,7 +1895,7 @@
       "sprite": "circle",
       "prettyName": "OSPARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -1740,7 +1905,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "ospare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PILBOP",
@@ -1749,7 +1916,7 @@
       "sprite": "circle",
       "prettyName": "Pilot Boarding Place",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#DEFFFF",
         "black": "#000000",
         "magenta": "#D44DE7",
@@ -1763,7 +1930,9 @@
         "labelField": "name",
         "description": "Pilot boarding place",
         "iconId": "pilbop"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PILPNT",
@@ -1772,7 +1941,7 @@
       "sprite": "circle",
       "prettyName": "PILPNT",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1782,7 +1951,9 @@
         "maxZoom": 24,
         "description": "pile or bollard",
         "iconId": "pilpnt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PIPARE",
@@ -1791,7 +1962,7 @@
       "sprite": "circle",
       "prettyName": "Pipeline Area",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1801,7 +1972,9 @@
         "maxZoom": 24,
         "description": "HO information note",
         "iconId": "pipare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PIPOHD",
@@ -1810,7 +1983,7 @@
       "sprite": "circle",
       "prettyName": "PIPOHD",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7",
         "black": "#000000"
       },
@@ -1821,7 +1994,9 @@
         "labelField": "verclr",
         "description": "S-52 line style SOLD",
         "iconId": "pipohd"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PIPSOL",
@@ -1830,7 +2005,7 @@
       "sprite": "circle",
       "prettyName": "PIPSOL",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -1838,7 +2013,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "pipsol"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PONTON",
@@ -1847,7 +2024,7 @@
       "sprite": "circle",
       "prettyName": "Pontoon",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#55666E"
       },
       "mapboxRenderingHints": {
@@ -1855,7 +2032,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "ponton"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PRCARE",
@@ -1864,7 +2043,7 @@
       "sprite": "circle",
       "prettyName": "Precautionary Area",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1874,7 +2053,9 @@
         "maxZoom": 24,
         "description": "point symbol for traffic precautionary area",
         "iconId": "prcare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PRDARE",
@@ -1883,7 +2064,7 @@
       "sprite": "circle",
       "prettyName": "PRDARE",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -1891,7 +2072,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "prdare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "PYLONS",
@@ -1900,7 +2083,7 @@
       "sprite": "circle",
       "prettyName": "Pylon",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -1910,7 +2093,9 @@
         "maxZoom": 24,
         "description": "position of a conspicuous point feature",
         "iconId": "pylons"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RADLNE",
@@ -1919,7 +2104,7 @@
       "sprite": "circle",
       "prettyName": "Radar Line",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "black": "#000000",
         "magenta": "#D44DE7"
@@ -1931,7 +2116,9 @@
         "labelField": "orient",
         "description": "S-52 line style DASH",
         "iconId": "radlne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RADRFL",
@@ -1940,7 +2127,7 @@
       "sprite": "circle",
       "prettyName": "Radar Reflector",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -1950,7 +2137,9 @@
         "maxZoom": 24,
         "description": "radar reflector",
         "iconId": "radrfl"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RADRNG",
@@ -1959,7 +2148,7 @@
       "sprite": "circle",
       "prettyName": "Radar Range",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -1969,7 +2158,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "radrng"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RADSTA",
@@ -1978,7 +2169,7 @@
       "sprite": "circle",
       "prettyName": "Radar Station",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -1987,7 +2178,9 @@
         "maxZoom": 24,
         "description": "position of a point feature",
         "iconId": "radsta"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RAILWY",
@@ -2003,7 +2196,7 @@
       "sprite": "circle",
       "prettyName": "RAILWY",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -2012,7 +2205,9 @@
         "maxZoom": 24,
         "description": "S-52 line style SOLD",
         "iconId": "railwy"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RAPIDS",
@@ -2021,7 +2216,7 @@
       "sprite": "circle",
       "prettyName": "Rapids",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2029,7 +2224,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "rapids"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RCRTCL",
@@ -2044,7 +2241,7 @@
       "sprite": "circle",
       "prettyName": "Recommended Route Centreline",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "black": "#000000",
         "magenta": "#D44DE7"
@@ -2056,7 +2253,9 @@
         "labelField": "orient",
         "description": "regulated one-way recommended route centreline, not based on fixed marks",
         "iconId": "rcrtcl"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RCTLPT",
@@ -2065,7 +2264,7 @@
       "sprite": "circle",
       "prettyName": "Recommended Track",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -2075,7 +2274,9 @@
         "maxZoom": 24,
         "description": "recommended route between parts of a traffic separation scheme, or for ships not needing a deep water route, with the direction not specified in the data",
         "iconId": "rctlpt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RDOCAL",
@@ -2089,7 +2290,7 @@
       "sprite": "circle",
       "prettyName": "RDOCAL",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "black": "#000000",
         "magenta": "#D44DE7"
@@ -2101,7 +2302,9 @@
         "labelField": "name",
         "description": "radio calling-in point whose direction is not known",
         "iconId": "rdocal"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RDOSTA",
@@ -2110,7 +2313,7 @@
       "sprite": "circle",
       "prettyName": "RDOSTA",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -2120,7 +2323,9 @@
         "maxZoom": 24,
         "description": "radio station",
         "iconId": "rdosta"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RECTRC",
@@ -2129,7 +2334,7 @@
       "sprite": "circle",
       "prettyName": "RECTRC",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7",
         "black": "#000000"
       },
@@ -2139,7 +2344,9 @@
         "maxZoom": 24,
         "labelField": "orient",
         "iconId": "rectrc"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RESARE",
@@ -2148,7 +2355,7 @@
       "sprite": "circle",
       "prettyName": "Restricted Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -2157,7 +2364,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "resare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RETRFL",
@@ -2166,7 +2375,7 @@
       "sprite": "circle",
       "prettyName": "RETRFL",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -2176,7 +2385,9 @@
         "maxZoom": 24,
         "description": "retro reflector, simplified",
         "iconId": "retrfl"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RIVERS",
@@ -2185,7 +2396,7 @@
       "sprite": "circle",
       "prettyName": "RIVERS",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -2194,16 +2405,25 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "rivers"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ROADWY",
-      "aliases": ["ROADWY", "road", "roadwy", "roads", "street_polygons", "streets"],
+      "aliases": [
+        "ROADWY",
+        "road",
+        "roadwy",
+        "roads",
+        "street_polygons",
+        "streets"
+      ],
       "symbolId": "s52_roadwy",
       "sprite": "circle",
       "prettyName": "ROADWY",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2211,7 +2431,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "roadwy"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RSCSTA",
@@ -2220,7 +2442,7 @@
       "sprite": "circle",
       "prettyName": "Rescue Station",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -2230,7 +2452,9 @@
         "maxZoom": 24,
         "description": "position approximate",
         "iconId": "rscsta"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RTPBCN",
@@ -2239,7 +2463,7 @@
       "sprite": "circle",
       "prettyName": "Radar Transponder Beacon",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -2249,7 +2473,9 @@
         "maxZoom": 24,
         "description": "radar transponder beacon",
         "iconId": "rtpbcn"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RUNWAY",
@@ -2258,7 +2484,7 @@
       "sprite": "circle",
       "prettyName": "RUNWAY",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2266,7 +2492,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "runway"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SBDARE",
@@ -2275,7 +2503,7 @@
       "sprite": "circle",
       "prettyName": "SBDARE",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -2284,7 +2512,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "sbdare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SEAARE",
@@ -2301,7 +2531,7 @@
       "sprite": "circle",
       "prettyName": "Sea Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -2310,7 +2540,9 @@
         "minZoom": 0,
         "maxZoom": 24,
         "iconId": "seaare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SILTNK",
@@ -2319,7 +2551,7 @@
       "sprite": "circle",
       "prettyName": "Tank",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -2328,7 +2560,9 @@
         "maxZoom": 24,
         "description": "tank",
         "iconId": "siltnk"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SISTAT",
@@ -2337,7 +2571,7 @@
       "sprite": "circle",
       "prettyName": "SISTAT",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#DEFFFF",
         "magenta": "#E0BBFF",
         "white": "#DEFFFF"
@@ -2348,7 +2582,9 @@
         "maxZoom": 24,
         "description": "signal station",
         "iconId": "sistat"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SISTAW",
@@ -2362,7 +2598,7 @@
       "sprite": "circle",
       "prettyName": "SISTAW",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#DEFFFF",
         "magenta": "#E0BBFF",
         "white": "#DEFFFF"
@@ -2373,7 +2609,9 @@
         "maxZoom": 24,
         "description": "signal station",
         "iconId": "sistaw"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SLCONS",
@@ -2382,7 +2620,7 @@
       "sprite": "circle",
       "prettyName": "Shoreline Construction",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D4D094",
         "black": "#000000"
       },
@@ -2392,7 +2630,9 @@
         "maxZoom": 24,
         "description": "mooring dolphin",
         "iconId": "slcons"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SLOGRD",
@@ -2401,7 +2641,7 @@
       "sprite": "circle",
       "prettyName": "SLOGRD",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -2410,7 +2650,9 @@
         "maxZoom": 24,
         "description": "hill or mountain top",
         "iconId": "slogrd"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SLOTOP",
@@ -2419,7 +2661,7 @@
       "sprite": "circle",
       "prettyName": "SLOTOP",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#957322"
       },
       "mapboxRenderingHints": {
@@ -2428,7 +2670,9 @@
         "maxZoom": 24,
         "description": "S-52 line style SOLD",
         "iconId": "slotop"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SMCFAC",
@@ -2443,7 +2687,7 @@
       "sprite": "circle",
       "prettyName": "SMCFAC",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2451,7 +2695,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "smcfac"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SNDWAV",
@@ -2460,7 +2706,7 @@
       "sprite": "circle",
       "prettyName": "SNDWAV",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -2469,7 +2715,9 @@
         "maxZoom": 24,
         "description": "sand waves",
         "iconId": "sndwav"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SOUNDG",
@@ -2478,7 +2726,7 @@
       "sprite": "circle",
       "prettyName": "Sounding",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#74CDFF"
       },
       "mapboxRenderingHints": {
@@ -2489,7 +2737,9 @@
         "priority": 15,
         "maxZoom": 24,
         "description": "S-52 conditional symbology procedure SOUNDG02"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SPLARE",
@@ -2498,7 +2748,7 @@
       "sprite": "circle",
       "prettyName": "Separation Area",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -2508,7 +2758,9 @@
         "maxZoom": 24,
         "description": "sea plane landing area",
         "iconId": "splare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SPRING",
@@ -2517,7 +2769,7 @@
       "sprite": "circle",
       "prettyName": "SPRING",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -2526,7 +2778,9 @@
         "maxZoom": 24,
         "description": "spring",
         "iconId": "spring"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "STSLNE",
@@ -2535,7 +2789,7 @@
       "sprite": "circle",
       "prettyName": "STSLNE",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -2544,7 +2798,9 @@
         "maxZoom": 24,
         "description": "S-52 line style DASH",
         "iconId": "stslne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SUBTLN",
@@ -2553,7 +2809,7 @@
       "sprite": "circle",
       "prettyName": "SUBTLN",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -2563,7 +2819,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "subtln"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SWPARE",
@@ -2572,7 +2830,7 @@
       "sprite": "circle",
       "prettyName": "SWPARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA",
         "black": "#000000"
       },
@@ -2583,7 +2841,9 @@
         "labelField": "drval1",
         "description": "S-52 area portrayal",
         "iconId": "swpare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TESARE",
@@ -2592,7 +2852,7 @@
       "sprite": "circle",
       "prettyName": "TESARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -2601,7 +2861,9 @@
         "maxZoom": 24,
         "description": "S-52 conditional symbology procedure RESTRN01",
         "iconId": "tesare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TIDEWY",
@@ -2616,7 +2878,7 @@
       "sprite": "circle",
       "prettyName": "TIDEWY",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -2624,7 +2886,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "tidewy"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TOPMAR",
@@ -2633,7 +2897,7 @@
       "sprite": "circle",
       "prettyName": "Topmark",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2641,7 +2905,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "topmar"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TSELNE",
@@ -2650,7 +2916,7 @@
       "sprite": "circle",
       "prettyName": "TSELNE",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -2660,7 +2926,9 @@
         "maxZoom": 24,
         "description": "S-52 line style SOLD",
         "iconId": "tselne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TSEZNE",
@@ -2669,7 +2937,7 @@
       "sprite": "circle",
       "prettyName": "TSEZNE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -2679,7 +2947,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "tsezne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TSSBND",
@@ -2693,7 +2963,7 @@
       "sprite": "circle",
       "prettyName": "Traffic Separation Boundary",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -2703,7 +2973,9 @@
         "maxZoom": 24,
         "description": "S-52 line style DASH",
         "iconId": "tssbnd"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TSSCRS",
@@ -2717,7 +2989,7 @@
       "sprite": "circle",
       "prettyName": "Traffic Separation Crossing",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -2727,7 +2999,9 @@
         "maxZoom": 24,
         "description": "precautionary area or a traffic separation scheme crossing or roundabout",
         "iconId": "tsscrs"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TSSLPT",
@@ -2736,7 +3010,7 @@
       "sprite": "circle",
       "prettyName": "TSSLPT",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "black": "#000000",
         "magenta": "#E0BBFF"
@@ -2747,7 +3021,9 @@
         "maxZoom": 24,
         "description": "precautionary area or a traffic separation scheme crossing or roundabout",
         "iconId": "tsslpt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TSSRON",
@@ -2761,7 +3037,7 @@
       "sprite": "circle",
       "prettyName": "Traffic Separation Roundabout",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -2771,7 +3047,9 @@
         "maxZoom": 24,
         "description": "precautionary area or a traffic separation scheme crossing or roundabout",
         "iconId": "tssron"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TUNNEL",
@@ -2780,7 +3058,7 @@
       "sprite": "circle",
       "prettyName": "TUNNEL",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2788,7 +3066,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "tunnel"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TWRTPT",
@@ -2797,7 +3077,7 @@
       "sprite": "circle",
       "prettyName": "Two-Way Route",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#D44DE7",
         "magenta": "#D44DE7"
       },
@@ -2807,7 +3087,9 @@
         "maxZoom": 24,
         "description": "S-52 area portrayal",
         "iconId": "twrtpt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "UNSARE",
@@ -2816,7 +3098,7 @@
       "sprite": "circle",
       "prettyName": "UNSARE",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#ACCADA"
       },
       "mapboxRenderingHints": {
@@ -2825,7 +3107,9 @@
         "maxZoom": 24,
         "description": "area of no chart data",
         "iconId": "unsare"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "UWTROC",
@@ -2834,7 +3118,7 @@
       "sprite": "circle",
       "prettyName": "UWTROC",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2843,7 +3127,9 @@
         "maxZoom": 24,
         "description": "S-52 conditional symbology procedure OBSTRN04",
         "iconId": "uwtroc"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "VEGATN",
@@ -2852,7 +3138,7 @@
       "sprite": "circle",
       "prettyName": "Vegetation",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2860,7 +3146,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "vegatn"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "WATFAL",
@@ -2869,7 +3157,7 @@
       "sprite": "circle",
       "prettyName": "Waterfall",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2877,7 +3165,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "watfal"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "WATTUR",
@@ -2886,7 +3176,7 @@
       "sprite": "circle",
       "prettyName": "WATTUR",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -2895,7 +3185,9 @@
         "maxZoom": 24,
         "description": "overfalls, eddies and breakers",
         "iconId": "wattur"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "WEDKLP",
@@ -2904,7 +3196,7 @@
       "sprite": "circle",
       "prettyName": "WEDKLP",
       "featureType": "area",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#839BA7"
       },
       "mapboxRenderingHints": {
@@ -2913,7 +3205,9 @@
         "maxZoom": 24,
         "description": "weed, kelp",
         "iconId": "wedklp"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "WRECKS",
@@ -2922,7 +3216,7 @@
       "sprite": "cross",
       "prettyName": "Wreck",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2933,7 +3227,9 @@
         "maxZoom": 24,
         "description": "S-52 conditional symbology procedure WRECKS02",
         "iconId": "wrecks"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ACHPNT",
@@ -2942,7 +3238,7 @@
       "sprite": "circle",
       "prettyName": "ACHPNT",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#E0BBFF",
         "magenta": "#E0BBFF"
       },
@@ -2952,7 +3248,9 @@
         "maxZoom": 24,
         "description": "anchor",
         "iconId": "achpnt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "BUIREL",
@@ -2961,7 +3259,7 @@
       "sprite": "circle",
       "prettyName": "BUIREL",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -2971,16 +3269,18 @@
         "maxZoom": 24,
         "description": "conspicuous religious building, Christian",
         "iconId": "buirel"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CANBNK",
-      "aliases": ["CANBNK", "canal_bank", "canbnk"],
+      "aliases": ["CANBNK", "canbnk"],
       "symbolId": "s52_canbnk",
       "sprite": "circle",
       "prettyName": "CANBNK",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -2988,7 +3288,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "canbnk"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "CHNWIR",
@@ -2997,7 +3299,7 @@
       "sprite": "circle",
       "prettyName": "CHNWIR",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -3006,7 +3308,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "chnwir"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "LAKSHR",
@@ -3015,7 +3319,7 @@
       "sprite": "circle",
       "prettyName": "LAKSHR",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#55666E"
       },
       "mapboxRenderingHints": {
@@ -3023,7 +3327,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "lakshr"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "MONUMT",
@@ -3032,7 +3338,7 @@
       "sprite": "circle",
       "prettyName": "MONUMT",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -3042,7 +3348,9 @@
         "maxZoom": 24,
         "description": "conspicuous monument",
         "iconId": "monumt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RIVBNK",
@@ -3051,7 +3359,7 @@
       "sprite": "circle",
       "prettyName": "RIVBNK",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -3059,7 +3367,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "rivbnk"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "SQUARE",
@@ -3068,7 +3378,7 @@
       "sprite": "circle",
       "prettyName": "SQUARE",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -3076,7 +3386,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "square"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TOWERS",
@@ -3085,7 +3397,7 @@
       "sprite": "circle",
       "prettyName": "TOWERS",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#C2EFFF",
         "black": "#000000",
         "blue": "#C2EFFF"
@@ -3096,7 +3408,9 @@
         "maxZoom": 24,
         "description": "tower, black, full-chart and simplified",
         "iconId": "towers"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ZEMCNT",
@@ -3105,7 +3419,7 @@
       "sprite": "circle",
       "prettyName": "ZEMCNT",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000",
         "black": "#000000"
       },
@@ -3114,7 +3428,9 @@
         "minZoom": 7,
         "maxZoom": 24,
         "iconId": "zemcnt"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "ANNOTA",
@@ -3123,7 +3439,7 @@
       "sprite": "circle",
       "prettyName": "ANNOTA",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -3131,7 +3447,9 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "annota"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "RESTRC",
@@ -3140,7 +3458,7 @@
       "sprite": "circle",
       "prettyName": "RESTRC",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -3149,7 +3467,9 @@
         "maxZoom": 24,
         "description": "S-52 line portrayal",
         "iconId": "restrc"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "TRFLNE",
@@ -3158,7 +3478,7 @@
       "sprite": "circle",
       "prettyName": "TRFLNE",
       "featureType": "line",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -3167,7 +3487,9 @@
         "maxZoom": 24,
         "description": "S-52 line portrayal",
         "iconId": "trflne"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
     },
     {
       "id": "GENNAV",
@@ -3176,7 +3498,7 @@
       "sprite": "circle",
       "prettyName": "GENNAV",
       "featureType": "poi",
-      "s52ColorScheme": {
+      "colorScheme": {
         "default": "#000000"
       },
       "mapboxRenderingHints": {
@@ -3184,7 +3506,395 @@
         "minZoom": 10,
         "maxZoom": 24,
         "iconId": "gennav"
-      }
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DEPTH_AREA",
+      "aliases": ["depth_area"],
+      "symbolId": "s52_depare",
+      "sprite": "circle",
+      "prettyName": "Depth Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "description": "depth area",
+        "iconId": "depare",
+        "priority": 10
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from DEPARE alias depth_area"
+      ]
+    },
+    {
+      "id": "DEPTH_CONTOUR",
+      "aliases": ["depth_contour"],
+      "symbolId": "s52_depcnt",
+      "sprite": "circle",
+      "prettyName": "Depth Contour",
+      "featureType": "depth",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "depth",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "labelField": "depth",
+        "description": "depth contour",
+        "iconId": "depcnt",
+        "priority": 10
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from DEPCNT alias depth_contour"
+      ]
+    },
+    {
+      "id": "CAUTION_AREA",
+      "aliases": ["caution_area"],
+      "symbolId": "s52_ctnare",
+      "sprite": "circle",
+      "prettyName": "Caution Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "caution area",
+        "iconId": "ctnare"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from CTNARE alias caution_area"
+      ]
+    },
+    {
+      "id": "CARGO_TRANSSHIPMENT_AREA",
+      "aliases": ["cargo_transshipment_area"],
+      "symbolId": "s52_ctsare",
+      "sprite": "circle",
+      "prettyName": "Cargo Transshipment Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "cargo transshipment area",
+        "iconId": "ctsare"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from CTSARE alias cargo_transshipment_area"
+      ]
+    },
+    {
+      "id": "DUMPING_GROUND_AREA",
+      "aliases": ["dumping_ground"],
+      "symbolId": "s52_dmpgrd",
+      "sprite": "circle",
+      "prettyName": "Dumping Ground",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "dumping ground",
+        "iconId": "dmpgrd"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from DMPGRD alias dumping_ground"
+      ]
+    },
+    {
+      "id": "INCINERATION_AREA",
+      "aliases": ["incineration_area"],
+      "symbolId": "s52_icnare",
+      "sprite": "circle",
+      "prettyName": "Incineration Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "incineration area",
+        "iconId": "icnare"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from ICNARE alias incineration_area"
+      ]
+    },
+    {
+      "id": "BRIDGE_LINE",
+      "aliases": ["bridge", "bridges"],
+      "symbolId": "s52_bridge",
+      "sprite": "circle",
+      "prettyName": "Bridge",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "bridge line",
+        "iconId": "bridge"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from BRIDGE aliases bridge/bridges"
+      ]
+    },
+    {
+      "id": "CANAL_BANK_LINE",
+      "aliases": ["canal_bank"],
+      "symbolId": "s52_canbnk",
+      "sprite": "circle",
+      "prettyName": "Canal Bank",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "canal bank",
+        "iconId": "canbnk"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from CANBNK alias canal_bank"
+      ]
+    },
+    {
+      "id": "BOUNDARY_LINE",
+      "aliases": ["boundary", "boundaries"],
+      "symbolId": "s52_restrc",
+      "sprite": "circle",
+      "prettyName": "Boundary Line",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "boundary line",
+        "iconId": "restrc"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from COALNE aliases boundary/boundaries"
+      ]
+    },
+    {
+      "id": "LABELS_ADDRESS",
+      "aliases": ["addresses"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Address Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 12,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 10,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": ["origin: custom mapping", "derived from LNDMRK alias addresses"]
+    },
+    {
+      "id": "LABELS_BOUNDARY",
+      "aliases": ["boundary_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Boundary Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "line",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias boundary_labels"
+      ]
+    },
+    {
+      "id": "LABELS_PLACE",
+      "aliases": ["place_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Place Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias place_labels"
+      ]
+    },
+    {
+      "id": "LABELS_STREET",
+      "aliases": ["street_labels", "streets_polygons_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Street Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 11,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "line",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK aliases street_labels/streets_polygons_labels"
+      ]
+    },
+    {
+      "id": "LABELS_STREET_POINT",
+      "aliases": ["street_labels_points"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Street Labels (Points)",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 12,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 10,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias street_labels_points"
+      ]
+    },
+    {
+      "id": "LABELS_WATER_LINE",
+      "aliases": ["water_lines_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Water Labels (Lines)",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "line",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias water_lines_labels"
+      ]
+    },
+    {
+      "id": "LABELS_WATER_AREA",
+      "aliases": ["water_polygons_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Water Labels (Areas)",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias water_polygons_labels"
+      ]
     }
   ],
   "unmappedAliases": [

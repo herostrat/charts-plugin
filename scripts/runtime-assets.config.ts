@@ -49,7 +49,9 @@ const pmtilesCliUrlFor = (ctx: RuntimeAssetContext) => {
   return url
 }
 
-export const runtimeCopyTasks = (ctx: RuntimeAssetContext): RuntimeCopyTask[] => [
+export const runtimeCopyTasks = (
+  ctx: RuntimeAssetContext
+): RuntimeCopyTask[] => [
   {
     from: 'public',
     to: resolvePluginPath(ctx, '{pluginOutDir}/public')
@@ -62,12 +64,18 @@ export const runtimeDownloadTasks = (
   const tasks: RuntimeDownloadTask[] = [
     {
       url: `https://unpkg.com/leaflet@${LEAFLET_VERSION}/dist/leaflet.css`,
-      to: resolvePluginPath(ctx, '{pluginOutDir}/public/assets/leaflet/leaflet.css'),
+      to: resolvePluginPath(
+        ctx,
+        '{pluginOutDir}/public/assets/leaflet/leaflet.css'
+      ),
       cacheKey: `leaflet-${LEAFLET_VERSION}.css`
     },
     {
       url: `https://unpkg.com/leaflet@${LEAFLET_VERSION}/dist/leaflet.js`,
-      to: resolvePluginPath(ctx, '{pluginOutDir}/public/assets/leaflet/leaflet.js'),
+      to: resolvePluginPath(
+        ctx,
+        '{pluginOutDir}/public/assets/leaflet/leaflet.js'
+      ),
       cacheKey: `leaflet-${LEAFLET_VERSION}.js`
     },
     {

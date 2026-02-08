@@ -98,8 +98,7 @@ const boundsToBbox = (b: LeafletBounds): [number, number, number, number] => {
   return [sw.lng, sw.lat, ne.lng, ne.lat]
 }
 
-const isRightClick = (evt: LeafletMouseEvent) =>
-  evt.originalEvent?.button === 2
+const isRightClick = (evt: LeafletMouseEvent) => evt.originalEvent?.button === 2
 
 const setBboxValue = (bbox: [number, number, number, number] | null) => {
   currentBounds = bbox
@@ -117,9 +116,12 @@ const addLocalVectorBasemap = async () => {
   const L = getLeaflet()
   if (!bboxMap || !L) return
   try {
-    const r = await fetch(assetUrl('assets/world/ne_110m_admin_0_countries.geojson'), {
-      cache: 'no-store'
-    })
+    const r = await fetch(
+      assetUrl('assets/world/ne_110m_admin_0_countries.geojson'),
+      {
+        cache: 'no-store'
+      }
+    )
     if (!r.ok) return
     const gj = await r.json()
     L.geoJSON(gj, {

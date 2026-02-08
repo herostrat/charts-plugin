@@ -6,15 +6,15 @@ import {
   type ThemeId
 } from '../style/nautical-style-generator'
 import { isVectorFormat } from '../tiles/format'
-import { loadS52Mapping } from './s52-mapping'
+import { loadObjectCatalog } from '../catalog/loader'
 
 type ProvidersById = { [key: string]: ChartProvider }
 
 type StyleRouteDeps = {
   app: Application
   getProviders: () => ProvidersById
-  getCatalogChoice: (identifier: string) => 's52' | 'none'
-  defaultCatalogId: 's52'
+  getCatalogChoice: (identifier: string) => string | 'none'
+  defaultCatalogId: string
 }
 
 export const registerStyleRoutes = ({
@@ -27,14 +27,14 @@ export const registerStyleRoutes = ({
     const identifier = Array.isArray(req.params.identifier)
       ? req.params.identifier[0]
       : req.params.identifier
-    const theme: ThemeId = 'day'
+    const theme: ThemeId = 'signalk_day'
     const provider = getProviders()[identifier]
     if (!provider || !isVectorFormat(provider.format)) {
       return res.sendStatus(404)
     }
     const catalogChoice = getCatalogChoice(identifier) ?? defaultCatalogId
-    const mapping = loadS52Mapping()
-    const catalogObjects = catalogChoice === 'none' ? [] : mapping.objects || []
+    const catalog = loadObjectCatalog()
+    const catalogObjects = catalogChoice === 'none' ? [] : catalog.objects || []
     return res.json(buildNauticalVectorStyle(provider, catalogObjects, theme))
   })
 }

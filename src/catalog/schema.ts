@@ -1,17 +1,23 @@
 // Type-safe object definitions for the extended object catalog structure
-// This file describes the new structure with nautical rendering hints
+// This file describes the structure with rendering hints
 
-export interface S52ColorScheme {
+export interface CatalogColorScheme {
   default: string // Hex color for the default case
   [key: string]: string // e.g. "red", "green", "yellow" for lateral marks
 }
 
 export interface MapboxRenderingHints {
-  layerType: 'poi' | 'line' | 'area' | 'depth' | 'hazard' | 'auto'
+  layerType: 'poi' | 'line' | 'area' | 'depth' | 'hazard' | 'text' | 'auto'
   minZoom?: number
   maxZoom?: number
   iconId?: string // Reference to sprite sheet
   labelField?: string // Feature property for labels
+  textPlacement?: 'point' | 'line'
+  textAllowOverlap?: boolean
+  textSize?: number
+  textColor?: string
+  textHaloColor?: string
+  textHaloWidth?: number
   iconSizeByZoom?: {
     z8?: number
     z12?: number
@@ -21,17 +27,19 @@ export interface MapboxRenderingHints {
   description?: string
 }
 
-export interface S52ObjectDefinition {
+export interface ChartObjectDefinition {
   // ...existing code...
   id: string // Canonical ID (e.g. "BOYLAT")
   aliases: string[] // Alternative names
   prettyName: string // For UI
-  symbolId: string // Legacy S-52 symbol ID
+  symbolId: string // Legacy symbol reference
   sprite?: string // Fallback sprite name
+  notes?: string[]
+  origin?: string
 
-  // NEW: Nautical rendering hints
-  featureType?: 'poi' | 'line' | 'area' | 'depth' | 'hazard'
-  s52ColorScheme?: S52ColorScheme
+  // Rendering hints
+  featureType?: 'poi' | 'line' | 'area' | 'depth' | 'hazard' | 'text'
+  colorScheme?: CatalogColorScheme
   mapboxRenderingHints?: MapboxRenderingHints
 
   // Future
@@ -49,6 +57,7 @@ export interface ClassifiedLayers {
   areas: string[]
   depth: string[]
   hazard: string[]
+  text: string[]
   unknown: string[]
 }
 
@@ -60,7 +69,7 @@ export interface ClassifiedLayers {
  */
 export function classifyLayers(
   layerIds: string[],
-  catalog?: S52ObjectDefinition[]
+  catalog?: ChartObjectDefinition[]
 ): ClassifiedLayers {
   const result: ClassifiedLayers = {
     poi: [],
@@ -68,13 +77,14 @@ export function classifyLayers(
     areas: [],
     depth: [],
     hazard: [],
+    text: [],
     unknown: []
   }
 
   const catalogMap = catalog
     ? new Map(catalog.map((obj) => [obj.id, obj]))
     : new Map()
-  const aliasMap = new Map<string, S52ObjectDefinition>()
+  const aliasMap = new Map<string, ChartObjectDefinition>()
   if (catalog) {
     for (const obj of catalog) {
       for (const alias of obj.aliases || []) {
@@ -86,12 +96,27 @@ export function classifyLayers(
   for (const layerId of layerIds) {
     const normalized = layerId.toUpperCase()
 
+    // Priority 0: label layers are text-only
+    if (/(label|labels)/i.test(layerId)) {
+      result.text.push(layerId)
+      continue
+    }
+
     // Priority 1: catalog lookup
     if (catalogMap.has(normalized)) {
       const feature = catalogMap.get(normalized)!
-      const rawType = feature.featureType || 'unknown'
+      const rawType =
+        feature.mapboxRenderingHints?.layerType || feature.featureType || 'auto'
       const type =
-        rawType === 'line' ? 'lines' : rawType === 'area' ? 'areas' : rawType
+        rawType === 'line'
+          ? 'lines'
+          : rawType === 'area'
+            ? 'areas'
+            : rawType === 'text'
+              ? 'text'
+              : rawType === 'poi' || rawType === 'depth' || rawType === 'hazard'
+                ? rawType
+                : 'unknown'
       result[type as keyof ClassifiedLayers].push(layerId)
       continue
     }
@@ -99,9 +124,18 @@ export function classifyLayers(
     // Priority 1b: alias lookup
     if (aliasMap.has(normalized)) {
       const feature = aliasMap.get(normalized)!
-      const rawType = feature.featureType || 'unknown'
+      const rawType =
+        feature.mapboxRenderingHints?.layerType || feature.featureType || 'auto'
       const type =
-        rawType === 'line' ? 'lines' : rawType === 'area' ? 'areas' : rawType
+        rawType === 'line'
+          ? 'lines'
+          : rawType === 'area'
+            ? 'areas'
+            : rawType === 'text'
+              ? 'text'
+              : rawType === 'poi' || rawType === 'depth' || rawType === 'hazard'
+                ? rawType
+                : 'unknown'
       result[type as keyof ClassifiedLayers].push(layerId)
       continue
     }

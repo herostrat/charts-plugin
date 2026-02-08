@@ -4,7 +4,7 @@ import * as chai from 'chai'
 
 const { expect } = chai
 
-const catalogPath = path.resolve('src/assets/s52/object-catalog.json')
+const catalogPath = path.resolve('src/catalog/data/object-catalog.json')
 const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'))
 
 const coreIds = [
@@ -50,12 +50,10 @@ describe('Nautical catalog: core entries', () => {
       const entry = findById(id)
       expect(entry, `${id} not found`).to.be.ok
       expect(entry.featureType, `${id} featureType missing`).to.be.a('string')
-      expect(entry.s52ColorScheme, `${id} s52ColorScheme missing`).to.be.an(
-        'object'
-      )
+      expect(entry.colorScheme, `${id} colorScheme missing`).to.be.an('object')
       expect(
-        entry.s52ColorScheme.default,
-        `${id} s52ColorScheme.default missing`
+        entry.colorScheme.default,
+        `${id} colorScheme.default missing`
       ).to.be.a('string')
       expect(
         entry.mapboxRenderingHints,

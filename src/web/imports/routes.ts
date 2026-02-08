@@ -281,7 +281,6 @@ const normalizeFsPath = (input: string | undefined) => {
   return path.resolve('/', safeInput)
 }
 
-
 const listDirectory = async (dirPath: string) => {
   const entries = await fsp.readdir(dirPath, { withFileTypes: true })
   const results = await Promise.all(

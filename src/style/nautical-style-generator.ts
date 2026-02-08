@@ -1,24 +1,24 @@
 /**
- * Nautical Mapbox style generator.
+ * Chart Mapbox style generator.
  *
  * Replaces the old `buildBasicVectorStyle()` with a more flexible,
- * S-52 compliant implementation for vector tiles.
+ * Chart style implementation for vector tiles.
  *
  * Introduced progressively and can coexist with the old
  * "basic" mode behind a feature flag.
  */
 
 import type { ChartProvider } from '../types'
-import { classifyLayers } from './nautical-catalog'
-import type { S52ObjectDefinition } from './nautical-catalog'
+import { classifyLayers } from '../catalog/schema'
+import type { ChartObjectDefinition } from '../catalog/schema'
 
 // ============================================================================
-// BASE STYLES (S-52 COLOR PALETTE)
+// BASE STYLES (CHART COLOR PALETTES)
 // ============================================================================
 
-type ThemeId = 'day' | 'night'
+type ThemeId = 's52_day' | 's52_night' | 'signalk_day' | 'signalk_night'
 
-type S52ThemeColors = {
+type ThemeColors = {
   water: string
   land: string
   urban: string
@@ -34,8 +34,8 @@ type S52ThemeColors = {
 
 type StyleLayer = Record<string, unknown>
 
-const S52_THEMES: Record<ThemeId, S52ThemeColors> = {
-  day: {
+const CHART_THEMES: Record<ThemeId, ThemeColors> = {
+  s52_day: {
     water: '#8db3e0',
     land: '#e8d8c8',
     urban: '#d4c4b0',
@@ -48,7 +48,7 @@ const S52_THEMES: Record<ThemeId, S52ThemeColors> = {
     symbolBlack: '#000000',
     symbolWhite: '#ffffff'
   },
-  night: {
+  s52_night: {
     water: '#0b1b2b',
     land: '#2a211a',
     urban: '#3a2f24',
@@ -60,11 +60,37 @@ const S52_THEMES: Record<ThemeId, S52ThemeColors> = {
     depthLine: '#3b6b9a',
     symbolBlack: '#f0f0f0',
     symbolWhite: '#0a0a0a'
+  },
+  signalk_day: {
+    water: '#79a6d2',
+    land: '#e2d1b8',
+    urban: '#ccb79a',
+    lateralRed: '#cc2b3e',
+    lateralGreen: '#2f9b5f',
+    light: '#f4d35e',
+    hazard: '#c44536',
+    navLine: '#5b6d9a',
+    depthLine: '#2f5e88',
+    symbolBlack: '#1d1d1d',
+    symbolWhite: '#f5f5f5'
+  },
+  signalk_night: {
+    water: '#0a1825',
+    land: '#241a14',
+    urban: '#2f231b',
+    lateralRed: '#d46a6a',
+    lateralGreen: '#5dc18f',
+    light: '#e6c15c',
+    hazard: '#d48b7b',
+    navLine: '#7a8bb3',
+    depthLine: '#3d6f9f',
+    symbolBlack: '#eaeaea',
+    symbolWhite: '#111111'
   }
 }
 
-const getThemeColors = (theme: ThemeId): S52ThemeColors => {
-  return S52_THEMES[theme] || S52_THEMES.day
+const getThemeColors = (theme: ThemeId): ThemeColors => {
+  return CHART_THEMES[theme] || CHART_THEMES.signalk_day
 }
 
 // ============================================================================
@@ -75,16 +101,15 @@ function getNauticalBaseStyle(theme: ThemeId) {
   const colors = getThemeColors(theme)
   return {
     version: 8,
-    name: `Nautical Charts (S-52 Based, ${theme})`,
+    name: `Chart Style (${theme})`,
     metadata: {
-      description:
-        'IHO S-52 compliant vector chart style for maritime navigation'
+      description: 'Vector chart style for maritime navigation'
     },
     center: [0, 50] as [number, number],
     zoom: 4,
     pitch: 0,
     bearing: 0,
-    sprite: '/@signalk/charts-plugin/styles/sprites/s52',
+    sprite: '/@signalk/charts-plugin/styles/sprites/nautical',
     glyphs: '/@signalk/charts-plugin/fonts/{fontstack}/{range}.pbf',
     background: {
       paint: {
@@ -103,7 +128,7 @@ function getNauticalBaseStyle(theme: ThemeId) {
  */
 function buildWaterAndDepthLayers(
   depthLayerIds: string[],
-  colors: S52ThemeColors
+  colors: ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
 
@@ -173,7 +198,7 @@ function buildWaterAndDepthLayers(
  */
 function buildLandLayers(
   areaLayerIds: string[],
-  colors: S52ThemeColors,
+  colors: ThemeColors,
   fillColorOverride?: string
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
@@ -213,8 +238,8 @@ function buildLandLayers(
  */
 function buildLineLayers(
   lineLayerIds: string[],
-  catalog: S52ObjectDefinition[] | undefined,
-  colors: S52ThemeColors
+  catalog: ChartObjectDefinition[] | undefined,
+  colors: ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
   const catalogMap = catalog
@@ -226,7 +251,7 @@ function buildLineLayers(
     const catalogEntry = catalogMap.get(normalized)
 
     // Standard-Linie
-    const lineColor = catalogEntry?.s52ColorScheme?.default || colors.navLine
+    const lineColor = catalogEntry?.colorScheme?.default || colors.navLine
     const linePattern = normalized === 'NAVLNE' ? [4, 2] : undefined // Dashed for navigation line
 
     layers.push({
@@ -260,14 +285,14 @@ function buildLineLayers(
  */
 function buildAreaLayers(
   areaLayerIds: string[],
-  catalog: S52ObjectDefinition[] | undefined,
-  colors: S52ThemeColors
+  catalog: ChartObjectDefinition[] | undefined,
+  colors: ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
   const catalogMap = catalog
     ? new Map(catalog.map((obj) => [obj.id, obj]))
     : new Map()
-  const aliasMap = new Map<string, S52ObjectDefinition>()
+  const aliasMap = new Map<string, ChartObjectDefinition>()
   if (catalog) {
     for (const obj of catalog) {
       for (const alias of obj.aliases || []) {
@@ -281,7 +306,7 @@ function buildAreaLayers(
     const normalized = layerId.toUpperCase()
     const catalogEntry = catalogMap.get(normalized) || aliasMap.get(normalized)
 
-    const fillColor = catalogEntry?.s52ColorScheme?.default || colors.light
+    const fillColor = catalogEntry?.colorScheme?.default || colors.light
     const fillOpacity = normalized === 'ACHARE' ? 0.15 : 0.1 // Make anchorage areas more visible
 
     layers.push({
@@ -339,7 +364,7 @@ function buildAreaLayers(
           'icon-image': [
             'case',
             ['all', ['has', 'symbol_id'], ['!=', ['get', 'symbol_id'], '']],
-            ['replace', ['downcase', ['get', 'symbol_id']], 's52_', ''],
+            ['get', 'symbol_id'],
             areaIconId
           ],
           'symbol-placement': 'point',
@@ -372,8 +397,8 @@ function buildAreaLayers(
  */
 function buildPOILayers(
   poiLayerIds: string[],
-  catalog: S52ObjectDefinition[] | undefined,
-  colors: S52ThemeColors
+  catalog: ChartObjectDefinition[] | undefined,
+  colors: ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
   const catalogMap = catalog
@@ -441,12 +466,81 @@ function buildPOILayers(
 }
 
 /**
+ * Build text-only label layers (street names, place labels, etc.)
+ */
+function buildTextLayers(
+  textLayerIds: string[],
+  catalog: ChartObjectDefinition[] | undefined,
+  colors: ThemeColors
+): StyleLayer[] {
+  const layers: StyleLayer[] = []
+  const catalogMap = catalog
+    ? new Map(catalog.map((obj) => [obj.id, obj]))
+    : new Map()
+  const aliasMap = new Map<string, ChartObjectDefinition>()
+  if (catalog) {
+    for (const obj of catalog) {
+      for (const alias of obj.aliases || []) {
+        aliasMap.set(alias.toUpperCase(), obj)
+      }
+    }
+  }
+
+  for (const layerId of textLayerIds) {
+    const normalized = layerId.toUpperCase()
+    const catalogEntry = catalogMap.get(normalized) || aliasMap.get(normalized)
+    const hints = catalogEntry?.mapboxRenderingHints || {}
+    const labelField =
+      hints.labelField && hints.labelField.trim() ? hints.labelField : 'name'
+    const minZoom = hints.minZoom ?? 8
+    const maxZoom = hints.maxZoom ?? 24
+    const placement =
+      hints.textPlacement ||
+      (/(line|lines|street|water_lines|river)/i.test(layerId)
+        ? 'line'
+        : 'point')
+
+    layers.push({
+      id: `text-label-${sanitizeId(layerId)}`,
+      type: 'symbol',
+      source: 'charts-vector',
+      'source-layer': layerId,
+      minzoom: minZoom,
+      maxzoom: maxZoom,
+      layout: {
+        'text-field': ['case', ['has', labelField], ['get', labelField], ''],
+        'text-size': hints.textSize ?? 11,
+        'text-font': ['OpenSans Regular'],
+        ...(placement === 'line'
+          ? {
+              'symbol-placement': 'line',
+              'text-rotation-alignment': 'map'
+            }
+          : {
+              'symbol-placement': 'point',
+              'text-offset': [0, 0.8],
+              'text-anchor': 'top'
+            }),
+        'text-allow-overlap': hints.textAllowOverlap ?? false
+      },
+      paint: {
+        'text-color': hints.textColor ?? colors.symbolBlack,
+        'text-halo-color': hints.textHaloColor ?? colors.symbolWhite,
+        'text-halo-width': hints.textHaloWidth ?? 1
+      }
+    })
+  }
+
+  return layers
+}
+
+/**
  * Build hazard layers (wrecks, rocks, shoals)
  */
 function buildHazardLayers(
   hazardLayerIds: string[],
-  catalog: S52ObjectDefinition[] | undefined,
-  colors: S52ThemeColors
+  catalog: ChartObjectDefinition[] | undefined,
+  colors: ThemeColors
 ): StyleLayer[] {
   const layers: StyleLayer[] = []
   const catalogMap = catalog
@@ -457,7 +551,7 @@ function buildHazardLayers(
     const normalized = layerId.toUpperCase()
     const catalogEntry = catalogMap.get(normalized)
 
-    const hazardColor = catalogEntry?.s52ColorScheme?.default || colors.hazard
+    const hazardColor = catalogEntry?.colorScheme?.default || colors.hazard
     const iconId =
       catalogEntry?.mapboxRenderingHints?.iconId ||
       getDefaultHazardIconId(layerId)
@@ -516,8 +610,8 @@ function buildHazardLayers(
  */
 export function buildNauticalVectorStyle(
   provider: ChartProvider,
-  catalog: S52ObjectDefinition[],
-  theme: ThemeId = 'day'
+  catalog: ChartObjectDefinition[],
+  theme: ThemeId = 'signalk_day'
 ) {
   const colors = getThemeColors(theme)
   // 1. Hole Layer-IDs aus Provider
@@ -553,6 +647,9 @@ export function buildNauticalVectorStyle(
 
     // Navigation lines (middle layer, above areas)
     ...buildLineLayers(classified.lines, catalog, colors),
+
+    // Text-only labels (street/water/place labels)
+    ...buildTextLayers(classified.text, catalog, colors),
 
     // POIs (buoys, lights, etc.) - above areas
     ...buildPOILayers(classified.poi, catalog, colors),

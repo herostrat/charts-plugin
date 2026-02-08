@@ -66,12 +66,19 @@ const downloadFile = async (url: string, toPath: string) => {
           response.statusCode < 400 &&
           response.headers.location
         ) {
-          const redirected = new URL(response.headers.location, nextUrl).toString()
-          download(redirected, depth + 1).then(resolve).catch(reject)
+          const redirected = new URL(
+            response.headers.location,
+            nextUrl
+          ).toString()
+          download(redirected, depth + 1)
+            .then(resolve)
+            .catch(reject)
           return
         }
         if (response.statusCode && response.statusCode >= 400) {
-          reject(new Error(`Download failed (${response.statusCode}) ${nextUrl}`))
+          reject(
+            new Error(`Download failed (${response.statusCode}) ${nextUrl}`)
+          )
           return
         }
         ensureDir(path.dirname(tmpPath))

@@ -38,8 +38,8 @@ describe('buildNauticalVectorStyle', () => {
 
   it('respects theme selection', () => {
     const provider = createProvider(['DEPARE'])
-    const dayStyle = buildNauticalVectorStyle(provider, [], 'day')
-    const nightStyle = buildNauticalVectorStyle(provider, [], 'night')
+    const dayStyle = buildNauticalVectorStyle(provider, [], 'signalk_day')
+    const nightStyle = buildNauticalVectorStyle(provider, [], 'signalk_night')
 
     expect(dayStyle.background).to.not.deep.equal(nightStyle.background)
   })
@@ -53,7 +53,7 @@ describe('buildNauticalVectorStyle', () => {
         prettyName: 'Anchorage',
         symbolId: 'ACHARE',
         featureType: 'area',
-        s52ColorScheme: { default: '#ff00ff' },
+        colorScheme: { default: '#ff00ff' },
         mapboxRenderingHints: {
           iconId: 'anchor',
           minZoom: 8,
@@ -66,7 +66,7 @@ describe('buildNauticalVectorStyle', () => {
         prettyName: 'Wreck',
         symbolId: 'WRECKS',
         featureType: 'hazard',
-        s52ColorScheme: { default: '#ff00ff' },
+        colorScheme: { default: '#ff00ff' },
         mapboxRenderingHints: { iconId: 'wreck', minZoom: 6 }
       }
     ]

@@ -1,7 +1,7 @@
 {
   "version": 8,
-  "name": "S-52 Placeholder Style",
-  "sprite": "/@signalk/charts-plugin/styles/sprites/s52",
+  "name": "Nautical Placeholder Style",
+  "sprite": "/@signalk/charts-plugin/styles/sprites/nautical",
   "sources": {
     "charts": {
       "type": "vector",

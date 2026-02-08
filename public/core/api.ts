@@ -51,9 +51,7 @@ export const api = {
   listJobs: () => apiGet(`${API_BASE}`),
   createJob: (payload: unknown) => apiSend(`${API_BASE}`, 'POST', payload),
   listSources: (opts?: { refresh?: boolean }) =>
-    apiGet(
-      `${API_BASE}/sources${opts?.refresh ? '?refresh=1' : ''}`
-    ),
+    apiGet(`${API_BASE}/sources${opts?.refresh ? '?refresh=1' : ''}`),
   upload: apiUpload,
   cancelJob: (id: string | number) =>
     apiSend(`${API_BASE}/${encodeURIComponent(id)}`, 'DELETE', null),

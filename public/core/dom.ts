@@ -32,7 +32,9 @@ export let registerStatus = $('#registerStatus') as HTMLElement | null
 // Download form
 export let downloadUrlEl = $('#downloadUrl') as HTMLInputElement | null
 export let downloadTypeEl = $('#downloadType') as HTMLSelectElement | null
-export let downloadDeliveryEl = $('#downloadDelivery') as HTMLSelectElement | null
+export let downloadDeliveryEl = $(
+  '#downloadDelivery'
+) as HTMLSelectElement | null
 export let downloadCatalogEl = $('#downloadCatalog') as HTMLSelectElement | null
 export let downloadCatalogBody = $('#downloadCatalogBody') as HTMLElement | null
 export let downloadChartEl = $('#downloadChart') as HTMLSelectElement | null

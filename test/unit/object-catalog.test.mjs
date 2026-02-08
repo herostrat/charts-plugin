@@ -1,19 +1,19 @@
 import { expect } from 'chai'
-import { loadS52Mapping } from '../../src/resources/s52-mapping.ts'
+import { loadObjectCatalog } from '../../src/catalog/loader.ts'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-describe('loadS52Mapping', () => {
+describe('loadObjectCatalog', () => {
   it('loads mapping with objects', () => {
-    const mapping = loadS52Mapping()
-    expect(mapping).to.be.an('object')
-    expect(mapping.objects).to.be.an('array')
+    const catalog = loadObjectCatalog()
+    expect(catalog).to.be.an('object')
+    expect(catalog.objects).to.be.an('array')
   })
 
   it('returns cached mapping on subsequent calls', () => {
-    const first = loadS52Mapping()
-    const second = loadS52Mapping()
+    const first = loadObjectCatalog()
+    const second = loadObjectCatalog()
     expect(second).to.equal(first)
   })
 
@@ -21,16 +21,16 @@ describe('loadS52Mapping', () => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url))
     const catalogPath = path.resolve(
       __dirname,
-      '../../src/assets/s52/object-catalog.json'
+      '../../src/catalog/data/object-catalog.json'
     )
     const original = fs.readFileSync(catalogPath, 'utf8')
     try {
       fs.writeFileSync(catalogPath, '{ invalid-json')
       const freshModule = await import(
-        `../../src/resources/s52-mapping.ts?cachebust=${Date.now()}`
+        `../../src/catalog/loader.ts?cachebust=${Date.now()}`
       )
-      const mapping = freshModule.loadS52Mapping()
-      expect(mapping).to.deep.equal({ objects: [] })
+      const catalog = freshModule.loadObjectCatalog()
+      expect(catalog).to.deep.equal({ objects: [] })
     } finally {
       fs.writeFileSync(catalogPath, original)
     }

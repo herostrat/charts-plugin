@@ -49,7 +49,7 @@ interface Config {
   onlineChartProviders: OnlineChartProvider[]
   vectorCatalogs?: Array<{
     identifier: string
-    catalog: 's52' | 'none'
+    catalog: string
   }>
 }
 
@@ -65,8 +65,8 @@ interface ChartProviderApp
 
 const MIN_ZOOM = 1
 const MAX_ZOOM = 24
-const defaultCatalogId = 's52'
-type VectorCatalogChoice = 's52' | 'none'
+const defaultCatalogId = 'nautical'
+type VectorCatalogChoice = typeof defaultCatalogId | 'none'
 
 const plugin = (app: ChartProviderApp): Plugin => {
   let chartProviders: { [key: string]: ChartProvider } = {}
@@ -500,7 +500,7 @@ const resolveUniqueChartPaths = (
 }
 
 const buildVectorCatalogMap = (
-  entries?: Array<{ identifier: string; catalog: VectorCatalogChoice }>
+  entries?: Array<{ identifier: string; catalog: string }>
 ) => {
   const map = new Map<string, VectorCatalogChoice>()
   if (!entries) {
@@ -510,7 +510,8 @@ const buildVectorCatalogMap = (
     if (!entry?.identifier) {
       return
     }
-    const choice = entry.catalog === 'none' ? 'none' : defaultCatalogId
+    const normalized = (entry.catalog || '').toLowerCase()
+    const choice = normalized === 'none' ? 'none' : defaultCatalogId
     map.set(entry.identifier, choice)
   })
   return map

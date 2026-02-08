@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename)
 
 const mappingSource = path.resolve(
   __dirname,
-  '../src/assets/s52/object-catalog.json'
+  '../src/catalog/data/object-catalog.json'
 )
 const pluginOutDir = process.env.PLUGIN_OUT_DIR || 'plugin'
 const mappingTargetDir = path.resolve(
@@ -16,7 +16,7 @@ const mappingTargetDir = path.resolve(
 )
 const mappingTarget = path.join(mappingTargetDir, 'object-catalog.json')
 
-const stylesSourceDir = path.resolve(__dirname, '../scripts/assets/mapstyles')
+const stylesSourceDir = path.resolve(__dirname, '../assets/styles/mapstyles')
 const stylesTargetDir = path.resolve(
   __dirname,
   `../${pluginOutDir}/public/styles`

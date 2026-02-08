@@ -214,7 +214,10 @@ const buildBboxUrl = (
   return delivery.urlTemplate.replace(token, formatBbox(bbox))
 }
 
-const applyDelivery = (entry: CatalogEntry | null, delivery: CuratedDelivery | null) => {
+const applyDelivery = (
+  entry: CatalogEntry | null,
+  delivery: CuratedDelivery | null
+) => {
   activeEntry = entry
   activeDelivery = delivery
 
@@ -323,13 +326,19 @@ const renderCatalogInfo = (entry?: CatalogEntry) => {
   }
 
   if (!entry) {
-    addRow('Info', 'Pick a curated source to prefill the download URL and type.')
+    addRow(
+      'Info',
+      'Pick a curated source to prefill the download URL and type.'
+    )
     downloadCatalogInfo.appendChild(wrap)
     return
   }
 
   if (isManualEntry(entry)) {
-    addRow('Info', 'By Link: paste any direct download URL and choose the type.')
+    addRow(
+      'Info',
+      'By Link: paste any direct download URL and choose the type.'
+    )
     downloadCatalogInfo.appendChild(wrap)
     return
   }
@@ -338,9 +347,7 @@ const renderCatalogInfo = (entry?: CatalogEntry) => {
   const chart = entry.chart
   const deliveries = getDeliveries(chart)
   const delivery =
-    entry === activeEntry
-      ? activeDelivery
-      : pickDefaultDelivery(deliveries)
+    entry === activeEntry ? activeDelivery : pickDefaultDelivery(deliveries)
 
   addRow('Provider', provider.name)
   addRow('Chart', chart.name)
@@ -376,9 +383,7 @@ const renderChartOptions = (provider: CuratedProvider | null) => {
   downloadChartRow?.classList.toggle('is-hidden', charts.length === 0)
 
   const selected =
-    charts.find((chart) => chart.id === activeChart?.id) ||
-    charts[0] ||
-    null
+    charts.find((chart) => chart.id === activeChart?.id) || charts[0] || null
   if (selected) downloadChartEl.value = selected.id
   return selected
 }
@@ -402,7 +407,9 @@ const renderCatalogOptions = () => {
 const loadCatalog = async () => {
   setCatalogStatus('Loading curated sources...', false)
   try {
-    const payload = (await api.listSources({ refresh: false })) as CuratedCatalog
+    const payload = (await api.listSources({
+      refresh: false
+    })) as CuratedCatalog
     curatedProviders = Array.isArray(payload?.providers)
       ? (payload.providers as CuratedProvider[])
       : []
@@ -537,8 +544,7 @@ export const initDownload = (opts: {
       return
     }
     const chart =
-      activeProvider.charts.find((c) => c.id === downloadChartEl.value) ||
-      null
+      activeProvider.charts.find((c) => c.id === downloadChartEl.value) || null
     setActiveChart(activeProvider, chart)
     updateDownloadState()
   })
@@ -614,7 +620,13 @@ export const initDownload = (opts: {
         url.split('#')[0].split('?')[0].split('/').pop() || 'download'
       let sourceUrl = url
       let detectedType = t
-      let extract: { kind: 'pmtiles'; bbox: [number, number, number, number]; maxZoom?: number } | undefined
+      let extract:
+        | {
+            kind: 'pmtiles'
+            bbox: [number, number, number, number]
+            maxZoom?: number
+          }
+        | undefined
 
       if (activeDelivery?.kind === 'bbox') {
         const bbox = parseBboxText(downloadBboxEl?.value || '')
@@ -654,7 +666,11 @@ export const initDownload = (opts: {
         filename: string
         sourceUrl: string
         detectedType: string
-        extract?: { kind: 'pmtiles'; bbox: [number, number, number, number]; maxZoom?: number }
+        extract?: {
+          kind: 'pmtiles'
+          bbox: [number, number, number, number]
+          maxZoom?: number
+        }
         metadata?: unknown
       } = { filename, sourceUrl, detectedType, extract }
 
