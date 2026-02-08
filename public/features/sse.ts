@@ -5,12 +5,6 @@ import { showError } from '../core/ui.js';
 
 let renderImportsFn: (jobs: any[]) => void;
 
-const buildSseUrl = (hostOverride?: string) => {
-  const url = new URL(`${API_BASE}/events`, window.location.origin);
-  if (hostOverride) url.hostname = hostOverride;
-  return url.toString();
-};
-
 const setLiveUi = (mode: string, text?: string) => {
   state.sse.status = mode;
   if (!liveStateEl) return;
@@ -23,10 +17,6 @@ const setLiveUi = (mode: string, text?: string) => {
   liveStateEl.textContent = text || mode;
 };
 
-const logSse = (msg: string, data?: unknown) => {
-  const payload = data ? ` ${JSON.stringify(data)}` : '';
-  console.debug(`[sse] ${msg}${payload}`);
-};
 
 const syncRefreshUi = () => {
   if (!refreshBtn) return;
@@ -135,21 +125,19 @@ export const disconnectSse = () => {
   syncRefreshUi();
 };
 
-export const connectSse = (hostOverride?: string, allowAltHost = true) => {
+export const connectSse = () => {
   disconnectSse();
 
   if (!('EventSource' in window)) {
     setLiveUi('no-sse', 'no SSE');
     showError('This browser does not support Server-Sent Events (EventSource).');
     syncRefreshUi();
-    logSse('EventSource not available');
     return;
   }
 
-  const url = buildSseUrl(hostOverride);
+  const url = new URL(`${API_BASE}/events`, window.location.origin).toString();
   setLiveUi('connecting', 'connecting');
   syncRefreshUi();
-  logSse('connecting', { url, origin: window.location.origin });
 
   const es = new EventSource(url);
   state.sse.es = es;
@@ -157,7 +145,7 @@ export const connectSse = (hostOverride?: string, allowAltHost = true) => {
 
   const readyFallback = window.setTimeout(() => {
     if (state.sse.es === es && es.readyState === 1) {
-        setLiveUi('connected', 'active');
+      setLiveUi('connected', 'active');
       syncRefreshUi();
     }
   }, 1500);
@@ -165,34 +153,19 @@ export const connectSse = (hostOverride?: string, allowAltHost = true) => {
 
   es.onopen = () => {
     state.sse.lastEventAt = Date.now();
-      setLiveUi('connected', 'active');
+    setLiveUi('connected', 'active');
     window.clearTimeout(readyFallback);
-    logSse('open');
   };
 
   es.onerror = () => {
     window.clearTimeout(readyFallback);
-    logSse('error', { readyState: es.readyState, url });
-
-    if (allowAltHost) {
-      const host = window.location.hostname;
-      const altHost = host === 'localhost' ? '127.0.0.1' : host === '127.0.0.1' ? 'localhost' : null;
-      if (altHost && !hostOverride) {
-        logSse('retry-alt-host', { altHost });
-        connectSse(altHost, false);
-        return;
-      }
-    }
-
-    setLiveUi('no-sse', 'no SSE');
-    syncRefreshUi();
+    setLiveUi('reconnecting', 'reconnecting');
   };
 
   const onAny = (ev: MessageEvent) => {
     state.sse.lastEventAt = Date.now();
     const payload = safeJson(ev.data);
     window.clearTimeout(readyFallback);
-    logSse(`event:${ev.type}`, payload ?? ev.data);
     handleSsePayload(payload);
   };
 

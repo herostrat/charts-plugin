@@ -256,6 +256,29 @@ describe('Imports Web API', () => {
     })
   })
 
+  describe('GET /@signalk/charts-plugin/imports/events', () => {
+    it('emits hello and snapshot events with SSE headers', async () => {
+      const { req, res } = await openSse(
+        testServer,
+        '/@signalk/charts-plugin/imports/events'
+      )
+
+      try {
+        expect(res.statusCode).to.equal(200)
+        expect(res.headers['content-type']).to.match(/text\/event-stream/)
+        expect(res.headers['cache-control']).to.include('no-cache')
+        expect(res.headers['cache-control']).to.include('no-transform')
+        expect(res.headers['x-accel-buffering']).to.equal('no')
+
+        const events = await readSseEvents(res, 2, 2000)
+        expect(events[0].event).to.equal('hello')
+        expect(events[1].event).to.equal('snapshot')
+      } finally {
+        req.destroy()
+      }
+    })
+  })
+
   describe('Config endpoints', () => {
     it('returns config entries', () => {
       return getRequest(testServer, '/@signalk/charts-plugin/imports/config')
@@ -295,16 +318,19 @@ describe('Imports Web API', () => {
       const itemId = job.items[0].id
 
       const { req, res } = await openSse(testServer, '/@signalk/charts-plugin/imports/events')
-      const events = await readSseEvents(res, 1)
-      expect(events[0].event).to.equal('snapshot')
-      expect(events[0].data.type).to.equal('snapshot')
-      expect(events[0].data.data).to.be.an('array')
+      try {
+        const events = await readSseEvents(res, 2)
+        const snapshot = events.find((event) => event.event === 'snapshot')
+        expect(snapshot).to.exist
+        expect(snapshot.data.type).to.equal('snapshot')
+        expect(snapshot.data.data).to.be.an('array')
 
-      updateImportItem(job.id, itemId, { state: 'COMPLETED' })
-      const updates = await readSseEvents(res, 1)
-      expect(updates[0].event).to.equal('item')
-
-      req.destroy()
+        updateImportItem(job.id, itemId, { state: 'COMPLETED' })
+        const updates = await readSseEvents(res, 1)
+        expect(updates[0].event).to.equal('item')
+      } finally {
+        req.destroy()
+      }
     })
   })
 })
