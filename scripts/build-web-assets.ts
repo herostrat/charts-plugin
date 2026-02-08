@@ -3,6 +3,7 @@ import path from 'path'
 import https from 'https'
 import http from 'http'
 import { fileURLToPath } from 'url'
+import esbuild from 'esbuild'
 import { copyTasks, downloadTasks } from './web-assets.config'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -68,9 +69,33 @@ const runDownloadTasks = async () => {
   }
 }
 
+const runBundle = async () => {
+  const publicDir = path.resolve(repoRoot, 'public')
+  const outDir = path.resolve(repoRoot, 'plugin/public')
+
+  await esbuild.build({
+    entryPoints: [path.join(publicDir, 'index.ts')],
+    outfile: path.join(outDir, 'index.js'),
+    bundle: true,
+    minify: true,
+    sourcemap: false,
+    format: 'esm',
+    target: ['es2020'],
+    treeShaking: true
+  })
+
+  await esbuild.build({
+    entryPoints: [path.join(publicDir, 'style.css')],
+    outfile: path.join(outDir, 'style.css'),
+    bundle: false,
+    minify: true
+  })
+}
+
 const main = async () => {
   runCopyTasks()
   await runDownloadTasks()
+  await runBundle()
 }
 
 main().catch((err) => {

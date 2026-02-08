@@ -2,7 +2,7 @@ interface Window {
   L?: unknown
 }
 
-import { sourcePanels, sourceTabBtns, refreshBtn, autoRefreshEl, detailsOverlay, configOverlay, refreshDom } from './core/dom.js';
+import { sourcePanels, sourceTabBtns, refreshBtn, detailsOverlay, configOverlay, refreshDom } from './core/dom.js';
 import { state } from './core/state.js';
 import { detectTypeFromName, boundsToText, isSupportedType, requiresMeta } from './core/utils.js';
 import { initLocal, loadDir, updateLocalRegisterState } from './features/local.js';
@@ -12,7 +12,7 @@ import { initImports, refreshJobs, renderImports } from './features/imports.js';
 import { initDetails, closeDetails, openDetails } from './features/details.js';
 import { initConfig } from './features/config.js';
 import { initMap, renderMap, focusBounds, resetView, setMapHidden } from './features/map.js';
-import { initSse, connectSse, disconnectSse, isSseConnected } from './features/sse.js';
+import { initSse, connectSse, isSseConnected } from './features/sse.js';
 
 (() => {
   'use strict';
@@ -38,10 +38,6 @@ import { initSse, connectSse, disconnectSse, isSseConnected } from './features/s
 
   refreshBtn?.addEventListener('click', refreshJobs);
 
-  autoRefreshEl?.addEventListener('change', () => {
-    if (autoRefreshEl.checked) connectSse();
-    else disconnectSse();
-  });
 
   window.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
@@ -52,7 +48,7 @@ import { initSse, connectSse, disconnectSse, isSseConnected } from './features/s
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
       refreshJobs();
-      if (autoRefreshEl?.checked && !isSseConnected()) connectSse();
+      if (!isSseConnected()) connectSse();
     }
   });
 

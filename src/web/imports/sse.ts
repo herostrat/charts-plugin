@@ -13,9 +13,13 @@ export const registerImportEvents = (app: Application) => {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive'
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no'
     })
+    res.flushHeaders()
     res.write('retry: 3000\n\n')
+
+    writeEvent(res, 'hello', { type: 'hello', at: new Date().toISOString() })
 
     const snapshot = listImportJobs()
     writeEvent(res, 'snapshot', { type: 'snapshot', data: snapshot })

@@ -1,9 +1,15 @@
-import { autoRefreshEl, liveStateEl } from '../core/dom.js';
+import { liveStateEl, refreshBtn } from '../core/dom.js';
 import { state } from '../core/state.js';
 import { API_BASE } from '../core/constants.js';
 import { showError } from '../core/ui.js';
 
 let renderImportsFn: (jobs: any[]) => void;
+
+const buildSseUrl = (hostOverride?: string) => {
+  const url = new URL(`${API_BASE}/events`, window.location.origin);
+  if (hostOverride) url.hostname = hostOverride;
+  return url.toString();
+};
 
 const setLiveUi = (mode: string, text?: string) => {
   state.sse.status = mode;
@@ -15,6 +21,18 @@ const setLiveUi = (mode: string, text?: string) => {
   else liveStateEl.classList.add('live--re');
 
   liveStateEl.textContent = text || mode;
+};
+
+const logSse = (msg: string, data?: unknown) => {
+  const payload = data ? ` ${JSON.stringify(data)}` : '';
+  console.debug(`[sse] ${msg}${payload}`);
+};
+
+const syncRefreshUi = () => {
+  if (!refreshBtn) return;
+  const showRefresh = state.sse.status === 'no-sse';
+  refreshBtn.disabled = !showRefresh;
+  refreshBtn.classList.toggle('is-hidden', !showRefresh);
 };
 
 const safeJson = (str: string) => {
@@ -58,6 +76,11 @@ const removeJob = (jobId: any) => {
 
 const handleSsePayload = (payload: any) => {
   if (payload == null) return;
+
+  if (state.sse.status !== 'connected') {
+     setLiveUi('connected', 'active');
+    syncRefreshUi();
+  }
 
   if (Array.isArray(payload)) {
     state.jobs = payload;
@@ -108,44 +131,68 @@ const handleSsePayload = (payload: any) => {
 export const disconnectSse = () => {
   try { state.sse.es?.close?.(); } catch (_) {}
   state.sse.es = null;
-  if (state.sse.watchdog) window.clearInterval(state.sse.watchdog);
-  state.sse.watchdog = null;
   setLiveUi('off', 'off');
+  syncRefreshUi();
 };
 
-export const connectSse = () => {
+export const connectSse = (hostOverride?: string, allowAltHost = true) => {
   disconnectSse();
 
-  if (!autoRefreshEl?.checked) {
-    setLiveUi('off', 'off');
-    return;
-  }
-
   if (!('EventSource' in window)) {
-    setLiveUi('off', 'no SSE');
+    setLiveUi('no-sse', 'no SSE');
     showError('This browser does not support Server-Sent Events (EventSource).');
+    syncRefreshUi();
+    logSse('EventSource not available');
     return;
   }
 
-  const url = `${API_BASE}/events`;
+  const url = buildSseUrl(hostOverride);
   setLiveUi('connecting', 'connecting');
+  syncRefreshUi();
+  logSse('connecting', { url, origin: window.location.origin });
 
   const es = new EventSource(url);
   state.sse.es = es;
   state.sse.lastEventAt = Date.now();
 
+  const readyFallback = window.setTimeout(() => {
+    if (state.sse.es === es && es.readyState === 1) {
+        setLiveUi('connected', 'active');
+      syncRefreshUi();
+    }
+  }, 1500);
+
+
   es.onopen = () => {
     state.sse.lastEventAt = Date.now();
-    setLiveUi('connected', 'connected');
+      setLiveUi('connected', 'active');
+    window.clearTimeout(readyFallback);
+    logSse('open');
   };
 
   es.onerror = () => {
-    setLiveUi('reconnecting', 'reconnecting');
+    window.clearTimeout(readyFallback);
+    logSse('error', { readyState: es.readyState, url });
+
+    if (allowAltHost) {
+      const host = window.location.hostname;
+      const altHost = host === 'localhost' ? '127.0.0.1' : host === '127.0.0.1' ? 'localhost' : null;
+      if (altHost && !hostOverride) {
+        logSse('retry-alt-host', { altHost });
+        connectSse(altHost, false);
+        return;
+      }
+    }
+
+    setLiveUi('no-sse', 'no SSE');
+    syncRefreshUi();
   };
 
   const onAny = (ev: MessageEvent) => {
     state.sse.lastEventAt = Date.now();
     const payload = safeJson(ev.data);
+    window.clearTimeout(readyFallback);
+    logSse(`event:${ev.type}`, payload ?? ev.data);
     handleSsePayload(payload);
   };
 
@@ -154,17 +201,10 @@ export const connectSse = () => {
   es.addEventListener('job', onAny);
   es.addEventListener('item', onAny);
   es.addEventListener('delete', onAny);
+  es.addEventListener('hello', onAny);
   es.addEventListener('ping', () => { state.sse.lastEventAt = Date.now(); });
 
-  state.sse.watchdog = window.setInterval(() => {
-    if (!autoRefreshEl?.checked) return;
-    const age = Date.now() - (state.sse.lastEventAt || 0);
-    if (age > 30000) {
-      setLiveUi('reconnecting', 'reconnecting');
-      try { es.close(); } catch (_) {}
-      connectSse();
-    }
-  }, 5000);
+  // No watchdog: idle periods can be normal for this app.
 };
 
 export const isSseConnected = () => {
@@ -174,8 +214,5 @@ export const isSseConnected = () => {
 export const initSse = (opts: { renderImports: (jobs: any[]) => void }) => {
   renderImportsFn = opts.renderImports;
 
-  autoRefreshEl?.addEventListener('change', () => {
-    if (autoRefreshEl.checked) connectSse();
-    else disconnectSse();
-  });
+  syncRefreshUi();
 };

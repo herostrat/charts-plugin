@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs/promises'
+import type { Dirent } from 'fs'
 import type {
   ImportFileType,
   ImportItem,
@@ -308,7 +309,7 @@ export const seedImportJobsFromDatabase = async (databaseDir: string) => {
     return
   }
 
-  let entries: fs.Dirent[]
+  let entries: Dirent[]
   try {
     entries = await fs.readdir(databaseDir, { withFileTypes: true })
   } catch {

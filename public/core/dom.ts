@@ -50,7 +50,6 @@ export let streamStatus = $('#streamStatus') as HTMLElement | null;
 
 // Global refresh
 export let refreshBtn = $('#refreshBtn') as HTMLButtonElement | null;
-export let autoRefreshEl = $('#autoRefresh') as HTMLInputElement | null;
 export let liveStateEl = $('#liveState') as HTMLElement | null;
 
 // Imports UI
@@ -124,7 +123,6 @@ export const refreshDom = () => {
 	streamStatus = $('#streamStatus') as HTMLElement | null;
 
 	refreshBtn = $('#refreshBtn') as HTMLButtonElement | null;
-	autoRefreshEl = $('#autoRefresh') as HTMLInputElement | null;
 	liveStateEl = $('#liveState') as HTMLElement | null;
 
 	importsListEl = $('#importsList') as HTMLElement | null;
