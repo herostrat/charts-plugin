@@ -5,14 +5,47 @@ on:
    types: [completed]
 
 jobs:
-  build:
+  publish_base:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: '22.x'
         registry-url: 'https://registry.npmjs.org'
-    - run: npm install && npm run build && npm publish --access public
+        cache: 'npm'
+        cache-dependency-path: |
+          package-lock.json
+    - run: npm ci
+    - run: npm run build
+    - run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish_arch:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - arch: linux-x64
+            runner: ubuntu-latest
+          - arch: linux-arm64
+            runner: ubuntu-24.04-arm64
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'npm'
+        cache-dependency-path: |
+          package-lock.json
+    - run: npm ci
+    - name: Build arch bundle
+      run: PLUGIN_OUT_DIR=plugin-${{ matrix.arch }} npm run build
+    - name: Prepare arch package
+      run: node scripts/prepare-arch-package.mjs --arch ${{ matrix.arch }}
+    - name: Publish arch package
+      run: npm publish dist/package-${{ matrix.arch }} --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

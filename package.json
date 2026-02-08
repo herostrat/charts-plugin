@@ -5,10 +5,11 @@
   "main": "plugin/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsup && npm run build:sprites && npm run copy-style-assets && npm run build:web-assets",
-    "build:web-assets": "tsx scripts/build-web-assets.ts && tsc -p tsconfig.web.json --noEmit",
+    "build": "tsup && npm run build:sprites && npm run copy-style-assets && npm run build:runtime-assets",
+    "build:runtime-assets": "tsx scripts/build-runtime-assets.ts && tsc -p tsconfig.web.json --noEmit",
+    "build:web-assets": "npm run build:runtime-assets",
     "copy-style-assets": "tsx scripts/copy-style-assets.ts",
-    "watch": "tsup --watch --onSuccess \"npm run copy-style-assets && npm run build:sprites && npm run build:web-assets\"",
+    "watch": "tsup --watch --onSuccess \"npm run copy-style-assets && npm run build:sprites && npm run build:runtime-assets\"",
     "start": "npm run watch",
     "prepare": "npm run build",
     "prettier": "prettier -w \"src/**/*.{ts,js,css,html,json,md}\" \"scripts/**/*.{ts,js,json,md}\" \"test/**/*.{ts,js,mjs,json,md}\" \"public/**/*.{ts,js,css,html}\"",
@@ -21,7 +22,8 @@
     "coverage": "npx c8 --reporter=lcov --reporter=text --exclude test --exclude \"**/*.d.ts\" mocha --node-option import=tsx \"test/**/*.mjs\" \"test/**/*.ts\"",
     "coverage:report": "c8 report --reporter=html && echo 'Coverage report generated at coverage/index.html'",
     "build:sprites": "tsx scripts/build-sprites.ts",
-    "sources:generate": "tsx scripts/generate-curated-sources.ts"
+    "sources:generate": "tsx scripts/generate-curated-sources.ts",
+    "prepare-arch-package": "node scripts/prepare-arch-package.mjs"
   },
   "c8": {
     "exclude": [

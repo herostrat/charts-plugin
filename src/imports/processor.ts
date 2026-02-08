@@ -1,8 +1,9 @@
 import path from 'path'
 import os from 'os'
-import { createWriteStream } from 'fs'
+import { createWriteStream, existsSync } from 'fs'
 import { pipeline } from 'stream/promises'
 import { spawn } from 'child_process'
+import { fileURLToPath } from 'url'
 import {
   addImportJobError,
   getImportJob,
@@ -43,6 +44,21 @@ const resolveOutputDir = (sourcePath?: string) => {
 
 const safeFilename = (name: string) => name.replace(/[^a-zA-Z0-9._-]/g, '_')
 
+const resolvePmtilesBin = () => {
+  const binName = process.platform === 'win32' ? 'pmtiles.cmd' : 'pmtiles'
+  const pluginBin = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    'bin',
+    binName
+  )
+  if (!existsSync(pluginBin)) {
+    throw new Error(
+      `pmtiles CLI missing at ${pluginBin}. Run build to bundle it.`
+    )
+  }
+  return pluginBin
+}
+
 const downloadToTempFile = async (sourceUrl: string, filename: string) => {
   const res = await fetch(sourceUrl)
   if (!res.ok) {
@@ -81,12 +97,15 @@ const runPmtilesExtract = (
       args.push(`--maxzoom=${maxZoom}`)
     }
 
-    const proc = spawn('pmtiles', args)
+    const bin = resolvePmtilesBin()
+    const proc = spawn(bin, args)
     let stderr = ''
     proc.stderr.on('data', (data) => {
       stderr += data.toString()
     })
-    proc.on('error', (err) => reject(err))
+    proc.on('error', (err) => {
+      reject(err)
+    })
     proc.on('close', (code) => {
       if (code === 0) {
         resolve()
@@ -229,7 +248,11 @@ const extractMetadata = async (
   return null
 }
 
-const buildMetadataPayload = (item: ImportItem, meta: ImportItemMetadata) => {
+const buildMetadataPayload = (
+  item: ImportItem,
+  meta: ImportItemMetadata,
+  sourcePathOverride?: string
+) => {
   if (!isValidMetadata(meta)) {
     return null
   }
@@ -246,11 +269,16 @@ const buildMetadataPayload = (item: ImportItem, meta: ImportItemMetadata) => {
     updatedAt: meta.updatedAt,
     detectedType: item.detectedType,
     source: {
-      path: item.sourcePath,
+      path: sourcePathOverride ?? item.sourcePath,
       url: item.sourceUrl,
       streamUrl: item.streamUrl
     }
   }
+}
+
+const isWithinDir = (filePath: string, dirPath: string) => {
+  const rel = path.relative(dirPath, filePath)
+  return rel && !rel.startsWith('..') && !path.isAbsolute(rel)
 }
 
 const processItem = async (jobId: number, item: ImportItem) => {
@@ -387,14 +415,18 @@ const processItem = async (jobId: number, item: ImportItem) => {
     const stagingDir = buildStagingDir(layout.inputDir, bundleId)
     const finalDir = path.join(layout.inputDir, bundleId)
     const targetPath = path.join(finalDir, path.basename(sourcePath))
+    const uploadDir = path.join(layout.inputDir, 'uploads')
+    const sourceIsUpload = isWithinDir(sourcePath, uploadDir)
 
     await fs.mkdir(stagingDir, { recursive: true })
-    await fs.copyFile(
-      sourcePath,
-      path.join(stagingDir, path.basename(sourcePath))
-    )
+    const stagedPath = path.join(stagingDir, path.basename(sourcePath))
+    if (sourceIsUpload) {
+      await safeMove(sourcePath, stagedPath)
+    } else {
+      await fs.copyFile(sourcePath, stagedPath)
+    }
 
-    const metadataPayload = buildMetadataPayload(item, validMeta)
+    const metadataPayload = buildMetadataPayload(item, validMeta, targetPath)
     if (metadataPayload) {
       await writeChartsMetadataFile(stagingDir, metadataPayload)
     }
@@ -422,8 +454,21 @@ const processItem = async (jobId: number, item: ImportItem) => {
       const inputDir = path.join(layout.inputDir, bundleId)
       const databaseDir = path.join(layout.databaseDir, bundleId)
       await safeMove(inputDir, databaseDir)
+      const databaseSourcePath = path.join(
+        databaseDir,
+        path.basename(workingSourcePath)
+      )
+      const metadataPayload = buildMetadataPayload(
+        item,
+        validMeta,
+        databaseSourcePath
+      )
+      if (metadataPayload) {
+        await writeChartsMetadataFile(databaseDir, metadataPayload)
+      }
       updateImportItem(jobId, item.id, {
         output: databaseDir,
+        sourcePath: databaseSourcePath,
         state: 'AVAILABLE'
       })
     } else {
@@ -444,12 +489,15 @@ const processItem = async (jobId: number, item: ImportItem) => {
     })
     if (layout) {
       const bundleId = buildBundleId(jobId, item.id)
+      const inputDir = path.join(layout.inputDir, bundleId)
       const databaseDir = path.join(layout.databaseDir, bundleId)
       await commitStagingDir(conversionOutputDir, databaseDir)
+      await fs.rm(inputDir, { recursive: true, force: true }).catch(() => {})
       updateImportItem(jobId, item.id, {
         state: 'AVAILABLE',
         stagingDir: outcome.stagingDir,
-        output: databaseDir
+        output: databaseDir,
+        sourcePath: databaseDir
       })
     } else {
       updateImportItem(jobId, item.id, {

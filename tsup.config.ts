@@ -1,9 +1,11 @@
 import { defineConfig } from 'tsup'
 
+const outDir = process.env.PLUGIN_OUT_DIR || 'plugin'
+
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
-  outDir: 'plugin',
+  outDir,
   dts: true,
   clean: true,
   platform: 'node',

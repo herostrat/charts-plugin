@@ -8,7 +8,12 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const repoRoot = path.resolve(__dirname, '..')
-const outputDir = path.resolve(repoRoot, 'plugin/public/styles/sprites')
+const pluginOutDir = process.env.PLUGIN_OUT_DIR || 'plugin'
+const outputDir = path.resolve(
+  repoRoot,
+  pluginOutDir,
+  'public/styles/sprites'
+)
 const outputBase = path.join(outputDir, 's52')
 const iconDir = path.resolve(repoRoot, 'scripts/assets/charts/icons')
 

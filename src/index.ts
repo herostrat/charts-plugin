@@ -375,10 +375,10 @@ const plugin = (app: ChartProviderApp): Plugin => {
     if (!refreshListenerRegistered) {
       let refreshTimer: NodeJS.Timeout | null = null
       onImportEvent((event) => {
-        if (event.type !== 'item') {
+        if (event.type === 'item' && event.item.state !== 'AVAILABLE') {
           return
         }
-        if (event.item.state !== 'AVAILABLE') {
+        if (event.type !== 'item' && event.type !== 'delete') {
           return
         }
         if (refreshTimer) {

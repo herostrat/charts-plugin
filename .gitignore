@@ -12,3 +12,6 @@ tmp/
 test/fixtures/charts/input/uploads/*-upload.tif
 test/fixtures/charts/input/uploads/*-upload.tiff
 test/fixtures/charts/input/*.staging/
+dist/
+plugin-linux-*/
+.cache/runtime-assets/

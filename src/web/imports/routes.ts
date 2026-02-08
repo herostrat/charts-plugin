@@ -19,7 +19,8 @@ import type {
   ImportFileType,
   ImportItemMetadata,
   ImportStreamType,
-  ImportExtractOptions
+  ImportExtractOptions,
+  ImportJob
 } from '../../imports/types'
 import {
   getConvertersForType,
@@ -57,6 +58,29 @@ const normalizeParam = (value: string | string[] | undefined) => {
     return value[0] ?? ''
   }
   return value ?? ''
+}
+
+const buildBundleId = (jobId: number, itemId: string) => `${jobId}-${itemId}`
+
+const deleteImportArtifacts = async (job: ImportJob) => {
+  const layout = getChartsStorageLayout()
+  if (!layout) return
+  const targets = [] as string[]
+  for (const item of job.items) {
+    const bundleId = buildBundleId(job.id, item.id)
+    targets.push(
+      path.join(layout.databaseDir, bundleId),
+      path.join(layout.inputDir, bundleId),
+      path.join(layout.inputDir, `${bundleId}.staging`),
+      path.join(layout.conversionDir, bundleId),
+      path.join(layout.conversionDir, `${bundleId}.staging`)
+    )
+  }
+  await Promise.all(
+    targets.map((target) =>
+      fsp.rm(target, { recursive: true, force: true }).catch(() => {})
+    )
+  )
 }
 
 const detectTypeFromFilename = (filename: string): ImportFileType => {
@@ -417,7 +441,7 @@ export const registerImportRoutes = ({
 
   app.delete(
     `${CHART_IMPORTS_PATH}/:id`,
-    (req: Request, res: Response, next) => {
+    async (req: Request, res: Response, next) => {
       const idRaw = normalizeParam(req.params.id)
       if (['config', 'events', 'fs', 'converters'].includes(idRaw)) {
         return next()
@@ -432,6 +456,7 @@ export const registerImportRoutes = ({
         if (!existing) {
           return sendError(res, 404, 'Import job not found')
         }
+        await deleteImportArtifacts(existing)
         const job = deleteImportJob(id)
         if (!job) {
           return sendError(res, 409, 'Import job is still in progress')

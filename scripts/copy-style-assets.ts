@@ -9,11 +9,18 @@ const mappingSource = path.resolve(
   __dirname,
   '../src/assets/s52/object-catalog.json'
 )
-const mappingTargetDir = path.resolve(__dirname, '../plugin/style/mapping')
+const pluginOutDir = process.env.PLUGIN_OUT_DIR || 'plugin'
+const mappingTargetDir = path.resolve(
+  __dirname,
+  `../${pluginOutDir}/style/mapping`
+)
 const mappingTarget = path.join(mappingTargetDir, 'object-catalog.json')
 
 const stylesSourceDir = path.resolve(__dirname, '../scripts/assets/mapstyles')
-const stylesTargetDir = path.resolve(__dirname, '../plugin/public/styles')
+const stylesTargetDir = path.resolve(
+  __dirname,
+  `../${pluginOutDir}/public/styles`
+)
 
 const copyDir = (fromDir: string, toDir: string) => {
   fs.mkdirSync(toDir, { recursive: true })

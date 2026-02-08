@@ -226,11 +226,21 @@ export const renderImports = (jobs: ImportJob[]) => {
     const deleteBtn = el.querySelector(
       'button[data-delete]'
     ) as HTMLButtonElement | null
-    deleteBtn?.addEventListener('click', (ev) => {
+    deleteBtn?.addEventListener('click', async (ev) => {
       ev.stopPropagation()
       if (!window.confirm('Delete this import job? This cannot be undone.'))
         return
-      showError('Delete is not implemented yet.')
+      if (deleteBtn) deleteBtn.disabled = true
+      try {
+        const jobId = Number(job.id)
+        if (!Number.isFinite(jobId)) throw new Error('Invalid job id')
+        await api.deleteJob(jobId)
+        if (!isSseConnectedFn?.()) await refreshJobs()
+      } catch (err: unknown) {
+        showError(`Delete failed: ${getErrorMessage(err)}`)
+      } finally {
+        if (deleteBtn) deleteBtn.disabled = false
+      }
     })
 
     importsListEl?.appendChild(el)
