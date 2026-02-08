@@ -1,7 +1,9 @@
 import type { Application, Request, Response } from 'express'
 import express from 'express'
-import fs from 'fs/promises'
+import fs from 'fs'
+import fsp from 'fs/promises'
 import path from 'path'
+import multer from 'multer'
 import { CHART_IMPORTS_PATH } from '../../routes/paths'
 import {
   cancelImportJob,
@@ -11,6 +13,7 @@ import {
   listImportJobs
 } from '../../imports/store'
 import { enqueueImportJob } from '../../imports/processor'
+import { getChartsStorageLayout } from '../../imports/storage'
 import type {
   ImportConversionOptions,
   ImportFileType,
@@ -82,6 +85,10 @@ const isValidDetectedType = (value: string) => {
   return ['geotiff', 's57', 'mbtiles', 'pmtiles', 'folder', 'unknown'].includes(
     value
   )
+}
+
+const sanitizeFilename = (name: string) => {
+  return name.replace(/[^a-zA-Z0-9._-]/g, '_')
 }
 
 const resolveFilename = (entry: ImportRequestItem) => {
@@ -218,14 +225,14 @@ const normalizeFsPath = (input: string | undefined) => {
 }
 
 const listDirectory = async (dirPath: string) => {
-  const entries = await fs.readdir(dirPath, { withFileTypes: true })
+  const entries = await fsp.readdir(dirPath, { withFileTypes: true })
   const results = await Promise.all(
     entries.map(async (entry) => {
       const fullPath = path.join(dirPath, entry.name)
       let size: number | undefined
       let mtime: string | undefined
       try {
-        const stats = await fs.stat(fullPath)
+        const stats = await fsp.stat(fullPath)
         size = stats.isFile() ? stats.size : undefined
         mtime = stats.mtime.toISOString()
       } catch {
@@ -251,11 +258,32 @@ export const registerImportRoutes = ({
   app.use(CHART_IMPORTS_PATH, express.json({ limit: '10mb' }))
   registerImportEvents(app)
 
+  const upload = multer({
+    storage: multer.diskStorage({
+      destination: (_req, _file, cb) => {
+        const layout = getChartsStorageLayout()
+        if (!layout) {
+          cb(new Error('Charts storage layout not initialized'), '')
+          return
+        }
+        const dir = path.join(layout.inputDir, 'uploads')
+        fs.mkdirSync(dir, { recursive: true })
+        cb(null, dir)
+      },
+      filename: (_req, file, cb) => {
+        const base = sanitizeFilename(
+          path.basename(file.originalname || 'upload')
+        )
+        cb(null, `${Date.now()}-${base}`)
+      }
+    })
+  })
+
   app.get(`${CHART_IMPORTS_PATH}/fs`, async (req: Request, res: Response) => {
     const requested = normalizeParam(req.query.path as string | undefined)
     const dirPath = normalizeFsPath(requested)
     try {
-      const stats = await fs.stat(dirPath)
+      const stats = await fsp.stat(dirPath)
       if (!stats.isDirectory()) {
         return sendError(res, 400, 'Path is not a directory')
       }
@@ -290,6 +318,53 @@ export const registerImportRoutes = ({
     enqueueImportJob(job.id)
     return res.status(202).json(job)
   })
+
+  app.post(
+    `${CHART_IMPORTS_PATH}/upload`,
+    upload.single('file'),
+    (req: Request, res: Response) => {
+      const file = req.file
+      if (!file) {
+        return sendError(res, 400, 'File is required')
+      }
+
+      const rawType = normalizeDetectedType(
+        typeof req.body?.detectedType === 'string'
+          ? (req.body.detectedType as ImportFileType)
+          : undefined
+      )
+      const detectedType =
+        rawType ?? detectTypeFromFilename(file.originalname || file.filename)
+
+      if (!isValidDetectedType(detectedType)) {
+        return sendError(res, 400, 'Unsupported detectedType')
+      }
+      if (detectedType === 'folder') {
+        return sendError(res, 400, 'Folder uploads are not supported')
+      }
+
+      let metadata: ImportItemMetadata | undefined
+      if (typeof req.body?.metadata === 'string' && req.body.metadata.trim()) {
+        try {
+          metadata = JSON.parse(req.body.metadata) as ImportItemMetadata
+        } catch {
+          return sendError(res, 400, 'Invalid metadata JSON')
+        }
+      }
+
+      const job = createImportJob([
+        {
+          filename: file.originalname || file.filename,
+          sourcePath: file.path,
+          sizeBytes: file.size,
+          detectedType,
+          metadata
+        }
+      ])
+      enqueueImportJob(job.id)
+      return res.status(202).json(job)
+    }
+  )
 
   app.delete(
     `${CHART_IMPORTS_PATH}/:id`,

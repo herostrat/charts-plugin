@@ -9,7 +9,8 @@ import plugin from '../../src/index.ts'
 import {
   createImportJob,
   resetImportStore,
-  updateImportItem
+  updateImportItem,
+  updateImportJobState
 } from '../../src/imports/store.ts'
 import { createTestServer } from '../helpers/test-server.mjs'
 
@@ -175,6 +176,21 @@ describe('Imports Web API', () => {
         })
     })
 
+    it('rejects unsupported detectedType', () => {
+      return postRequest(testServer, '/@signalk/charts-plugin/imports', {
+        items: [{
+          filename: 'test.tif',
+          sourcePath: '/tmp/test.tif',
+          detectedType: 'nope'
+        }]
+      })
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/detectedType/)
+        })
+    })
+
     it('accepts a valid item', () => {
       return postRequest(testServer, '/@signalk/charts-plugin/imports', {
         items: [{
@@ -207,6 +223,22 @@ describe('Imports Web API', () => {
           expect(res.status).to.equal(404)
         })
     })
+
+    it('returns a job when it exists', () => {
+      const job = createImportJob([
+        {
+          filename: 'sample.tif',
+          sourcePath: '/tmp/sample.tif',
+          detectedType: 'geotiff'
+        }
+      ])
+
+      return getRequest(testServer, `/@signalk/charts-plugin/imports/${job.id}`)
+        .then((res) => {
+          expect(res.status).to.equal(200)
+          expect(res.body.id).to.equal(job.id)
+        })
+    })
   })
 
   describe('DELETE /@signalk/charts-plugin/imports/:id', () => {
@@ -215,6 +247,46 @@ describe('Imports Web API', () => {
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(404)
+        })
+    })
+
+    it('deletes a completed job when action=delete', () => {
+      const job = createImportJob([
+        {
+          filename: 'sample.tif',
+          sourcePath: '/tmp/sample.tif',
+          detectedType: 'geotiff'
+        }
+      ])
+      updateImportJobState(job.id, 'COMPLETED')
+
+      return deleteRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/${job.id}?action=delete`
+      )
+        .then((res) => {
+          expect(res.status).to.equal(200)
+          expect(res.body.id).to.equal(job.id)
+        })
+    })
+
+    it('cancels a job by default', () => {
+      const job = createImportJob([
+        {
+          filename: 'sample.tif',
+          sourcePath: '/tmp/sample.tif',
+          detectedType: 'geotiff'
+        }
+      ])
+
+      return deleteRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/${job.id}`
+      )
+        .then((res) => {
+          expect(res.status).to.equal(200)
+          expect(res.body.id).to.equal(job.id)
+          expect(res.body.state).to.equal('CANCELED')
         })
     })
   })
@@ -242,6 +314,15 @@ describe('Imports Web API', () => {
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(400)
+        })
+    })
+
+    it('returns 404 for missing directory', () => {
+      const missingPath = path.join(createTempDir(), 'missing')
+      return getRequest(testServer, `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(missingPath)}`)
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(404)
         })
     })
   })

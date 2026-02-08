@@ -1,4 +1,4 @@
-import { basemapNote, mapEl, mapEmpty, mapToggle, mapWrap } from '../core/dom.js';
+import { basemapNote, mapEl, mapEmpty, mapReset, mapToggle, mapWrap } from '../core/dom.js';
 import { state } from '../core/state.js';
 import { getBounds } from '../core/utils.js';
 
@@ -134,5 +134,6 @@ export const initMap = (opts: { renderImports: () => void }) => {
 
   addLocalVectorBasemap();
 
+  mapReset?.addEventListener('click', () => resetView());
   mapToggle?.addEventListener('click', () => setMapHidden(!state.mapHidden));
 };

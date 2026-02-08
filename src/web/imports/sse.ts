@@ -3,10 +3,16 @@ import { CHART_IMPORTS_PATH } from '../../routes/paths'
 import { listImportJobs } from '../../imports/store'
 import { onImportEvent } from '../../imports/events'
 
+type FlushableResponse = Response & { flush?: () => void }
+
+const flush = (res: Response) => {
+  ;(res as FlushableResponse).flush?.()
+}
+
 const writeEvent = (res: Response, event: string, payload: unknown) => {
   res.write(`event: ${event}\n`)
   res.write(`data: ${JSON.stringify(payload)}\n\n`)
-  res.flush?.()
+  flush(res)
 }
 
 export const registerImportEvents = (app: Application) => {
@@ -19,7 +25,7 @@ export const registerImportEvents = (app: Application) => {
     })
     res.flushHeaders()
     res.write('retry: 3000\n\n')
-    res.flush?.()
+    flush(res)
 
     writeEvent(res, 'hello', { type: 'hello', at: new Date().toISOString() })
 

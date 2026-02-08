@@ -7,6 +7,7 @@ import { state } from './core/state.js';
 import { detectTypeFromName, boundsToText, isSupportedType, requiresMeta } from './core/utils.js';
 import { initLocal, loadDir, updateLocalRegisterState } from './features/local.js';
 import { initDownload, updateDownloadState } from './features/download.js';
+import { initUpload, updateUploadState } from './features/upload.js';
 import { initStream, updateStreamState } from './features/stream.js';
 import { initImports, refreshJobs, renderImports } from './features/imports.js';
 import { initDetails, closeDetails, openDetails } from './features/details.js';
@@ -34,6 +35,7 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js';
 
   initLocal({ refreshJobs, isSseConnected });
   initDownload({ refreshJobs, isSseConnected });
+  initUpload({ refreshJobs, isSseConnected });
   initStream({ refreshJobs, isSseConnected });
 
   refreshBtn?.addEventListener('click', refreshJobs);
@@ -71,6 +73,7 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js';
   loadDir('/');
   updateLocalRegisterState();
   updateDownloadState();
+  updateUploadState();
   updateStreamState();
 
   refreshJobs();

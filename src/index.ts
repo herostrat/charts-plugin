@@ -414,8 +414,15 @@ const plugin = (app: ChartProviderApp): Plugin => {
   const registerRoutes = () => {
     app.debug('** Registering API paths **')
 
-    const publicAssets = path.resolve(__dirname, 'public')
-    if (fs.existsSync(publicAssets)) {
+    const publicAssetsCandidates = [
+      path.resolve(__dirname, 'public'),
+      path.resolve(__dirname, '..', 'plugin', 'public'),
+      path.resolve(__dirname, '..', 'public')
+    ]
+    const publicAssets = publicAssetsCandidates.find((candidate) =>
+      fs.existsSync(candidate)
+    )
+    if (publicAssets) {
       app.use('/@signalk/charts-plugin', express.static(publicAssets))
     }
 

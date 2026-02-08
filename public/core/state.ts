@@ -14,5 +14,6 @@ export const state = {
   filter: 'active',
   sse: { es: null as EventSource | null, status: 'off', lastEventAt: 0, watchdog: null as number | null },
   local: { selected: null as any, type: 'unknown' },
-  download: { typeOverridden: false }
+  download: { typeOverridden: false },
+  upload: { typeOverridden: false }
 };

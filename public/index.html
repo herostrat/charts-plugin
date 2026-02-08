@@ -80,6 +80,7 @@
             <p></p>
           </div>
           <div class="head-actions">
+            <button id="mapReset" class="btn btn--ghost btn--sm">Zoom out</button>
             <button id="mapToggle" class="btn btn--ghost btn--sm">Hide</button>
           </div>
         </div>
@@ -105,6 +106,7 @@
         <div class="head-actions">
           <div class="seg" aria-label="Source mode">
             <button class="is-active" data-tab="register">Local</button>
+            <button data-tab="upload">Upload</button>
             <button data-tab="download">Download</button>
             <button data-tab="stream">Streaming</button>
           </div>
@@ -198,6 +200,77 @@
             <div id="registerStatus" class="status" role="status">Select a file or folder to register.</div>
 
             <div class="hint">Supported by extension: <code>.tif/.tiff</code>, <code>.mbtiles</code>, <code>.pmtiles</code>, <code>.000/.001/.s57</code>. Also supported: <code>folder</code> (requires metadata).</div>
+          </div>
+        </section>
+
+        <!-- Upload -->
+        <section class="panel" data-panel="upload">
+          <div class="form">
+            <label class="field">
+              <span>Upload file</span>
+              <input id="uploadFile" class="input" type="file" accept=".tif,.tiff,.mbtiles,.pmtiles,.s57,.000,.001" />
+            </label>
+
+            <label class="field">
+              <span>Detected type (override)</span>
+              <select id="uploadType" class="select">
+                <option value="unknown">unknown</option>
+                <option value="geotiff">geotiff</option>
+                <option value="s57">s57</option>
+                <option value="mbtiles">mbtiles</option>
+                <option value="pmtiles">pmtiles</option>
+              </select>
+            </label>
+
+            <div id="uploadHeavyWarn" class="status is-warn is-hidden">
+              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
+            </div>
+
+            <div id="uploadMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
+              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
+
+              <div class="field">
+                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                <div class="grid4">
+                  <input id="upMinLon" class="input" type="number" step="any" placeholder="minLon" />
+                  <input id="upMinLat" class="input" type="number" step="any" placeholder="minLat" />
+                  <input id="upMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
+                  <input id="upMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
+                </div>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Min zoom</span>
+                  <input id="upMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
+                </label>
+                <label class="field">
+                  <span>Max zoom</span>
+                  <input id="upMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
+                </label>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Updated</span>
+                  <input id="upUpdated" class="input" type="datetime-local" />
+                </label>
+                <label class="field">
+                  <span>Format</span>
+                  <input id="upFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Description</span>
+                <input id="upDescription" class="input" type="text" placeholder="Short description" />
+              </label>
+
+              <div id="upMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
+            </div>
+
+            <button id="uploadBtn" class="btn btn--primary" disabled>Upload</button>
+            <div id="uploadStatus" class="status" role="status">Select a file to upload. Type is guessed from the filename but can be overridden.</div>
           </div>
         </section>
 

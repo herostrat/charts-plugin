@@ -38,6 +38,15 @@ export let downloadHeavyWarn = $('#downloadHeavyWarn') as HTMLElement | null;
 export let downloadBtn = $('#downloadBtn') as HTMLButtonElement | null;
 export let downloadStatus = $('#downloadStatus') as HTMLElement | null;
 
+// Upload form
+export let uploadFileEl = $('#uploadFile') as HTMLInputElement | null;
+export let uploadTypeEl = $('#uploadType') as HTMLSelectElement | null;
+export let uploadMetaBox = $('#uploadMetaBox') as HTMLElement | null;
+export let uploadMetaStatus = $('#upMetaStatus') as HTMLElement | null;
+export let uploadHeavyWarn = $('#uploadHeavyWarn') as HTMLElement | null;
+export let uploadBtn = $('#uploadBtn') as HTMLButtonElement | null;
+export let uploadStatus = $('#uploadStatus') as HTMLElement | null;
+
 // Stream form
 export let streamUrlEl = $('#streamUrl') as HTMLInputElement | null;
 export let streamTypeEl = $('#streamType') as HTMLSelectElement | null;
@@ -64,6 +73,7 @@ export let kpiTotal = $('#kpiTotal') as HTMLElement | null;
 // Map
 export let mapEl = $('#leafletMap') as HTMLDivElement | null;
 export let mapWrap = $('#mapWrap') as HTMLElement | null;
+export let mapReset = $('#mapReset') as HTMLButtonElement | null;
 export let mapToggle = $('#mapToggle') as HTMLButtonElement | null;
 export let mapEmpty = $('#mapEmpty') as HTMLElement | null;
 export let basemapNote = $('#basemapNote') as HTMLElement | null;
@@ -113,6 +123,14 @@ export const refreshDom = () => {
 	downloadBtn = $('#downloadBtn') as HTMLButtonElement | null;
 	downloadStatus = $('#downloadStatus') as HTMLElement | null;
 
+	uploadFileEl = $('#uploadFile') as HTMLInputElement | null;
+	uploadTypeEl = $('#uploadType') as HTMLSelectElement | null;
+	uploadMetaBox = $('#uploadMetaBox') as HTMLElement | null;
+	uploadMetaStatus = $('#upMetaStatus') as HTMLElement | null;
+	uploadHeavyWarn = $('#uploadHeavyWarn') as HTMLElement | null;
+	uploadBtn = $('#uploadBtn') as HTMLButtonElement | null;
+	uploadStatus = $('#uploadStatus') as HTMLElement | null;
+
 	streamUrlEl = $('#streamUrl') as HTMLInputElement | null;
 	streamTypeEl = $('#streamType') as HTMLSelectElement | null;
 	streamDetectedTypeEl = $('#streamDetectedType') as HTMLSelectElement | null;
@@ -135,6 +153,7 @@ export const refreshDom = () => {
 
 	mapEl = $('#leafletMap') as HTMLDivElement | null;
 	mapWrap = $('#mapWrap') as HTMLElement | null;
+	mapReset = $('#mapReset') as HTMLButtonElement | null;
 	mapToggle = $('#mapToggle') as HTMLButtonElement | null;
 	mapEmpty = $('#mapEmpty') as HTMLElement | null;
 	basemapNote = $('#basemapNote') as HTMLElement | null;
