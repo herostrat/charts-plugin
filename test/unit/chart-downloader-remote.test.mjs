@@ -18,7 +18,11 @@ const makeProvider = (overrides = {}) => ({
 
 describe('ChartDownloader remote fetching', () => {
   it('returns null without remoteUrl', async () => {
-    const result = await ChartDownloader.fetchTileFromRemote(makeProvider(), { x: 1, y: 2, z: 3 })
+    const result = await ChartDownloader.fetchTileFromRemote(makeProvider(), {
+      x: 1,
+      y: 2,
+      z: 3
+    })
     expect(result).to.equal(null)
   })
 
@@ -26,8 +30,14 @@ describe('ChartDownloader remote fetching', () => {
     const originalFetch = global.fetch
     global.fetch = async () => ({ ok: false })
 
-    const provider = makeProvider({ remoteUrl: 'https://example.com/{z}/{x}/{y}' })
-    const result = await ChartDownloader.fetchTileFromRemote(provider, { x: 1, y: 2, z: 3 })
+    const provider = makeProvider({
+      remoteUrl: 'https://example.com/{z}/{x}/{y}'
+    })
+    const result = await ChartDownloader.fetchTileFromRemote(provider, {
+      x: 1,
+      y: 2,
+      z: 3
+    })
     expect(result).to.equal(null)
 
     global.fetch = originalFetch
@@ -47,7 +57,11 @@ describe('ChartDownloader remote fetching', () => {
     const provider = makeProvider({
       remoteUrl: 'https://example.com/{z}/{z-2}/{x}/{y}/{-y}'
     })
-    const result = await ChartDownloader.fetchTileFromRemote(provider, { x: 4, y: 5, z: 6 })
+    const result = await ChartDownloader.fetchTileFromRemote(provider, {
+      x: 4,
+      y: 5,
+      z: 6
+    })
 
     expect(capturedUrl).to.equal('https://example.com/6/4/4/5/58')
     expect(Buffer.isBuffer(result)).to.equal(true)
@@ -62,7 +76,11 @@ describe('ChartDownloader remote fetching', () => {
     fs.mkdirSync(path.dirname(tilePath), { recursive: true })
     fs.writeFileSync(tilePath, Buffer.from('cached'))
 
-    const buffer = await ChartDownloader.getTileFromCacheOrRemote(tmpDir, provider, { x: 2, y: 3, z: 1 })
+    const buffer = await ChartDownloader.getTileFromCacheOrRemote(
+      tmpDir,
+      provider,
+      { x: 2, y: 3, z: 1 }
+    )
     expect(buffer?.toString()).to.equal('cached')
 
     fs.rmSync(tmpDir, { recursive: true, force: true })

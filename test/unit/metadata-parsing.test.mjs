@@ -6,7 +6,12 @@ import { expect } from 'chai'
 describe('Metadata Parsing', () => {
   describe('Invalid metadata handling', () => {
     it('handles missing "bounds" in metadata', () => {
-      const metadata = { name: 'Test Chart', minzoom: 2, maxzoom: 14, format: 'png' }
+      const metadata = {
+        name: 'Test Chart',
+        minzoom: 2,
+        maxzoom: 14,
+        format: 'png'
+      }
       const isEmpty = !metadata.bounds
       expect(isEmpty).to.be.true
     })
@@ -17,7 +22,7 @@ describe('Metadata Parsing', () => {
     })
     it('handles empty vector_layers array', () => {
       function parseVectorLayers(layers) {
-        return (layers ?? []).map(l => l.id)
+        return (layers ?? []).map((l) => l.id)
       }
       expect(parseVectorLayers(undefined)).to.deep.equal([])
       expect(parseVectorLayers(null)).to.deep.equal([])
@@ -30,7 +35,7 @@ describe('Metadata Parsing', () => {
     })
     it('handles missing vector_layers field (should provide empty array)', () => {
       const metadata = { name: 'Test Chart' }
-      const chartLayers = (metadata.vector_layers ?? []).map(l => l.id)
+      const chartLayers = (metadata.vector_layers ?? []).map((l) => l.id)
       expect(chartLayers).to.deep.equal([])
     })
   })
@@ -38,7 +43,7 @@ describe('Metadata Parsing', () => {
     it('handles string bounds correctly', () => {
       function parseBounds(bounds) {
         if (typeof bounds === 'string') {
-          return bounds.split(',').map(b => parseFloat(b.trim()))
+          return bounds.split(',').map((b) => parseFloat(b.trim()))
         } else if (Array.isArray(bounds) && bounds.length === 4) {
           return bounds
         }
@@ -49,7 +54,7 @@ describe('Metadata Parsing', () => {
     it('handles array bounds correctly', () => {
       function parseBounds(bounds) {
         if (typeof bounds === 'string') {
-          return bounds.split(',').map(b => parseFloat(b.trim()))
+          return bounds.split(',').map((b) => parseFloat(b.trim()))
         } else if (Array.isArray(bounds) && bounds.length === 4) {
           return bounds
         }
@@ -60,7 +65,7 @@ describe('Metadata Parsing', () => {
     it('handles invalid bounds (not 4 elements)', () => {
       function parseBounds(bounds) {
         if (typeof bounds === 'string') {
-          return bounds.split(',').map(b => parseFloat(b.trim()))
+          return bounds.split(',').map((b) => parseFloat(b.trim()))
         } else if (Array.isArray(bounds) && bounds.length === 4) {
           return bounds
         }
@@ -83,7 +88,9 @@ describe('Metadata Parsing', () => {
     })
     it('handles invalid scale (uses default)', () => {
       const scale = 'invalid'
-      const parsed = (scale && !isNaN(parseInt(scale)) ? parseInt(scale) : undefined) || 250000
+      const parsed =
+        (scale && !isNaN(parseInt(scale)) ? parseInt(scale) : undefined) ||
+        250000
       expect(parsed).to.equal(250000)
     })
   })

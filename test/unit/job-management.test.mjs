@@ -15,7 +15,7 @@ describe('Job Management', () => {
       expect(maxZoom).to.equal('15')
     })
     it('rejects missing maxZoom', () => {
-      const body = { }
+      const body = {}
       const maxZoom = body.maxZoom
       expect(maxZoom).to.be.undefined
     })
@@ -24,7 +24,7 @@ describe('Job Management', () => {
         { regionGUID: 'abc123' },
         { bbox: { minLon: 0, minLat: 0, maxLon: 10, maxLat: 10 } },
         { tile: { x: 5, y: 5, z: 3 } },
-        { }
+        {}
       ]
       testCases.forEach((body, idx) => {
         const hasParam = body.regionGUID || body.bbox || body.tile
@@ -62,8 +62,17 @@ describe('Job Management', () => {
   })
   describe('Coordinate Calculation State', () => {
     it('tracks tiles count in job', () => {
-      const job = { tiles: [], totalTiles: 0, downloadedTiles: 0, cachedTiles: 0, failedTiles: 0 }
-      job.tiles = [ { x: 0, y: 0, z: 1 }, { x: 1, y: 0, z: 1 } ]
+      const job = {
+        tiles: [],
+        totalTiles: 0,
+        downloadedTiles: 0,
+        cachedTiles: 0,
+        failedTiles: 0
+      }
+      job.tiles = [
+        { x: 0, y: 0, z: 1 },
+        { x: 1, y: 0, z: 1 }
+      ]
       job.totalTiles = job.tiles.length
       expect(job.totalTiles).to.equal(2)
       expect(job.downloadedTiles).to.equal(0)
@@ -76,15 +85,29 @@ describe('Job Management', () => {
       expect(status).to.equal(1)
     })
     it('tracks progress percentage', () => {
-      const job = { totalTiles: 100, downloadedTiles: 30, cachedTiles: 50, failedTiles: 10 }
-      const progress = (job.downloadedTiles + job.cachedTiles + job.failedTiles) / job.totalTiles
+      const job = {
+        totalTiles: 100,
+        downloadedTiles: 30,
+        cachedTiles: 50,
+        failedTiles: 10
+      }
+      const progress =
+        (job.downloadedTiles + job.cachedTiles + job.failedTiles) /
+        job.totalTiles
       expect(progress).to.equal(0.9)
     })
     it('handles zero total tiles', () => {
-      const job = { totalTiles: 0, downloadedTiles: 0, cachedTiles: 0, failedTiles: 0 }
-      const progress = job.totalTiles > 0 
-        ? (job.downloadedTiles + job.cachedTiles + job.failedTiles) / job.totalTiles 
-        : 0
+      const job = {
+        totalTiles: 0,
+        downloadedTiles: 0,
+        cachedTiles: 0,
+        failedTiles: 0
+      }
+      const progress =
+        job.totalTiles > 0
+          ? (job.downloadedTiles + job.cachedTiles + job.failedTiles) /
+            job.totalTiles
+          : 0
       expect(progress).to.equal(0)
     })
   })

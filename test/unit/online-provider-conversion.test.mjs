@@ -3,7 +3,10 @@ import { expect } from 'chai'
 describe('Online Provider Conversion', () => {
   it('converts provider name to kebab-case identifier', () => {
     function kebabCase(str) {
-      return str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
+      return str
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]/g, '')
     }
     expect(kebabCase('Test Provider')).to.equal('test-provider')
     expect(kebabCase('OpenSeaMap')).to.equal('openseamap')
@@ -49,9 +52,12 @@ describe('Online Provider Conversion', () => {
         return acc
       }, {})
     }
-    const result = parseHeaders(['Authorization: Bearer token', 'User-Agent: MyApp'])
+    const result = parseHeaders([
+      'Authorization: Bearer token',
+      'User-Agent: MyApp'
+    ])
     expect(result).to.deep.equal({
-      'Authorization': 'Bearer token',
+      Authorization: 'Bearer token',
       'User-Agent': 'MyApp'
     })
   })

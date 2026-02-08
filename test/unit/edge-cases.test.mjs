@@ -4,7 +4,7 @@ const { expect } = chai
 
 /**
  * Edge Case Tests: Critical Scenarios for Map Rendering
- * 
+ *
  * Tests boundary conditions, extreme inputs, and error cases
  * that could cause subtle rendering bugs if not handled correctly.
  */
@@ -58,13 +58,16 @@ class MockChartDownloader {
   getTilesForGeoJSON(geojson, zoomMin = 1, zoomMax = 14) {
     // Simplified implementation for testing
     const tiles = []
-    
+
     if (!geojson || !geojson.features || geojson.features.length === 0) {
       return tiles
     }
 
     for (const feature of geojson.features) {
-      if (!feature.geometry || !['Polygon', 'MultiPolygon'].includes(feature.geometry.type)) {
+      if (
+        !feature.geometry ||
+        !['Polygon', 'MultiPolygon'].includes(feature.geometry.type)
+      ) {
         continue
       }
       // Simplified: just add representative tiles
@@ -89,7 +92,7 @@ describe('Edge Case Tests: Antimeridian Handling', () => {
       // From Japan (170°E) to Hawaii (-170°W)
       const bbox = [170, 0, -170, 10]
       const tiles = downloader.getTilesForBBox(bbox, 2)
-      
+
       expect(tiles).to.be.an('array')
       expect(tiles.length).to.be.greaterThan(0)
     })
@@ -98,10 +101,10 @@ describe('Edge Case Tests: Antimeridian Handling', () => {
       // Create similar-sized bbox that doesn't cross
       const nonCrossingBbox = [170, 0, 179, 10]
       const crossingBbox = [170, 0, -170, 10]
-      
+
       const tilesCrossing = downloader.getTilesForBBox(crossingBbox, 3)
       const tilesNonCrossing = downloader.getTilesForBBox(nonCrossingBbox, 3)
-      
+
       expect(tilesCrossing.length).to.be.greaterThan(tilesNonCrossing.length)
     })
 
@@ -109,7 +112,7 @@ describe('Edge Case Tests: Antimeridian Handling', () => {
       // This is a degenerate case but should handle gracefully
       const bbox = [0, 0, 0, 10]
       const tiles = downloader.getTilesForBBox(bbox, 2)
-      
+
       // Should give at least some tiles (or empty, but not crash)
       expect(tiles).to.be.an('array')
     })
@@ -118,7 +121,7 @@ describe('Edge Case Tests: Antimeridian Handling', () => {
       // 179°E to -179°W (almost complete coverage)
       const bbox = [179, -60, -179, 60]
       const tiles = downloader.getTilesForBBox(bbox, 2)
-      
+
       expect(tiles.length).to.be.greaterThan(0)
     })
   })
@@ -139,7 +142,7 @@ describe('Edge Case Tests: Antimeridian Handling', () => {
       // -170 > -180, so this looks like it crosses antimeridian
       const bbox = [-170, -45, -180, 45]
       const tiles = downloader.getTilesForBBox(bbox, 2)
-      
+
       expect(tiles.length).to.be.greaterThan(0)
     })
   })
@@ -157,7 +160,7 @@ describe('Edge Case Tests: Extreme Coordinates', () => {
       // Web Mercator projection has limits
       const bbox = [-180, -85.05, 180, 85.05]
       const tiles = downloader.getTilesForBBox(bbox, 3)
-      
+
       expect(tiles).to.be.an('array')
       expect(tiles.length).to.be.greaterThan(0)
     })
@@ -177,9 +180,9 @@ describe('Edge Case Tests: Extreme Coordinates', () => {
     })
 
     it('north is always less than south (y_north < y_south)', () => {
-      const [x1, y1] = downloader.lonLatToTileXY(0, 45, 4)
-      const [x2, y2] = downloader.lonLatToTileXY(0, -45, 4)
-      
+      const [_x1, y1] = downloader.lonLatToTileXY(0, 45, 4)
+      const [_x2, y2] = downloader.lonLatToTileXY(0, -45, 4)
+
       expect(y1).to.be.lessThan(y2)
     })
   })
@@ -188,10 +191,10 @@ describe('Edge Case Tests: Extreme Coordinates', () => {
     it('validates tile coordinate ranges', () => {
       for (let z = 0; z <= 10; z++) {
         const maxTile = Math.pow(2, z) - 1
-        
+
         const [xMin, yMin] = downloader.lonLatToTileXY(-180, 85, z)
-        const [xMax, yMax] = downloader.lonLatToTileXY(180, -85, z)
-        
+        const [_xMax, _yMax] = downloader.lonLatToTileXY(180, -85, z)
+
         // Tiles should be in valid range
         expect(xMin).to.be.at.least(0)
         expect(xMin).to.be.at.most(maxTile)
@@ -201,10 +204,10 @@ describe('Edge Case Tests: Extreme Coordinates', () => {
     })
 
     it('handles 0° meridian correctly', () => {
-      const [x0, y0] = downloader.lonLatToTileXY(0, 0, 4)
-      const [xNeg, yNeg] = downloader.lonLatToTileXY(-0.0001, 0, 4)
-      const [xPos, yPos] = downloader.lonLatToTileXY(0.0001, 0, 4)
-      
+      const [x0, _y0] = downloader.lonLatToTileXY(0, 0, 4)
+      const [xNeg, _yNeg] = downloader.lonLatToTileXY(-0.0001, 0, 4)
+      const [xPos, _yPos] = downloader.lonLatToTileXY(0.0001, 0, 4)
+
       // Should be very close
       expect(x0).to.be.oneOf([xNeg, xPos])
     })
@@ -214,7 +217,7 @@ describe('Edge Case Tests: Extreme Coordinates', () => {
     it('handles zoom 0 (whole world)', () => {
       const bbox = [-180, -85, 180, 85]
       const tiles = downloader.getTilesForBBox(bbox, 0)
-      
+
       expect(tiles).to.be.an('array')
       expect(tiles.length).to.be.greaterThan(0)
       // At most 2 tiles at zoom 0 due to how calculation works
@@ -223,7 +226,7 @@ describe('Edge Case Tests: Extreme Coordinates', () => {
 
     it('handles high zoom levels', () => {
       const bbox = [0, 0, 1, 1]
-      
+
       for (let z = 15; z <= 20; z++) {
         const tiles = downloader.getTilesForBBox(bbox, z)
         expect(tiles).to.be.an('array')
@@ -236,7 +239,7 @@ describe('Edge Case Tests: Extreme Coordinates', () => {
       const tiles2 = downloader.getTilesForBBox(bbox, 2)
       const tiles3 = downloader.getTilesForBBox(bbox, 3)
       const tiles4 = downloader.getTilesForBBox(bbox, 4)
-      
+
       expect(tiles2.length).to.be.lessThan(tiles3.length)
       expect(tiles3.length).to.be.lessThan(tiles4.length)
     })
@@ -265,7 +268,7 @@ describe('Edge Case Tests: Y-Coordinate Flipping Boundaries', () => {
       const maxY = Math.pow(2, z) - 1 // 15
       const y = Math.floor(maxY / 2) // 7
       const flipped = Math.pow(2, z) - 1 - y
-      
+
       // Roughly centered, may be 7 or 8
       expect(flipped).to.be.oneOf([7, 8])
     })
@@ -273,7 +276,7 @@ describe('Edge Case Tests: Y-Coordinate Flipping Boundaries', () => {
     it('flip maintains y within valid range', () => {
       for (let z = 0; z <= 20; z++) {
         const maxY = Math.pow(2, z) - 1
-        
+
         for (let y = 0; y <= maxY; y += Math.max(1, Math.floor(maxY / 5))) {
           const flipped = Math.pow(2, z) - 1 - y
           expect(flipped).to.be.at.least(0)
@@ -312,7 +315,7 @@ describe('Edge Case Tests: Empty and Invalid Data', () => {
     it('handles empty feature collection', () => {
       const geojson = { type: 'FeatureCollection', features: [] }
       const tiles = downloader.getTilesForGeoJSON(geojson, 1, 5)
-      
+
       expect(tiles).to.be.an('array')
       expect(tiles.length).to.equal(0)
     })
@@ -341,9 +344,9 @@ describe('Edge Case Tests: Tile Calculation Consistency', () => {
     it('bbox calculation yields unique tiles', () => {
       const bbox = [-50, -50, 50, 50]
       const tiles = downloader.getTilesForBBox(bbox, 8)
-      
+
       // Convert to string for comparison
-      const tileSet = new Set(tiles.map(t => `${t.z}-${t.x}-${t.y}`))
+      const tileSet = new Set(tiles.map((t) => `${t.z}-${t.x}-${t.y}`))
       expect(tileSet.size).to.equal(tiles.length) // All unique
     })
   })
@@ -351,16 +354,16 @@ describe('Edge Case Tests: Tile Calculation Consistency', () => {
   describe('Zoom Continuity', () => {
     it('tiles cover complete range for each zoom level', () => {
       const bbox = [-180, -85, 180, 85]
-      
+
       for (let z = 0; z <= 5; z++) {
         const tiles = downloader.getTilesForBBox(bbox, z)
         const byZoom = {}
-        
-        tiles.forEach(t => {
+
+        tiles.forEach((t) => {
           if (!byZoom[t.z]) byZoom[t.z] = new Set()
           byZoom[t.z].add(`${t.x}-${t.y}`)
         })
-        
+
         // Each zoom should have at least some tiles
         expect(Object.keys(byZoom).length).to.be.greaterThan(0)
       }
@@ -379,15 +382,15 @@ describe('Edge Case Tests: Numeric Precision', () => {
     it('handles very small bbox (sub-tile)', () => {
       const bbox = [0.00001, 0.00001, 0.00002, 0.00002]
       const tiles = downloader.getTilesForBBox(bbox, 18)
-      
+
       expect(tiles).to.be.an('array')
       expect(tiles.length).to.be.greaterThan(0)
     })
 
     it('handles bbox with repeated decimal places', () => {
-      const bbox = [0.123456789, 0.123456789, 0.234567890, 0.234567890]
+      const bbox = [0.123456789, 0.123456789, 0.23456789, 0.23456789]
       const tiles = downloader.getTilesForBBox(bbox, 15)
-      
+
       expect(tiles).to.be.an('array')
     })
 
@@ -395,7 +398,7 @@ describe('Edge Case Tests: Numeric Precision', () => {
       // Converting same coordinate multiple times should be consistent
       const [x1, y1] = downloader.lonLatToTileXY(12.345, 56.789, 10)
       const [x2, y2] = downloader.lonLatToTileXY(12.345, 56.789, 10)
-      
+
       expect(x1).to.equal(x2)
       expect(y1).to.equal(y2)
     })
@@ -406,8 +409,8 @@ describe('Edge Case Tests: Special Format Handling', () => {
   describe('PNG vs JPG Format Detection', () => {
     it('recognizes PNG extension (case-insensitive)', () => {
       const formats = ['png', 'PNG', 'pNg', 'jpg']
-      
-      formats.forEach(fmt => {
+
+      formats.forEach((fmt) => {
         const filename = `tile.${fmt}`
         const pathMatch = filename.match(/\.(png|jpg|pbf)$/i)
         expect(pathMatch).to.be.an('array')
@@ -416,11 +419,12 @@ describe('Edge Case Tests: Special Format Handling', () => {
 
     it('rejects invalid formats', () => {
       const invalidFormats = ['svg', 'webp', 'tiff', 'txt']
-      
-      invalidFormats.forEach(fmt => {
+
+      invalidFormats.forEach((fmt) => {
         const filename = `tile.${fmt}`
         const pathMatch = filename.match(/\.(png|jpg|pbf)$/i)
-        if (fmt !== 'webp') { // webp might match jpg pattern
+        if (fmt !== 'webp') {
+          // webp might match jpg pattern
           expect(pathMatch).to.be.null
         }
       })
@@ -440,12 +444,12 @@ describe('Edge Case Tests: Tile Range Bounds', () => {
       // At zoom 1, there are 2 tiles horizontally (0 and 1)
       const maxX = Math.pow(2, 1) - 1 // 1
       expect(maxX).to.equal(1)
-      
+
       // Mathematically: 180° and -180° are same meridian
       // The conversion at exact boundaries might differ slightly
-      const [x180, y180] = downloader.lonLatToTileXY(180, 0, 1)
-      const [xNeg180, yNeg180] = downloader.lonLatToTileXY(-180, 0, 1)
-      
+      const [x180, _y180] = downloader.lonLatToTileXY(180, 0, 1)
+      const [xNeg180, _yNeg180] = downloader.lonLatToTileXY(-180, 0, 1)
+
       // Both should be in valid range, wrapping at boundaries is OK
       expect(x180).to.be.at.most(2)
       expect(x180).to.be.at.least(0)

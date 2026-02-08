@@ -50,10 +50,21 @@ describe('Nautical catalog: core entries', () => {
       const entry = findById(id)
       expect(entry, `${id} not found`).to.be.ok
       expect(entry.featureType, `${id} featureType missing`).to.be.a('string')
-      expect(entry.s52ColorScheme, `${id} s52ColorScheme missing`).to.be.an('object')
-      expect(entry.s52ColorScheme.default, `${id} s52ColorScheme.default missing`).to.be.a('string')
-      expect(entry.mapboxRenderingHints, `${id} mapboxRenderingHints missing`).to.be.an('object')
-      expect(entry.mapboxRenderingHints.layerType, `${id} layerType missing`).to.be.a('string')
+      expect(entry.s52ColorScheme, `${id} s52ColorScheme missing`).to.be.an(
+        'object'
+      )
+      expect(
+        entry.s52ColorScheme.default,
+        `${id} s52ColorScheme.default missing`
+      ).to.be.a('string')
+      expect(
+        entry.mapboxRenderingHints,
+        `${id} mapboxRenderingHints missing`
+      ).to.be.an('object')
+      expect(
+        entry.mapboxRenderingHints.layerType,
+        `${id} layerType missing`
+      ).to.be.a('string')
     })
   })
 })

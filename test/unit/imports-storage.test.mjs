@@ -69,7 +69,10 @@ describe('Imports storage pipeline', () => {
     ])
 
     enqueueImportJob(job.id)
-    const updated = await waitForJob(job.id, (j) => j.state === 'COMPLETED' || j.state === 'AVAILABLE')
+    const updated = await waitForJob(
+      job.id,
+      (j) => j.state === 'COMPLETED' || j.state === 'AVAILABLE'
+    )
 
     const bundleId = `${job.id}-${updated.items[0].id}`
     const databaseDir = path.join(layout.databaseDir, bundleId)
@@ -95,7 +98,10 @@ describe('Imports storage pipeline', () => {
     ])
 
     enqueueImportJob(job.id)
-    const updated = await waitForJob(job.id, (j) => j.items[0].state === 'METADATA_FAILED')
+    const updated = await waitForJob(
+      job.id,
+      (j) => j.items[0].state === 'METADATA_FAILED'
+    )
     expect(updated.items[0].state).to.equal('METADATA_FAILED')
   })
 })

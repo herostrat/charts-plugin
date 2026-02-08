@@ -20,7 +20,11 @@ describe('ChartDownloader job lifecycle', () => {
   it('initializes from tile and computes cached tiles', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
     const provider = makeProvider()
-    const downloader = new ChartDownloader({ getResource: async () => ({}) }, tmpDir, provider)
+    const downloader = new ChartDownloader(
+      { getResource: async () => ({}) },
+      tmpDir,
+      provider
+    )
 
     await downloader.initializeJobFromTile({ x: 0, y: 0, z: 0 }, 0)
 
@@ -35,7 +39,11 @@ describe('ChartDownloader job lifecycle', () => {
   it('deletes cached tiles on deleteCache', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
     const provider = makeProvider()
-    const downloader = new ChartDownloader({ getResource: async () => ({}) }, tmpDir, provider)
+    const downloader = new ChartDownloader(
+      { getResource: async () => ({}) },
+      tmpDir,
+      provider
+    )
 
     await downloader.initializeJobFromTile({ x: 0, y: 0, z: 0 }, 0)
 
@@ -52,7 +60,11 @@ describe('ChartDownloader job lifecycle', () => {
   it('respects cancelJob flag', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
     const provider = makeProvider()
-    const downloader = new ChartDownloader({ getResource: async () => ({}) }, tmpDir, provider)
+    const downloader = new ChartDownloader(
+      { getResource: async () => ({}) },
+      tmpDir,
+      provider
+    )
 
     downloader.cancelJob()
     expect(downloader.cancelRequested).to.equal(true)
@@ -62,8 +74,14 @@ describe('ChartDownloader job lifecycle', () => {
 
   it('downloads tiles during seedCache', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
-    const provider = makeProvider({ remoteUrl: 'https://example.com/{z}/{x}/{y}' })
-    const downloader = new ChartDownloader({ getResource: async () => ({}) }, tmpDir, provider)
+    const provider = makeProvider({
+      remoteUrl: 'https://example.com/{z}/{x}/{y}'
+    })
+    const downloader = new ChartDownloader(
+      { getResource: async () => ({}) },
+      tmpDir,
+      provider
+    )
 
     await downloader.initializeJobFromTile({ x: 0, y: 0, z: 0 }, 0)
 
@@ -139,7 +157,11 @@ describe('ChartDownloader job lifecycle', () => {
   it('initializes from bbox and tile helpers', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
     const provider = makeProvider()
-    const downloader = new ChartDownloader({ getResource: async () => ({}) }, tmpDir, provider)
+    const downloader = new ChartDownloader(
+      { getResource: async () => ({}) },
+      tmpDir,
+      provider
+    )
 
     await downloader.initializeJobFromBBox([-1, -1, 1, 1], 1)
     expect(downloader.info().totalTiles).to.be.greaterThan(0)
@@ -156,7 +178,11 @@ describe('ChartDownloader job lifecycle', () => {
   it('returns tiles for valid GeoJSON polygons', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
     const provider = makeProvider()
-    const downloader = new ChartDownloader({ getResource: async () => ({}) }, tmpDir, provider)
+    const downloader = new ChartDownloader(
+      { getResource: async () => ({}) },
+      tmpDir,
+      provider
+    )
 
     const geojson = {
       type: 'FeatureCollection',
@@ -165,7 +191,15 @@ describe('ChartDownloader job lifecycle', () => {
           type: 'Feature',
           geometry: {
             type: 'Polygon',
-            coordinates: [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]
+            coordinates: [
+              [
+                [0, 0],
+                [1, 0],
+                [1, 1],
+                [0, 1],
+                [0, 0]
+              ]
+            ]
           },
           properties: {}
         }

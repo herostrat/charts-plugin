@@ -1,15 +1,18 @@
-import { openMbtilesFile, ensureMbtilesLoaded } from '../../src/tiles/catalog/mbtiles.ts';
-import path from 'path';
-import { expect } from 'chai';
-import { fileURLToPath } from 'url';
+import {
+  openMbtilesFile,
+  ensureMbtilesLoaded
+} from '../../src/tiles/catalog/mbtiles.ts'
+import path from 'path'
+import { expect } from 'chai'
+import { fileURLToPath } from 'url'
 
 describe('openMbtilesFile defensive structure tests', () => {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const fixturesRoot = path.resolve(__dirname, '../fixtures/mbtiles');
+  const __dirname = path.dirname(fileURLToPath(import.meta.url))
+  const fixturesRoot = path.resolve(__dirname, '../fixtures/mbtiles')
 
   before(async () => {
-    await ensureMbtilesLoaded();
-  });
+    await ensureMbtilesLoaded()
+  })
 
   it('parses bounds and zoom values from MBTiles metadata', async () => {
     const chart = await openMbtilesFile(
@@ -29,4 +32,4 @@ describe('openMbtilesFile defensive structure tests', () => {
     )
     expect(chart).to.be.null
   })
-});
+})

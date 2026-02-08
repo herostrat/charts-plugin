@@ -1,0 +1,8 @@
+coverage/
+plugin/
+node_modules/
+tmp/
+dev-data/
+scripts/assets/
+test/fixtures/
+**/*.svg

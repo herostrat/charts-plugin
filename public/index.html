@@ -1,487 +1,863 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chart Imports</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Chart Imports</title>
 
-  <link rel="stylesheet" href="./assets/leaflet/leaflet.css" />
-  <link rel="stylesheet" href="./style.css" />
-</head>
+    <link rel="stylesheet" href="./assets/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-<body>
-  <header class="topbar">
-    <div class="topbar__brand">
-      <div class="logo" aria-hidden="true">🗺️</div>
-      <div>
-        <div class="title">Chart Imports</div>
-        <div class="subtitle">Live job status updates — imports window + sources window (no page reload)</div>
+  <body>
+    <header class="topbar">
+      <div class="topbar__brand">
+        <div class="logo" aria-hidden="true">🗺️</div>
+        <div>
+          <div class="title">Chart Imports</div>
+          <div class="subtitle">
+            Live job status updates — imports window + sources window (no page
+            reload)
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="topbar__actions">
-      <div class="livebox" title="Server-Sent Events live updates">
-        <div class="livebox__title">Live updates</div>
-        <div id="liveState" class="live live--re">connecting</div>
+      <div class="topbar__actions">
+        <div class="livebox" title="Server-Sent Events live updates">
+          <div class="livebox__title">Live updates</div>
+          <div id="liveState" class="live live--re">connecting</div>
+        </div>
+        <button
+          id="refreshBtn"
+          class="btn btn--ghost btn--icon"
+          title="Manual refresh (SSE unavailable)"
+          aria-label="Manual refresh"
+        >
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <polyline points="23 4 23 10 17 10" />
+            <polyline points="1 20 1 14 7 14" />
+            <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10" />
+            <path d="M20.49 15a9 9 0 0 1-14.13 3.36L1 14" />
+          </svg>
+        </button>
+        <button
+          id="configBtn"
+          class="btn btn--ghost btn--icon"
+          title="Open configuration"
+          aria-label="Open configuration"
+        >
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51.3.12.62.18.95.18H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+        </button>
       </div>
-      <button id="refreshBtn" class="btn btn--ghost btn--icon" title="Manual refresh (SSE unavailable)" aria-label="Manual refresh">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <polyline points="23 4 23 10 17 10" />
-          <polyline points="1 20 1 14 7 14" />
-          <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10" />
-          <path d="M20.49 15a9 9 0 0 1-14.13 3.36L1 14" />
-        </svg>
-      </button>
-      <button id="configBtn" class="btn btn--ghost btn--icon" title="Open configuration" aria-label="Open configuration">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51.3.12.62.18.95.18H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-        </svg>
-      </button>
-    </div>
-  </header>
+    </header>
 
-  <main class="shell">
-    <!-- LEFT: Imports + Map -->
-    <section class="stack">
-      <div class="card">
+    <main class="shell">
+      <!-- LEFT: Imports + Map -->
+      <section class="stack">
+        <div class="card">
+          <div class="card__head">
+            <div>
+              <h2>Imports</h2>
+              <p>
+                Shows importing/converting items and completed ones. Click item
+                → highlight & zoom.
+              </p>
+            </div>
+            <div class="head-actions">
+              <div class="seg" aria-label="Filter">
+                <button class="is-active" data-filter="all">All</button>
+                <button data-filter="progress">In progress</button>
+                <button data-filter="available">Available</button>
+                <button data-filter="error">Error</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="errorBanner" class="banner is-hidden" role="alert"></div>
+
+          <div class="kpis" aria-label="Import stats">
+            <div class="kpi">
+              <div class="kpi__k">In progress</div>
+              <div id="kpiActive" class="kpi__v">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">Available</div>
+              <div id="kpiAvailable" class="kpi__v">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">Error</div>
+              <div id="kpiFailed" class="kpi__v">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">Total</div>
+              <div id="kpiTotal" class="kpi__v">0</div>
+            </div>
+          </div>
+
+          <div id="importsEmpty" class="empty is-hidden">
+            No items yet. Register/import something in the Sources window.
+          </div>
+          <div id="importsList" class="imports" aria-live="polite"></div>
+        </div>
+
+        <div class="card">
+          <div class="card__head">
+            <div>
+              <h2>Map Overview</h2>
+              <p></p>
+            </div>
+            <div class="head-actions">
+              <button id="mapReset" class="btn btn--ghost btn--sm">
+                Zoom out
+              </button>
+              <button id="mapToggle" class="btn btn--ghost btn--sm">
+                Hide
+              </button>
+            </div>
+          </div>
+
+          <div id="mapWrap" class="mapwrap">
+            <div
+              id="leafletMap"
+              class="map"
+              role="img"
+              aria-label="Leaflet map overview"
+            ></div>
+            <div id="basemapNote" class="mapnote" style="display: none">
+              <b>No local basemap found.</b><br />
+              Put
+              <code>assets/world/ne_110m_admin_0_countries.geojson</code> next
+              to this HTML file.
+            </div>
+            <div id="mapEmpty" class="mapempty">No bounds available yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Sources -->
+      <aside class="card">
         <div class="card__head">
           <div>
-            <h2>Imports</h2>
-            <p>Shows importing/converting items and completed ones. Click item → highlight & zoom.</p>
+            <h2>Sources</h2>
+            <p>
+              Send file/source + detected type + (optional) metadata overrides
+              to the backend. Converter selection is backend-only.
+            </p>
           </div>
           <div class="head-actions">
-            <div class="seg" aria-label="Filter">
-              <button class="is-active" data-filter="all">All</button>
-              <button data-filter="progress">In progress</button>
-              <button data-filter="available">Available</button>
-              <button data-filter="error">Error</button>
+            <div class="seg" aria-label="Source mode">
+              <button class="is-active" data-tab="register">Local</button>
+              <button data-tab="upload">Upload</button>
+              <button data-tab="download">Download</button>
+              <button data-tab="stream">Streaming</button>
             </div>
           </div>
         </div>
 
-        <div id="errorBanner" class="banner is-hidden" role="alert"></div>
+        <div class="section">
+          <!-- Local register -->
+          <section class="panel is-active" data-panel="register">
+            <div class="browser" style="margin-bottom: 12px">
+              <div class="browser__head">
+                <button id="upBtn" class="btn btn--ghost btn--sm" title="Up">
+                  ↑
+                </button>
+                <div class="pathbox">
+                  <div class="pathbox__label">Server path</div>
+                  <div id="currentPath" class="pathbox__value">/</div>
+                </div>
+                <div class="browser__right">
+                  <input
+                    id="pathInput"
+                    class="input"
+                    style="max-width: 180px"
+                    type="text"
+                    placeholder="/mnt/usb"
+                  />
+                  <button id="goBtn" class="btn btn--ghost btn--sm">Go</button>
+                </div>
+              </div>
+              <ul
+                id="fsList"
+                class="fs"
+                aria-label="Server filesystem entries"
+              ></ul>
+            </div>
 
-        <div class="kpis" aria-label="Import stats">
-          <div class="kpi"><div class="kpi__k">In progress</div><div id="kpiActive" class="kpi__v">0</div></div>
-          <div class="kpi"><div class="kpi__k">Available</div><div id="kpiAvailable" class="kpi__v">0</div></div>
-          <div class="kpi"><div class="kpi__k">Error</div><div id="kpiFailed" class="kpi__v">0</div></div>
-          <div class="kpi"><div class="kpi__k">Total</div><div id="kpiTotal" class="kpi__v">0</div></div>
+            <div class="form">
+              <div class="field">
+                <span>Selected</span>
+                <input id="selectedFile" class="input" disabled value="None" />
+              </div>
+
+              <div class="field">
+                <span>Detected type (override)</span>
+                <select id="localType" class="select" disabled>
+                  <option value="unknown">unknown</option>
+                  <option value="geotiff">geotiff</option>
+                  <option value="s57">s57</option>
+                  <option value="mbtiles">mbtiles</option>
+                  <option value="pmtiles">pmtiles</option>
+                  <option value="folder">folder</option>
+                </select>
+              </div>
+
+              <div id="localHeavyWarn" class="status is-warn is-hidden">
+                This conversion/import can be compute-intensive on an SBC.
+                Consider converting on a dedicated PC and importing the result
+                here.
+              </div>
+
+              <div
+                id="localMetaBox"
+                class="metaBox is-hidden"
+                aria-label="Metadata overrides"
+              >
+                <div class="metaBox__head">
+                  Metadata overrides (required for type: folder)
+                </div>
+
+                <div class="field">
+                  <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                  <div class="grid4">
+                    <input
+                      id="localMinLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLon"
+                    />
+                    <input
+                      id="localMinLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLat"
+                    />
+                    <input
+                      id="localMaxLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLon"
+                    />
+                    <input
+                      id="localMaxLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLat"
+                    />
+                  </div>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Min zoom</span>
+                    <input
+                      id="localMinZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 0"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>Max zoom</span>
+                    <input
+                      id="localMaxZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 16"
+                    />
+                  </label>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Updated</span>
+                    <input
+                      id="localUpdated"
+                      class="input"
+                      type="datetime-local"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>Format</span>
+                    <input
+                      id="localFormat"
+                      class="input"
+                      type="text"
+                      placeholder="e.g. png/jpg/mvt"
+                    />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Description</span>
+                  <input
+                    id="localDescription"
+                    class="input"
+                    type="text"
+                    placeholder="Short description"
+                  />
+                </label>
+
+                <div id="localMetaStatus" class="status is-warn is-hidden">
+                  Please fill in all required metadata for folder imports.
+                </div>
+              </div>
+
+              <button id="registerBtn" class="btn btn--primary" disabled>
+                Register
+              </button>
+              <div id="registerStatus" class="status" role="status">
+                Select a file or folder to register.
+              </div>
+
+              <div class="hint">
+                Supported by extension: <code>.tif/.tiff</code>,
+                <code>.mbtiles</code>, <code>.pmtiles</code>,
+                <code>.000/.001/.s57</code>. Also supported:
+                <code>folder</code> (requires metadata).
+              </div>
+            </div>
+          </section>
+
+          <!-- Upload -->
+          <section class="panel" data-panel="upload">
+            <div class="form">
+              <label class="field">
+                <span>Upload file</span>
+                <input
+                  id="uploadFile"
+                  class="input"
+                  type="file"
+                  accept=".tif,.tiff,.mbtiles,.pmtiles,.s57,.000,.001"
+                />
+              </label>
+
+              <label class="field">
+                <span>Detected type (override)</span>
+                <select id="uploadType" class="select">
+                  <option value="unknown">unknown</option>
+                  <option value="geotiff">geotiff</option>
+                  <option value="s57">s57</option>
+                  <option value="mbtiles">mbtiles</option>
+                  <option value="pmtiles">pmtiles</option>
+                </select>
+              </label>
+
+              <div id="uploadHeavyWarn" class="status is-warn is-hidden">
+                This conversion/import can be compute-intensive on an SBC.
+                Consider converting on a dedicated PC and importing the result
+                here.
+              </div>
+
+              <div
+                id="uploadMetaBox"
+                class="metaBox is-hidden"
+                aria-label="Metadata overrides"
+              >
+                <div class="metaBox__head">
+                  Metadata overrides (required for type: folder)
+                </div>
+
+                <div class="field">
+                  <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                  <div class="grid4">
+                    <input
+                      id="upMinLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLon"
+                    />
+                    <input
+                      id="upMinLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLat"
+                    />
+                    <input
+                      id="upMaxLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLon"
+                    />
+                    <input
+                      id="upMaxLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLat"
+                    />
+                  </div>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Min zoom</span>
+                    <input
+                      id="upMinZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 0"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>Max zoom</span>
+                    <input
+                      id="upMaxZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 16"
+                    />
+                  </label>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Updated</span>
+                    <input id="upUpdated" class="input" type="datetime-local" />
+                  </label>
+                  <label class="field">
+                    <span>Format</span>
+                    <input
+                      id="upFormat"
+                      class="input"
+                      type="text"
+                      placeholder="e.g. png/jpg/mvt"
+                    />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Description</span>
+                  <input
+                    id="upDescription"
+                    class="input"
+                    type="text"
+                    placeholder="Short description"
+                  />
+                </label>
+
+                <div id="upMetaStatus" class="status is-warn is-hidden">
+                  Please fill in all required metadata for folder imports.
+                </div>
+              </div>
+
+              <button id="uploadBtn" class="btn btn--primary" disabled>
+                Upload
+              </button>
+              <div id="uploadStatus" class="status" role="status">
+                Select a file to upload. Type is guessed from the filename but
+                can be overridden.
+              </div>
+            </div>
+          </section>
+
+          <!-- Download -->
+          <section class="panel" data-panel="download">
+            <div class="form">
+              <label class="field">
+                <span>Source URL</span>
+                <input
+                  id="downloadUrl"
+                  class="input"
+                  type="url"
+                  placeholder="https://example.com/chart.tif"
+                />
+              </label>
+
+              <label class="field">
+                <span>Detected type (override)</span>
+                <select id="downloadType" class="select">
+                  <option value="unknown">unknown</option>
+                  <option value="geotiff">geotiff</option>
+                  <option value="s57">s57</option>
+                  <option value="mbtiles">mbtiles</option>
+                  <option value="pmtiles">pmtiles</option>
+                  <option value="folder">folder</option>
+                </select>
+              </label>
+
+              <div id="downloadHeavyWarn" class="status is-warn is-hidden">
+                This conversion/import can be compute-intensive on an SBC.
+                Consider converting on a dedicated PC and importing the result
+                here.
+              </div>
+
+              <div
+                id="downloadMetaBox"
+                class="metaBox is-hidden"
+                aria-label="Metadata overrides"
+              >
+                <div class="metaBox__head">
+                  Metadata overrides (required for type: folder)
+                </div>
+
+                <div class="field">
+                  <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                  <div class="grid4">
+                    <input
+                      id="dlMinLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLon"
+                    />
+                    <input
+                      id="dlMinLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLat"
+                    />
+                    <input
+                      id="dlMaxLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLon"
+                    />
+                    <input
+                      id="dlMaxLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLat"
+                    />
+                  </div>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Min zoom</span>
+                    <input
+                      id="dlMinZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 0"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>Max zoom</span>
+                    <input
+                      id="dlMaxZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 16"
+                    />
+                  </label>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Updated</span>
+                    <input id="dlUpdated" class="input" type="datetime-local" />
+                  </label>
+                  <label class="field">
+                    <span>Format</span>
+                    <input
+                      id="dlFormat"
+                      class="input"
+                      type="text"
+                      placeholder="e.g. png/jpg/mvt"
+                    />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Description</span>
+                  <input
+                    id="dlDescription"
+                    class="input"
+                    type="text"
+                    placeholder="Short description"
+                  />
+                </label>
+
+                <div id="dlMetaStatus" class="status is-warn is-hidden">
+                  Please fill in all required metadata for folder imports.
+                </div>
+              </div>
+
+              <button id="downloadBtn" class="btn btn--primary" disabled>
+                Download
+              </button>
+              <div id="downloadStatus" class="status" role="status">
+                Enter a URL. Type is guessed from the URL but can be overridden.
+              </div>
+            </div>
+          </section>
+
+          <!-- Streaming -->
+          <section class="panel" data-panel="stream">
+            <div class="form">
+              <label class="field">
+                <span>Stream URL</span>
+                <input
+                  id="streamUrl"
+                  class="input"
+                  type="url"
+                  placeholder="https://example.com/wms?…"
+                />
+              </label>
+
+              <label class="field">
+                <span>Stream type</span>
+                <select id="streamType" class="select">
+                  <option value="wms">WMS</option>
+                  <option value="wmts">WMTS</option>
+                  <option value="cog">COG</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Hint: detected type (override)</span>
+                <select id="streamDetectedType" class="select">
+                  <option value="unknown">unknown</option>
+                  <option value="geotiff">geotiff</option>
+                  <option value="s57">s57</option>
+                  <option value="mbtiles">mbtiles</option>
+                  <option value="pmtiles">pmtiles</option>
+                  <option value="folder">folder</option>
+                </select>
+              </label>
+
+              <div id="streamHeavyWarn" class="status is-warn is-hidden">
+                This conversion/import can be compute-intensive on an SBC.
+                Consider converting on a dedicated PC and importing the result
+                here.
+              </div>
+
+              <div
+                id="streamMetaBox"
+                class="metaBox is-hidden"
+                aria-label="Metadata overrides"
+              >
+                <div class="metaBox__head">
+                  Metadata overrides (required for type: folder)
+                </div>
+
+                <div class="field">
+                  <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                  <div class="grid4">
+                    <input
+                      id="stMinLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLon"
+                    />
+                    <input
+                      id="stMinLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="minLat"
+                    />
+                    <input
+                      id="stMaxLon"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLon"
+                    />
+                    <input
+                      id="stMaxLat"
+                      class="input"
+                      type="number"
+                      step="any"
+                      placeholder="maxLat"
+                    />
+                  </div>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Min zoom</span>
+                    <input
+                      id="stMinZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 0"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>Max zoom</span>
+                    <input
+                      id="stMaxZoom"
+                      class="input"
+                      type="number"
+                      min="0"
+                      max="24"
+                      placeholder="e.g. 16"
+                    />
+                  </label>
+                </div>
+
+                <div class="grid2">
+                  <label class="field">
+                    <span>Updated</span>
+                    <input id="stUpdated" class="input" type="datetime-local" />
+                  </label>
+                  <label class="field">
+                    <span>Format</span>
+                    <input
+                      id="stFormat"
+                      class="input"
+                      type="text"
+                      placeholder="e.g. png/jpg/mvt"
+                    />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Description</span>
+                  <input
+                    id="stDescription"
+                    class="input"
+                    type="text"
+                    placeholder="Short description"
+                  />
+                </label>
+
+                <div id="stMetaStatus" class="status is-warn is-hidden">
+                  Please fill in all required metadata for folder imports.
+                </div>
+              </div>
+
+              <button id="streamBtn" class="btn btn--primary" disabled>
+                Register Stream
+              </button>
+              <div id="streamStatus" class="status" role="status">
+                Provide a stream URL and type hint.
+              </div>
+            </div>
+          </section>
         </div>
+      </aside>
+    </main>
 
-        <div id="importsEmpty" class="empty is-hidden">No items yet. Register/import something in the Sources window.</div>
-        <div id="importsList" class="imports" aria-live="polite"></div>
-      </div>
-
-      <div class="card">
-        <div class="card__head">
+    <!-- Details overlay -->
+    <div
+      id="detailsOverlay"
+      class="overlay is-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detailsTitle"
+    >
+      <div class="modal" role="document">
+        <div class="modal__head">
+          <div class="modal__title">
+            <h3 id="detailsTitle">Details</h3>
+            <p id="detailsSub">—</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <span id="detailsChip" class="chip chip--queued">queued</span>
+            <button
+              id="detailsClose"
+              class="btn btn--ghost btn--sm"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="modal__body">
           <div>
-            <h2>Map Overview</h2>
-            <p></p>
+            <div class="sectionTitle">Metadata</div>
+            <div id="detailsMeta" class="kvgrid" style="margin-top: 10px"></div>
           </div>
-          <div class="head-actions">
-            <button id="mapReset" class="btn btn--ghost btn--sm">Zoom out</button>
-            <button id="mapToggle" class="btn btn--ghost btn--sm">Hide</button>
+          <div>
+            <div class="sectionTitle">Import Item (raw)</div>
+            <pre id="detailsItemJson" class="json">{}</pre>
           </div>
-        </div>
-
-        <div id="mapWrap" class="mapwrap">
-          <div id="leafletMap" class="map" role="img" aria-label="Leaflet map overview"></div>
-          <div id="basemapNote" class="mapnote" style="display:none;">
-            <b>No local basemap found.</b><br/>
-            Put <code>assets/world/ne_110m_admin_0_countries.geojson</code> next to this HTML file.
+          <div>
+            <div class="sectionTitle">Import Job (summary)</div>
+            <pre id="detailsJobJson" class="json">{}</pre>
           </div>
-          <div id="mapEmpty" class="mapempty">No bounds available yet.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT: Sources -->
-    <aside class="card">
-      <div class="card__head">
-        <div>
-          <h2>Sources</h2>
-          <p>Send file/source + detected type + (optional) metadata overrides to the backend. Converter selection is backend-only.</p>
-        </div>
-        <div class="head-actions">
-          <div class="seg" aria-label="Source mode">
-            <button class="is-active" data-tab="register">Local</button>
-            <button data-tab="upload">Upload</button>
-            <button data-tab="download">Download</button>
-            <button data-tab="stream">Streaming</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <!-- Local register -->
-        <section class="panel is-active" data-panel="register">
-          <div class="browser" style="margin-bottom:12px;">
-            <div class="browser__head">
-              <button id="upBtn" class="btn btn--ghost btn--sm" title="Up">↑</button>
-              <div class="pathbox">
-                <div class="pathbox__label">Server path</div>
-                <div id="currentPath" class="pathbox__value">/</div>
-              </div>
-              <div class="browser__right">
-                <input id="pathInput" class="input" style="max-width:180px;" type="text" placeholder="/mnt/usb" />
-                <button id="goBtn" class="btn btn--ghost btn--sm">Go</button>
-              </div>
-            </div>
-            <ul id="fsList" class="fs" aria-label="Server filesystem entries"></ul>
-          </div>
-
-          <div class="form">
-            <div class="field">
-              <span>Selected</span>
-              <input id="selectedFile" class="input" disabled value="None" />
-            </div>
-
-            <div class="field">
-              <span>Detected type (override)</span>
-              <select id="localType" class="select" disabled>
-                <option value="unknown">unknown</option>
-                <option value="geotiff">geotiff</option>
-                <option value="s57">s57</option>
-                <option value="mbtiles">mbtiles</option>
-                <option value="pmtiles">pmtiles</option>
-                <option value="folder">folder</option>
-              </select>
-            </div>
-
-            <div id="localHeavyWarn" class="status is-warn is-hidden">
-              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
-            </div>
-
-            <div id="localMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
-              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
-
-              <div class="field">
-                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
-                <div class="grid4">
-                  <input id="localMinLon" class="input" type="number" step="any" placeholder="minLon" />
-                  <input id="localMinLat" class="input" type="number" step="any" placeholder="minLat" />
-                  <input id="localMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
-                  <input id="localMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
-                </div>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Min zoom</span>
-                  <input id="localMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
-                </label>
-                <label class="field">
-                  <span>Max zoom</span>
-                  <input id="localMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
-                </label>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Updated</span>
-                  <input id="localUpdated" class="input" type="datetime-local" />
-                </label>
-                <label class="field">
-                  <span>Format</span>
-                  <input id="localFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
-                </label>
-              </div>
-
-              <label class="field">
-                <span>Description</span>
-                <input id="localDescription" class="input" type="text" placeholder="Short description" />
-              </label>
-
-              <div id="localMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
-            </div>
-
-            <button id="registerBtn" class="btn btn--primary" disabled>Register</button>
-            <div id="registerStatus" class="status" role="status">Select a file or folder to register.</div>
-
-            <div class="hint">Supported by extension: <code>.tif/.tiff</code>, <code>.mbtiles</code>, <code>.pmtiles</code>, <code>.000/.001/.s57</code>. Also supported: <code>folder</code> (requires metadata).</div>
-          </div>
-        </section>
-
-        <!-- Upload -->
-        <section class="panel" data-panel="upload">
-          <div class="form">
-            <label class="field">
-              <span>Upload file</span>
-              <input id="uploadFile" class="input" type="file" accept=".tif,.tiff,.mbtiles,.pmtiles,.s57,.000,.001" />
-            </label>
-
-            <label class="field">
-              <span>Detected type (override)</span>
-              <select id="uploadType" class="select">
-                <option value="unknown">unknown</option>
-                <option value="geotiff">geotiff</option>
-                <option value="s57">s57</option>
-                <option value="mbtiles">mbtiles</option>
-                <option value="pmtiles">pmtiles</option>
-              </select>
-            </label>
-
-            <div id="uploadHeavyWarn" class="status is-warn is-hidden">
-              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
-            </div>
-
-            <div id="uploadMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
-              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
-
-              <div class="field">
-                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
-                <div class="grid4">
-                  <input id="upMinLon" class="input" type="number" step="any" placeholder="minLon" />
-                  <input id="upMinLat" class="input" type="number" step="any" placeholder="minLat" />
-                  <input id="upMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
-                  <input id="upMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
-                </div>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Min zoom</span>
-                  <input id="upMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
-                </label>
-                <label class="field">
-                  <span>Max zoom</span>
-                  <input id="upMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
-                </label>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Updated</span>
-                  <input id="upUpdated" class="input" type="datetime-local" />
-                </label>
-                <label class="field">
-                  <span>Format</span>
-                  <input id="upFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
-                </label>
-              </div>
-
-              <label class="field">
-                <span>Description</span>
-                <input id="upDescription" class="input" type="text" placeholder="Short description" />
-              </label>
-
-              <div id="upMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
-            </div>
-
-            <button id="uploadBtn" class="btn btn--primary" disabled>Upload</button>
-            <div id="uploadStatus" class="status" role="status">Select a file to upload. Type is guessed from the filename but can be overridden.</div>
-          </div>
-        </section>
-
-        <!-- Download -->
-        <section class="panel" data-panel="download">
-          <div class="form">
-            <label class="field">
-              <span>Source URL</span>
-              <input id="downloadUrl" class="input" type="url" placeholder="https://example.com/chart.tif" />
-            </label>
-
-            <label class="field">
-              <span>Detected type (override)</span>
-              <select id="downloadType" class="select">
-                <option value="unknown">unknown</option>
-                <option value="geotiff">geotiff</option>
-                <option value="s57">s57</option>
-                <option value="mbtiles">mbtiles</option>
-                <option value="pmtiles">pmtiles</option>
-                <option value="folder">folder</option>
-              </select>
-            </label>
-
-            <div id="downloadHeavyWarn" class="status is-warn is-hidden">
-              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
-            </div>
-
-            <div id="downloadMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
-              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
-
-              <div class="field">
-                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
-                <div class="grid4">
-                  <input id="dlMinLon" class="input" type="number" step="any" placeholder="minLon" />
-                  <input id="dlMinLat" class="input" type="number" step="any" placeholder="minLat" />
-                  <input id="dlMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
-                  <input id="dlMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
-                </div>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Min zoom</span>
-                  <input id="dlMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
-                </label>
-                <label class="field">
-                  <span>Max zoom</span>
-                  <input id="dlMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
-                </label>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Updated</span>
-                  <input id="dlUpdated" class="input" type="datetime-local" />
-                </label>
-                <label class="field">
-                  <span>Format</span>
-                  <input id="dlFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
-                </label>
-              </div>
-
-              <label class="field">
-                <span>Description</span>
-                <input id="dlDescription" class="input" type="text" placeholder="Short description" />
-              </label>
-
-              <div id="dlMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
-            </div>
-
-            <button id="downloadBtn" class="btn btn--primary" disabled>Download</button>
-            <div id="downloadStatus" class="status" role="status">Enter a URL. Type is guessed from the URL but can be overridden.</div>
-          </div>
-        </section>
-
-        <!-- Streaming -->
-        <section class="panel" data-panel="stream">
-          <div class="form">
-            <label class="field">
-              <span>Stream URL</span>
-              <input id="streamUrl" class="input" type="url" placeholder="https://example.com/wms?…" />
-            </label>
-
-            <label class="field">
-              <span>Stream type</span>
-              <select id="streamType" class="select">
-                <option value="wms">WMS</option>
-                <option value="wmts">WMTS</option>
-                <option value="cog">COG</option>
-              </select>
-            </label>
-
-            <label class="field">
-              <span>Hint: detected type (override)</span>
-              <select id="streamDetectedType" class="select">
-                <option value="unknown">unknown</option>
-                <option value="geotiff">geotiff</option>
-                <option value="s57">s57</option>
-                <option value="mbtiles">mbtiles</option>
-                <option value="pmtiles">pmtiles</option>
-                <option value="folder">folder</option>
-              </select>
-            </label>
-
-            <div id="streamHeavyWarn" class="status is-warn is-hidden">
-              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
-            </div>
-
-            <div id="streamMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
-              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
-
-              <div class="field">
-                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
-                <div class="grid4">
-                  <input id="stMinLon" class="input" type="number" step="any" placeholder="minLon" />
-                  <input id="stMinLat" class="input" type="number" step="any" placeholder="minLat" />
-                  <input id="stMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
-                  <input id="stMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
-                </div>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Min zoom</span>
-                  <input id="stMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
-                </label>
-                <label class="field">
-                  <span>Max zoom</span>
-                  <input id="stMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
-                </label>
-              </div>
-
-              <div class="grid2">
-                <label class="field">
-                  <span>Updated</span>
-                  <input id="stUpdated" class="input" type="datetime-local" />
-                </label>
-                <label class="field">
-                  <span>Format</span>
-                  <input id="stFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
-                </label>
-              </div>
-
-              <label class="field">
-                <span>Description</span>
-                <input id="stDescription" class="input" type="text" placeholder="Short description" />
-              </label>
-
-              <div id="stMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
-            </div>
-
-            <button id="streamBtn" class="btn btn--primary" disabled>Register Stream</button>
-            <div id="streamStatus" class="status" role="status">Provide a stream URL and type hint.</div>
-          </div>
-        </section>
-      </div>
-    </aside>
-  </main>
-
-  <!-- Details overlay -->
-  <div id="detailsOverlay" class="overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
-    <div class="modal" role="document">
-      <div class="modal__head">
-        <div class="modal__title">
-          <h3 id="detailsTitle">Details</h3>
-          <p id="detailsSub">—</p>
-        </div>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <span id="detailsChip" class="chip chip--queued">queued</span>
-          <button id="detailsClose" class="btn btn--ghost btn--sm" aria-label="Close">Close</button>
-        </div>
-      </div>
-      <div class="modal__body">
-        <div>
-          <div class="sectionTitle">Metadata</div>
-          <div id="detailsMeta" class="kvgrid" style="margin-top:10px;"></div>
-        </div>
-        <div>
-          <div class="sectionTitle">Import Item (raw)</div>
-          <pre id="detailsItemJson" class="json">{}</pre>
-        </div>
-        <div>
-          <div class="sectionTitle">Import Job (summary)</div>
-          <pre id="detailsJobJson" class="json">{}</pre>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Config overlay -->
-  <div id="configOverlay" class="overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="configTitle">
-    <div class="modal" role="document">
-      <div class="modal__head">
-        <div class="modal__title">
-          <h3 id="configTitle">Configuration</h3>
-          <p id="configSub">Settings provided by the backend</p>
+    <!-- Config overlay -->
+    <div
+      id="configOverlay"
+      class="overlay is-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="configTitle"
+    >
+      <div class="modal" role="document">
+        <div class="modal__head">
+          <div class="modal__title">
+            <h3 id="configTitle">Configuration</h3>
+            <p id="configSub">Settings provided by the backend</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <button id="configSave" class="btn btn--primary btn--sm" disabled>
+              Save
+            </button>
+            <button
+              id="configClose"
+              class="btn btn--ghost btn--sm"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </div>
         </div>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <button id="configSave" class="btn btn--primary btn--sm" disabled>Save</button>
-          <button id="configClose" class="btn btn--ghost btn--sm" aria-label="Close">Close</button>
+        <div class="modal__body">
+          <div id="configStatus" class="status" role="status">
+            Open to load configuration…
+          </div>
+          <div
+            id="configList"
+            class="cfgList"
+            aria-label="Configuration entries"
+          ></div>
+          <div class="cfgFooterNote">
+            Close without saving is always possible. “Save” only sends changed
+            values.
+          </div>
         </div>
-      </div>
-      <div class="modal__body">
-        <div id="configStatus" class="status" role="status">Open to load configuration…</div>
-        <div id="configList" class="cfgList" aria-label="Configuration entries"></div>
-        <div class="cfgFooterNote">Close without saving is always possible. “Save” only sends changed values.</div>
       </div>
     </div>
-  </div>
 
-  <script src="./assets/leaflet/leaflet.js"></script>
-  <script type="module" src="./index.js"></script>
-</body>
+    <script src="./assets/leaflet/leaflet.js"></script>
+    <script type="module" src="./index.js"></script>
+  </body>
 </html>

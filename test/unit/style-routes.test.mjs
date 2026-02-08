@@ -34,12 +34,16 @@ describe('registerStyleRoutes', () => {
     })
 
     const baseUrl = `http://localhost:${server.address().port}`
-    const response = await chaiRequest.execute(baseUrl).get('/signalk/chart-style/missing')
+    const response = await chaiRequest
+      .execute(baseUrl)
+      .get('/signalk/chart-style/missing')
       .catch((e) => e.response)
 
     expect(response.status).to.equal(404)
 
-    const rasterResponse = await chaiRequest.execute(baseUrl).get('/signalk/chart-style/raster')
+    const rasterResponse = await chaiRequest
+      .execute(baseUrl)
+      .get('/signalk/chart-style/raster')
       .catch((e) => e.response)
     expect(rasterResponse.status).to.equal(404)
 
@@ -60,7 +64,9 @@ describe('registerStyleRoutes', () => {
     })
 
     const baseUrl = `http://localhost:${server.address().port}`
-    const response = await chaiRequest.execute(baseUrl).get('/signalk/chart-style/test-vector')
+    const response = await chaiRequest
+      .execute(baseUrl)
+      .get('/signalk/chart-style/test-vector')
 
     expect(response.status).to.equal(200)
     expect(response.body).to.have.property('sources')

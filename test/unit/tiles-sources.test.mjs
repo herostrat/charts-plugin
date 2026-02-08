@@ -207,7 +207,10 @@ describe('tile source handlers', () => {
   })
 
   it('returns 500 for missing pmtiles handle', async () => {
-    const provider = makeProvider({ _fileFormat: 'pmtiles', _pmtilesHandle: undefined })
+    const provider = makeProvider({
+      _fileFormat: 'pmtiles',
+      _pmtilesHandle: undefined
+    })
     const res = new MockResponse()
     await serveTileFromPmtiles(res, provider, 1, 2, 3)
     expect(res.statusCode).to.equal(500)

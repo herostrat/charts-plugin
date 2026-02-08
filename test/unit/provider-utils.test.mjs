@@ -21,13 +21,13 @@ describe('Provider Utils', () => {
         'v1',
         'v2'
       ]
-      fieldsToRemove.forEach(field => {
+      fieldsToRemove.forEach((field) => {
         expect(provider).to.have.property(field)
       })
       const sanitized = Object.keys(provider)
-        .filter(k => !fieldsToRemove.includes(k))
+        .filter((k) => !fieldsToRemove.includes(k))
         .reduce((obj, key) => ({ ...obj, [key]: provider[key] }), {})
-      fieldsToRemove.forEach(field => {
+      fieldsToRemove.forEach((field) => {
         expect(sanitized).to.not.have.property(field)
       })
     })

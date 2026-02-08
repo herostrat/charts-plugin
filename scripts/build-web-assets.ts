@@ -44,8 +44,7 @@ const runCopyTasks = () => {
 
 const downloadFile = async (url: string, toPath: string) => {
   await new Promise<void>((resolve, reject) => {
-    const client = url.startsWith('https://') ? https : http
-    const request = client.get(url, (response) => {
+    const handleResponse = (response: http.IncomingMessage) => {
       if (response.statusCode && response.statusCode >= 400) {
         reject(new Error(`Download failed (${response.statusCode}) ${url}`))
         return
@@ -57,7 +56,11 @@ const downloadFile = async (url: string, toPath: string) => {
         file.close()
         resolve()
       })
-    })
+    }
+
+    const request = url.startsWith('https://')
+      ? https.get(url, handleResponse)
+      : http.get(url, handleResponse)
     request.on('error', reject)
   })
 }

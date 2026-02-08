@@ -8,7 +8,11 @@ import { findCharts } from '../../src/tiles/catalog/scanner.ts'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const fixturesRoot = path.resolve(__dirname, '..', 'fixtures')
-const pmtilesFixture = path.join(fixturesRoot, 'pmtiles', 'test_fixture_1.pmtiles')
+const pmtilesFixture = path.join(
+  fixturesRoot,
+  'pmtiles',
+  'test_fixture_1.pmtiles'
+)
 
 const createTempDir = () =>
   fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'charts-bundles-'))
@@ -25,7 +29,10 @@ const writeMetadata = (dir, name, bounds) => {
     format: 'mvt',
     type: 'tilelayer'
   }
-  fs.writeFileSync(path.join(dir, 'metadata.json'), JSON.stringify(metadata, null, 2))
+  fs.writeFileSync(
+    path.join(dir, 'metadata.json'),
+    JSON.stringify(metadata, null, 2)
+  )
 }
 
 describe('Chart bundle scanning', () => {

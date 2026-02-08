@@ -1,15 +1,13 @@
-import fs from 'fs'
-import path from 'path'
 import * as chai from 'chai'
 
 const { expect } = chai
 
 /**
  * Unit Tests for Math & Coordinate Functions
- * 
+ *
  * Tests coordinate conversions, tile calculations, and metadata parsing
  * that are critical for map rendering, independent of HTTP layer.
- * 
+ *
  * These tests are essential for safe refactoring - they verify the
  * mathematical correctness of chart calculations.
  */
@@ -107,10 +105,10 @@ describe('Unit Tests: Coordinate Conversion', () => {
     })
 
     it('converts equator crossing antimeridian correctly', () => {
-      const [x1, y1] = downloader.lonLatToTileXY(0, 0, 1)
+      const [x1, _y1] = downloader.lonLatToTileXY(0, 0, 1)
       expect(x1).to.equal(1) // eastern hemisphere
-      
-      const [x2, y2] = downloader.lonLatToTileXY(-180, 0, 1)
+
+      const [x2, _y2] = downloader.lonLatToTileXY(-180, 0, 1)
       expect(x2).to.equal(0) // western hemisphere
     })
 
@@ -123,9 +121,9 @@ describe('Unit Tests: Coordinate Conversion', () => {
     })
 
     it('converts valid latitude range (85 to -85)', () => {
-      const [x1, y1] = downloader.lonLatToTileXY(0, 85, 4)
-      const [x2, y2] = downloader.lonLatToTileXY(0, -85, 4)
-      
+      const [_x1, y1] = downloader.lonLatToTileXY(0, 85, 4)
+      const [_x2, y2] = downloader.lonLatToTileXY(0, -85, 4)
+
       expect(y1).to.be.lessThan(y2) // North is smaller y
       expect(Math.abs(y1 - y2)).to.be.greaterThan(0)
     })
@@ -145,9 +143,9 @@ describe('Unit Tests: Coordinate Conversion', () => {
     it('converts zoom 0 tile (0, 0) to world bounds', () => {
       const bbox = downloader.tileToBBox(0, 0, 0)
       expect(bbox[0]).to.be.closeTo(-180, 5) // minLon
-      expect(bbox[1]).to.be.closeTo(-85, 5)   // minLat (Web Mercator limit)
-      expect(bbox[2]).to.be.closeTo(180, 5)  // maxLon (roughly)
-      expect(bbox[3]).to.be.closeTo(85, 5)   // maxLat (Web Mercator limit)
+      expect(bbox[1]).to.be.closeTo(-85, 5) // minLat (Web Mercator limit)
+      expect(bbox[2]).to.be.closeTo(180, 5) // maxLon (roughly)
+      expect(bbox[3]).to.be.closeTo(85, 5) // maxLat (Web Mercator limit)
     })
 
     it('produces bbox with correct lon ordering (min < max)', () => {
@@ -165,7 +163,7 @@ describe('Unit Tests: Coordinate Conversion', () => {
       const bbox = downloader.tileToBBox(5, 8, 4)
       const centerLon = (bbox[0] + bbox[2]) / 2
       const centerLat = (bbox[1] + bbox[3]) / 2
-      
+
       const [x, y] = downloader.lonLatToTileXY(centerLon, centerLat, 4)
       expect(x).to.equal(5)
       expect(y).to.equal(8)
@@ -234,12 +232,12 @@ describe('Unit Tests: Tile Calculations', () => {
     it('handles normal (non-antimeridian) bbox', () => {
       const bbox = [-120, 30, -100, 40] // Normal bbox (US)
       const tiles = downloader.getTilesForBBox(bbox, 4)
-      
+
       expect(tiles).to.be.an('array')
       expect(tiles.length).to.be.greaterThan(0)
-      
+
       // All tiles should have valid coordinates
-      tiles.forEach(tile => {
+      tiles.forEach((tile) => {
         expect(tile.z).to.be.at.most(4) // z should not exceed maxZoom
         expect(tile.x).to.be.a('number')
         expect(tile.y).to.be.a('number')
@@ -249,7 +247,7 @@ describe('Unit Tests: Tile Calculations', () => {
     it('handles antimeridian crossing bbox', () => {
       const bbox = [170, -10, -170, 10] // Crosses 180° meridian
       const tiles = downloader.getTilesForBBox(bbox, 3)
-      
+
       expect(tiles).to.be.an('array')
       expect(tiles.length).to.be.greaterThan(0)
     })
@@ -259,7 +257,7 @@ describe('Unit Tests: Tile Calculations', () => {
       const tiles1 = downloader.getTilesForBBox(bbox, 2)
       const tiles2 = downloader.getTilesForBBox(bbox, 3)
       const tiles3 = downloader.getTilesForBBox(bbox, 4)
-      
+
       expect(tiles1.length).to.be.lessThan(tiles2.length)
       expect(tiles2.length).to.be.lessThan(tiles3.length)
     })
@@ -267,10 +265,10 @@ describe('Unit Tests: Tile Calculations', () => {
     it('smaller bbox returns fewer tiles', () => {
       const largeBbox = [-45, -45, 45, 45]
       const smallBbox = [-10, -10, 10, 10]
-      
+
       const largeTiles = downloader.getTilesForBBox(largeBbox, 4)
       const smallTiles = downloader.getTilesForBBox(smallBbox, 4)
-      
+
       expect(smallTiles.length).to.be.lessThan(largeTiles.length)
     })
   })
@@ -279,7 +277,7 @@ describe('Unit Tests: Tile Calculations', () => {
     it('returns initial tile when max zoom equals current zoom', () => {
       const tile = { x: 0, y: 0, z: 0 }
       const subTiles = downloader.getSubTiles(tile, 0)
-      
+
       expect(subTiles.length).to.equal(1)
       expect(subTiles[0]).to.deep.equal(tile)
     })
@@ -287,19 +285,19 @@ describe('Unit Tests: Tile Calculations', () => {
     it('returns 4 subtiles when zooming down 1 level', () => {
       const tile = { x: 0, y: 0, z: 0 }
       const subTiles = downloader.getSubTiles(tile, 1)
-      
+
       // 1 parent + 4 children = 5
       expect(subTiles.length).to.equal(5)
-      
+
       // Parent tile should be first
       expect(subTiles[0]).to.deep.equal(tile)
-      
+
       // Should have 4 children at z=1
-      const z1Tiles = subTiles.filter(t => t.z === 1)
+      const z1Tiles = subTiles.filter((t) => t.z === 1)
       expect(z1Tiles.length).to.equal(4)
-      
+
       // All z=1 tiles should have x,y between 0-1
-      z1Tiles.forEach(t => {
+      z1Tiles.forEach((t) => {
         expect(t.x).to.be.oneOf([0, 1])
         expect(t.y).to.be.oneOf([0, 1])
       })
@@ -307,11 +305,11 @@ describe('Unit Tests: Tile Calculations', () => {
 
     it('correct number of tiles for multi-level subdivision', () => {
       const tile = { x: 0, y: 0, z: 0 }
-      
+
       // Tiles = 1 (z0) + 4 (z1) + 16 (z2) = 21
       const subTiles = downloader.getSubTiles(tile, 2)
       expect(subTiles.length).to.equal(21)
-      
+
       // Tiles = 1 + 4 + 16 + 64 = 85
       const subTiles3 = downloader.getSubTiles(tile, 3)
       expect(subTiles3.length).to.equal(85)
@@ -320,13 +318,13 @@ describe('Unit Tests: Tile Calculations', () => {
     it('handles non-zero starting tile', () => {
       const tile = { x: 3, y: 2, z: 2 }
       const subTiles = downloader.getSubTiles(tile, 3)
-      
+
       // 1 parent + 4 children = 5
       expect(subTiles.length).to.equal(5)
-      
+
       // Parent should be preserved
       expect(subTiles[0]).to.deep.equal(tile)
-      
+
       // Children x,y should be doubled
       expect(subTiles[1].x).to.equal(6) // 3 * 2
       expect(subTiles[1].y).to.equal(4) // 2 * 2
@@ -351,7 +349,7 @@ describe('Unit Tests: Metadata Parsing', () => {
       // Simulate parseMetadataJson behavior
       function parseBounds(bounds) {
         if (typeof bounds === 'string') {
-          return bounds.split(',').map(b => parseFloat(b.trim()))
+          return bounds.split(',').map((b) => parseFloat(b.trim()))
         } else if (Array.isArray(bounds) && bounds.length === 4) {
           return bounds
         }
@@ -379,7 +377,7 @@ describe('Unit Tests: Metadata Parsing', () => {
     it('handles bounds as array', () => {
       function parseBounds(bounds) {
         if (typeof bounds === 'string') {
-          return bounds.split(',').map(b => parseFloat(b.trim()))
+          return bounds.split(',').map((b) => parseFloat(b.trim()))
         } else if (Array.isArray(bounds) && bounds.length === 4) {
           return bounds
         }
@@ -403,8 +401,12 @@ describe('Unit Tests: Metadata Parsing', () => {
         name: json.name,
         description: json.description || '',
         bounds: undefined,
-        minzoom: isNaN(parseInt(json.minzoom)) ? undefined : parseInt(json.minzoom),
-        maxzoom: isNaN(parseInt(json.maxzoom)) ? undefined : parseInt(json.maxzoom),
+        minzoom: isNaN(parseInt(json.minzoom))
+          ? undefined
+          : parseInt(json.minzoom),
+        maxzoom: isNaN(parseInt(json.maxzoom))
+          ? undefined
+          : parseInt(json.maxzoom),
         format: json.format,
         type: json.type,
         scale: parseInt(json.scale) || 250000
@@ -426,7 +428,7 @@ describe('Unit Tests: Metadata Parsing', () => {
       ]
 
       function parseVectorLayers(layers) {
-        return layers.map(l => l.id)
+        return layers.map((l) => l.id)
       }
 
       const result = parseVectorLayers(layers)
@@ -435,7 +437,7 @@ describe('Unit Tests: Metadata Parsing', () => {
 
     it('handles empty vector layers', () => {
       function parseVectorLayers(layers) {
-        return layers ? layers.map(l => l.id) : []
+        return layers ? layers.map((l) => l.id) : []
       }
 
       const result = parseVectorLayers(undefined)

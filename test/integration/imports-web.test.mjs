@@ -41,7 +41,9 @@ const deleteRequest = (server, location) => {
 }
 
 const createTempDir = () => {
-  const base = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'charts-imports-'))
+  const base = fs.mkdtempSync(
+    path.join(fs.realpathSync(os.tmpdir()), 'charts-imports-')
+  )
   return base
 }
 
@@ -144,11 +146,12 @@ describe('Imports Web API', () => {
 
   describe('GET /@signalk/charts-plugin/imports', () => {
     it('returns empty array by default', () => {
-      return getRequest(testServer, '/@signalk/charts-plugin/imports')
-        .then((res) => {
+      return getRequest(testServer, '/@signalk/charts-plugin/imports').then(
+        (res) => {
           expect(res.status).to.equal(200)
           expect(res.body).to.deep.equal([])
-        })
+        }
+      )
     })
   })
 
@@ -163,11 +166,13 @@ describe('Imports Web API', () => {
     })
     it('rejects multiple sources', () => {
       return postRequest(testServer, '/@signalk/charts-plugin/imports', {
-        items: [{
-          filename: 'test.tif',
-          sourcePath: '/tmp/a.tif',
-          sourceUrl: 'https://example.com/a.tif'
-        }]
+        items: [
+          {
+            filename: 'test.tif',
+            sourcePath: '/tmp/a.tif',
+            sourceUrl: 'https://example.com/a.tif'
+          }
+        ]
       })
         .catch((err) => err.response)
         .then((res) => {
@@ -178,11 +183,13 @@ describe('Imports Web API', () => {
 
     it('rejects folder without metadata', () => {
       return postRequest(testServer, '/@signalk/charts-plugin/imports', {
-        items: [{
-          filename: 'folder',
-          sourcePath: '/charts/folder',
-          detectedType: 'folder'
-        }]
+        items: [
+          {
+            filename: 'folder',
+            sourcePath: '/charts/folder',
+            detectedType: 'folder'
+          }
+        ]
       })
         .catch((err) => err.response)
         .then((res) => {
@@ -193,11 +200,13 @@ describe('Imports Web API', () => {
 
     it('rejects unsupported detectedType', () => {
       return postRequest(testServer, '/@signalk/charts-plugin/imports', {
-        items: [{
-          filename: 'test.tif',
-          sourcePath: '/tmp/test.tif',
-          detectedType: 'nope'
-        }]
+        items: [
+          {
+            filename: 'test.tif',
+            sourcePath: '/tmp/test.tif',
+            detectedType: 'nope'
+          }
+        ]
       })
         .catch((err) => err.response)
         .then((res) => {
@@ -208,43 +217,51 @@ describe('Imports Web API', () => {
 
     it('accepts a valid item', () => {
       return postRequest(testServer, '/@signalk/charts-plugin/imports', {
-        items: [{
-          filename: 'test.tif',
-          sourcePath: '/tmp/test.tif',
-          detectedType: 'geotiff'
-        }]
+        items: [
+          {
+            filename: 'test.tif',
+            sourcePath: '/tmp/test.tif',
+            detectedType: 'geotiff'
+          }
+        ]
+      }).then((res) => {
+        expect(res.status).to.equal(202)
+        expect(res.body).to.have.property('id')
+        expect(res.body.items).to.have.length(1)
       })
-        .then((res) => {
-          expect(res.status).to.equal(202)
-          expect(res.body).to.have.property('id')
-          expect(res.body.items).to.have.length(1)
-        })
     })
   })
 
   describe('POST /@signalk/charts-plugin/imports/upload', () => {
     it('creates an import job from uploaded file', () => {
       const filePath = createTempFile('upload.tif')
-      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
-        filePath,
-        filename: 'upload.tif',
-        detectedType: 'geotiff'
+      return uploadRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/upload',
+        {
+          filePath,
+          filename: 'upload.tif',
+          detectedType: 'geotiff'
+        }
+      ).then((res) => {
+        expect(res.status).to.equal(202)
+        expect(res.body).to.have.property('id')
+        expect(res.body.items).to.have.length(1)
+        expect(res.body.items[0].filename).to.equal('upload.tif')
       })
-        .then((res) => {
-          expect(res.status).to.equal(202)
-          expect(res.body).to.have.property('id')
-          expect(res.body.items).to.have.length(1)
-          expect(res.body.items[0].filename).to.equal('upload.tif')
-        })
     })
 
     it('rejects unsupported detectedType', () => {
       const filePath = createTempFile('upload.tif')
-      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
-        filePath,
-        filename: 'upload.tif',
-        detectedType: 'nope'
-      })
+      return uploadRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/upload',
+        {
+          filePath,
+          filename: 'upload.tif',
+          detectedType: 'nope'
+        }
+      )
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(400)
@@ -254,11 +271,15 @@ describe('Imports Web API', () => {
 
     it('rejects folder uploads', () => {
       const filePath = createTempFile('upload.tif')
-      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
-        filePath,
-        filename: 'upload.tif',
-        detectedType: 'folder'
-      })
+      return uploadRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/upload',
+        {
+          filePath,
+          filename: 'upload.tif',
+          detectedType: 'folder'
+        }
+      )
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(400)
@@ -268,12 +289,16 @@ describe('Imports Web API', () => {
 
     it('rejects invalid metadata JSON', () => {
       const filePath = createTempFile('upload.tif')
-      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
-        filePath,
-        filename: 'upload.tif',
-        detectedType: 'geotiff',
-        metadata: '{bad json'
-      })
+      return uploadRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/upload',
+        {
+          filePath,
+          filename: 'upload.tif',
+          detectedType: 'geotiff',
+          metadata: '{bad json'
+        }
+      )
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(400)
@@ -284,7 +309,10 @@ describe('Imports Web API', () => {
 
   describe('GET /@signalk/charts-plugin/imports/:id', () => {
     it('returns 400 for invalid id', () => {
-      return getRequest(testServer, '/@signalk/charts-plugin/imports/not-a-number')
+      return getRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/not-a-number'
+      )
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(400)
@@ -308,11 +336,13 @@ describe('Imports Web API', () => {
         }
       ])
 
-      return getRequest(testServer, `/@signalk/charts-plugin/imports/${job.id}`)
-        .then((res) => {
-          expect(res.status).to.equal(200)
-          expect(res.body.id).to.equal(job.id)
-        })
+      return getRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/${job.id}`
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body.id).to.equal(job.id)
+      })
     })
   })
 
@@ -338,11 +368,10 @@ describe('Imports Web API', () => {
       return deleteRequest(
         testServer,
         `/@signalk/charts-plugin/imports/${job.id}?action=delete`
-      )
-        .then((res) => {
-          expect(res.status).to.equal(200)
-          expect(res.body.id).to.equal(job.id)
-        })
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body.id).to.equal(job.id)
+      })
     })
 
     it('cancels a job by default', () => {
@@ -357,12 +386,11 @@ describe('Imports Web API', () => {
       return deleteRequest(
         testServer,
         `/@signalk/charts-plugin/imports/${job.id}`
-      )
-        .then((res) => {
-          expect(res.status).to.equal(200)
-          expect(res.body.id).to.equal(job.id)
-          expect(res.body.state).to.equal('CANCELED')
-        })
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body.id).to.equal(job.id)
+        expect(res.body.state).to.equal('CANCELED')
+      })
     })
   })
 
@@ -374,10 +402,15 @@ describe('Imports Web API', () => {
       fs.writeFileSync(filePath, 'hello')
       fs.mkdirSync(subDir)
 
-      const res = await getRequest(testServer, `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(tempDir)}`)
+      const res = await getRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(tempDir)}`
+      )
       expect(res.status).to.equal(200)
       expect(res.body.path).to.equal(tempDir)
-      expect(res.body.entries.some((entry) => entry.name === 'sample.txt')).to.equal(true)
+      expect(
+        res.body.entries.some((entry) => entry.name === 'sample.txt')
+      ).to.equal(true)
     })
 
     it('returns 400 when path is not a directory', () => {
@@ -385,7 +418,10 @@ describe('Imports Web API', () => {
       const filePath = path.join(tempDir, 'sample.txt')
       fs.writeFileSync(filePath, 'hello')
 
-      return getRequest(testServer, `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(filePath)}`)
+      return getRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(filePath)}`
+      )
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(400)
@@ -394,7 +430,10 @@ describe('Imports Web API', () => {
 
     it('returns 404 for missing directory', () => {
       const missingPath = path.join(createTempDir(), 'missing')
-      return getRequest(testServer, `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(missingPath)}`)
+      return getRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(missingPath)}`
+      )
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(404)
@@ -404,11 +443,13 @@ describe('Imports Web API', () => {
 
   describe('GET /@signalk/charts-plugin/imports/converters/:type', () => {
     it('returns converters for geotiff', () => {
-      return getRequest(testServer, '/@signalk/charts-plugin/imports/converters/geotiff')
-        .then((res) => {
-          expect(res.status).to.equal(200)
-          expect(res.body).to.be.an('array')
-        })
+      return getRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/converters/geotiff'
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body).to.be.an('array')
+      })
     })
   })
 
@@ -437,14 +478,16 @@ describe('Imports Web API', () => {
 
   describe('Config endpoints', () => {
     it('returns config entries', () => {
-      return getRequest(testServer, '/@signalk/charts-plugin/imports/config')
-        .then((res) => {
-          expect(res.status).to.equal(200)
-          expect(res.body).to.be.an('array')
-          const keys = res.body.map((entry) => entry.key)
-          expect(keys).to.include('chartPaths')
-          expect(keys).to.include('cachePath')
-        })
+      return getRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/config'
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body).to.be.an('array')
+        const keys = res.body.map((entry) => entry.key)
+        expect(keys).to.include('chartPaths')
+        expect(keys).to.include('cachePath')
+      })
     })
 
     it('applies config changes', () => {
@@ -453,12 +496,11 @@ describe('Imports Web API', () => {
           { key: 'chartPaths', value: '/charts/one, /charts/two' },
           { key: 'cachePath', value: '/tmp/cache' }
         ]
+      }).then((res) => {
+        expect(res.status).to.equal(200)
+        const entry = res.body.find((item) => item.key === 'cachePath')
+        expect(entry.value).to.equal('/tmp/cache')
       })
-        .then((res) => {
-          expect(res.status).to.equal(200)
-          const entry = res.body.find((item) => item.key === 'cachePath')
-          expect(entry.value).to.equal('/tmp/cache')
-        })
     })
   })
 
@@ -473,7 +515,10 @@ describe('Imports Web API', () => {
       ])
       const itemId = job.items[0].id
 
-      const { req, res } = await openSse(testServer, '/@signalk/charts-plugin/imports/events')
+      const { req, res } = await openSse(
+        testServer,
+        '/@signalk/charts-plugin/imports/events'
+      )
       try {
         const events = await readSseEvents(res, 2)
         const snapshot = events.find((event) => event.event === 'snapshot')

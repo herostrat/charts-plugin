@@ -38,7 +38,10 @@ describe('providers/online convertOnlineProviderConfig', () => {
       headers: ['Authorization: Bearer token', 'User-Agent: MyApp']
     }
     const result = convertOnlineProviderConfig(provider)
-    expect(result.headers).to.deep.equal({ Authorization: 'Bearer token', 'User-Agent': 'MyApp' })
+    expect(result.headers).to.deep.equal({
+      Authorization: 'Bearer token',
+      'User-Agent': 'MyApp'
+    })
   })
 
   it('handles malformed header entries gracefully', () => {
@@ -92,7 +95,9 @@ describe('providers/online convertOnlineProviderConfig', () => {
       proxy: true
     }
     const result = convertOnlineProviderConfig(provider)
-    expect(result.v1.tilemapUrl).to.equal('~tilePath~/proxy-provider/{z}/{x}/{y}')
+    expect(result.v1.tilemapUrl).to.equal(
+      '~tilePath~/proxy-provider/{z}/{x}/{y}'
+    )
     expect(result.v2.url).to.equal('~tilePath~/proxy-provider/{z}/{x}/{y}')
     expect(result.remoteUrl).to.equal('http://tiles.example.com/{z}/{x}/{y}')
     expect(result.proxy).to.equal(true)

@@ -1,11 +1,11 @@
-import { openPmtilesFile } from '../../src/tiles/catalog/pmtiles.ts';
-import path from 'path';
-import { expect } from 'chai';
-import { fileURLToPath } from 'url';
+import { openPmtilesFile } from '../../src/tiles/catalog/pmtiles.ts'
+import path from 'path'
+import { expect } from 'chai'
+import { fileURLToPath } from 'url'
 
 describe('openPmtilesFile defensive structure tests', () => {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const fixturesRoot = path.resolve(__dirname, '../fixtures/pmtiles');
+  const __dirname = path.dirname(fileURLToPath(import.meta.url))
+  const fixturesRoot = path.resolve(__dirname, '../fixtures/pmtiles')
 
   it('returns null for invalid or empty PMTiles files', async () => {
     const empty = await openPmtilesFile(
@@ -31,4 +31,4 @@ describe('openPmtilesFile defensive structure tests', () => {
     expect(chart.minzoom).to.be.a('number')
     expect(chart.maxzoom).to.be.a('number')
   })
-});
+})

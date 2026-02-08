@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "lib": ["DOM", "ES2022"],
+    "typeRoots": ["./test/@types", "./node_modules/@types"]
+  },
+  "include": ["./test/**/*.ts"],
+  "exclude": ["node_modules", "plugin"]
+}

@@ -42,7 +42,8 @@ describe('registerTileRoutes handlers', () => {
       getCachePath: () => '/tmp'
     })
 
-    const response = await chaiRequest.execute(baseUrl)
+    const response = await chaiRequest
+      .execute(baseUrl)
       .get('/signalk/chart-tiles/test/a/b/c')
       .catch((e) => e.response)
 
@@ -56,7 +57,8 @@ describe('registerTileRoutes handlers', () => {
       getCachePath: () => '/tmp'
     })
 
-    const response = await chaiRequest.execute(baseUrl)
+    const response = await chaiRequest
+      .execute(baseUrl)
       .get('/signalk/chart-tiles/test/4/5/6')
       .catch((e) => e.response)
 
@@ -70,7 +72,8 @@ describe('registerTileRoutes handlers', () => {
       getCachePath: () => '/tmp'
     })
 
-    const response = await chaiRequest.execute(baseUrl)
+    const response = await chaiRequest
+      .execute(baseUrl)
       .get('/signalk/chart-tiles/missing/4/5/6')
       .catch((e) => e.response)
 
@@ -89,7 +92,8 @@ describe('registerTileRoutes handlers', () => {
       getCachePath: () => '/tmp'
     })
 
-    const response = await chaiRequest.execute(baseUrl)
+    const response = await chaiRequest
+      .execute(baseUrl)
       .get('/signalk/chart-tiles/test/1/2/3')
 
     expect(response.status).to.equal(200)
@@ -100,11 +104,14 @@ describe('registerTileRoutes handlers', () => {
   it('handles cache job creation validation', async () => {
     registerTileRoutes({
       app,
-      getProviders: () => ({ test: makeProvider({ _fileFormat: 'directory' }) }),
+      getProviders: () => ({
+        test: makeProvider({ _fileFormat: 'directory' })
+      }),
       getCachePath: () => '/tmp'
     })
 
-    const missingMaxZoom = await chaiRequest.execute(baseUrl)
+    const missingMaxZoom = await chaiRequest
+      .execute(baseUrl)
       .post('/signalk/chart-tiles/cache/test')
       .send({})
       .catch((e) => e.response)
@@ -116,7 +123,8 @@ describe('registerTileRoutes handlers', () => {
       called = true
     }
 
-    const okResponse = await chaiRequest.execute(baseUrl)
+    const okResponse = await chaiRequest
+      .execute(baseUrl)
       .post('/signalk/chart-tiles/cache/test')
       .send({ maxZoom: '5' })
     expect(okResponse.status).to.equal(200)
@@ -128,7 +136,9 @@ describe('registerTileRoutes handlers', () => {
   it('handles cache job actions', async () => {
     registerTileRoutes({
       app,
-      getProviders: () => ({ test: makeProvider({ _fileFormat: 'directory' }) }),
+      getProviders: () => ({
+        test: makeProvider({ _fileFormat: 'directory' })
+      }),
       getCachePath: () => '/tmp'
     })
 
@@ -141,32 +151,38 @@ describe('registerTileRoutes handlers', () => {
       }
     }
 
-    const listResponse = await chaiRequest.execute(baseUrl)
+    const listResponse = await chaiRequest
+      .execute(baseUrl)
       .get('/signalk/chart-tiles/cache/jobs')
     expect(listResponse.status).to.equal(200)
     expect(listResponse.body).to.be.an('array')
 
-    const startResponse = await chaiRequest.execute(baseUrl)
+    const startResponse = await chaiRequest
+      .execute(baseUrl)
       .post('/signalk/chart-tiles/cache/jobs/1')
       .send({ action: 'start' })
     expect(startResponse.status).to.equal(200)
 
-    const stopResponse = await chaiRequest.execute(baseUrl)
+    const stopResponse = await chaiRequest
+      .execute(baseUrl)
       .post('/signalk/chart-tiles/cache/jobs/1')
       .send({ action: 'stop' })
     expect(stopResponse.status).to.equal(200)
 
-    const deleteResponse = await chaiRequest.execute(baseUrl)
+    const deleteResponse = await chaiRequest
+      .execute(baseUrl)
       .post('/signalk/chart-tiles/cache/jobs/1')
       .send({ action: 'delete' })
     expect(deleteResponse.status).to.equal(200)
 
-    const removeResponse = await chaiRequest.execute(baseUrl)
+    const removeResponse = await chaiRequest
+      .execute(baseUrl)
       .post('/signalk/chart-tiles/cache/jobs/1')
       .send({ action: 'remove' })
     expect(removeResponse.status).to.equal(200)
 
-    const invalidResponse = await chaiRequest.execute(baseUrl)
+    const invalidResponse = await chaiRequest
+      .execute(baseUrl)
       .post('/signalk/chart-tiles/cache/jobs/1')
       .send({ action: 'invalid' })
       .catch((e) => e.response)

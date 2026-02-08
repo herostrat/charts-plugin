@@ -1,88 +1,156 @@
-import { basemapNote, mapEl, mapEmpty, mapReset, mapToggle, mapWrap } from '../core/dom.js';
-import { state } from '../core/state.js';
-import { getBounds } from '../core/utils.js';
+import {
+  basemapNote,
+  mapEl,
+  mapEmpty,
+  mapReset,
+  mapToggle,
+  mapWrap
+} from '../core/dom.js'
+import type { ImportItem } from '../core/state.js'
+import { state } from '../core/state.js'
+import { getBounds } from '../core/utils.js'
 
-let renderImportsFn: () => void;
-let leafletMap: any = null;
-let boundsGroup: any = null;
-let basemapLayer: any = null;
+type LeafletMap = {
+  fitBounds: (
+    bounds: unknown,
+    options?: { padding?: [number, number]; maxZoom?: number }
+  ) => void
+  setView: (center: [number, number], zoom: number) => void
+  createPane: (name: string) => void
+  getPane: (name: string) => { style: CSSStyleDeclaration }
+  invalidateSize: () => void
+}
+
+type LeafletFeatureGroup = {
+  addTo: (map: LeafletMap) => LeafletFeatureGroup
+  clearLayers: () => void
+}
+
+type LeafletRectangle = {
+  on: (event: string, cb: () => void) => void
+  addTo: (group: LeafletFeatureGroup) => void
+}
+
+type LeafletGlobal = {
+  map: (el: HTMLElement, options: Record<string, unknown>) => LeafletMap
+  featureGroup: () => LeafletFeatureGroup
+  latLngBounds: (coords: [[number, number], [number, number]]) => unknown
+  rectangle: (
+    bounds: unknown,
+    options: Record<string, unknown>
+  ) => LeafletRectangle
+  geoJSON: (
+    data: unknown,
+    options: Record<string, unknown>
+  ) => {
+    addTo: (map: LeafletMap) => void
+  }
+}
+
+type MapItem = { jobId: unknown; item: ImportItem; key: string }
+
+const getLeaflet = (): LeafletGlobal | null =>
+  (window as unknown as { L?: LeafletGlobal }).L ?? null
+
+let renderImportsFn: () => void
+let leafletMap: LeafletMap | null = null
+let boundsGroup: LeafletFeatureGroup | null = null
 
 const assetUrl = (() => {
-  const scriptEl = (document.currentScript as HTMLScriptElement | null) ||
-    document.querySelector<HTMLScriptElement>('script[src$="index.js"]');
-  const base = scriptEl?.src ? new URL('./', scriptEl.src) : new URL('./', window.location.href);
-  return (rel: string) => new URL(rel, base).toString();
-})();
+  const scriptEl =
+    (document.currentScript as HTMLScriptElement | null) ||
+    document.querySelector<HTMLScriptElement>('script[src$="index.js"]')
+  const base = scriptEl?.src
+    ? new URL('./', scriptEl.src)
+    : new URL('./', window.location.href)
+  return (rel: string) => new URL(rel, base).toString()
+})()
 
 const rectStyle = (focused: boolean) => ({
   color: focused ? '#2a67ff' : 'rgba(42,103,255,.75)',
   weight: focused ? 3 : 2,
   fillColor: '#2a67ff',
-  fillOpacity: focused ? 0.18 : 0.10
-});
+  fillOpacity: focused ? 0.18 : 0.1
+})
 
-const toLatLngBounds = (b: any) => {
-  if (!Array.isArray(b) || b.length !== 4) return null;
-  const [minLon, minLat, maxLon, maxLat] = b.map(Number);
-  if ([minLon, minLat, maxLon, maxLat].some((v) => !Number.isFinite(v))) return null;
-  return (window as any).L.latLngBounds([[minLat, minLon], [maxLat, maxLon]]);
-};
+const toLatLngBounds = (b: unknown) => {
+  if (!Array.isArray(b) || b.length !== 4) return null
+  const [minLon, minLat, maxLon, maxLat] = b.map(Number)
+  if ([minLon, minLat, maxLon, maxLat].some((v) => !Number.isFinite(v)))
+    return null
+  const L = getLeaflet()
+  if (!L) return null
+  return L.latLngBounds([
+    [minLat, minLon],
+    [maxLat, maxLon]
+  ])
+}
 
 export const focusBounds = (bounds: number[]) => {
-  if (!leafletMap || !(window as any).L) return;
-  const llb = toLatLngBounds(bounds);
-  if (!llb) return;
-  leafletMap.fitBounds(llb, { padding: [40, 40], maxZoom: 12 });
-};
+  const L = getLeaflet()
+  if (!leafletMap || !L) return
+  const llb = toLatLngBounds(bounds)
+  if (!llb) return
+  leafletMap.fitBounds(llb, { padding: [40, 40], maxZoom: 12 })
+}
 
 export const resetView = () => {
-  if (!leafletMap || !(window as any).L) return;
-  leafletMap.setView([20, 0], 2);
-};
+  const L = getLeaflet()
+  if (!leafletMap || !L) return
+  leafletMap.setView([20, 0], 2)
+}
 
-export const renderMap = (itemsWithJob: any[]) => {
+export const renderMap = (itemsWithJob: MapItem[]) => {
   const boundsItems = (Array.isArray(itemsWithJob) ? itemsWithJob : [])
     .map(({ jobId, item, key }) => ({ jobId, item, key, b: getBounds(item) }))
-    .filter((x) => Array.isArray(x.b) && x.b.length === 4);
+    .filter((x) => Array.isArray(x.b) && x.b.length === 4)
 
-  if (mapEmpty) mapEmpty.style.display = boundsItems.length ? 'none' : 'block';
-  if (!leafletMap || !boundsGroup || !(window as any).L) return;
+  if (mapEmpty) mapEmpty.style.display = boundsItems.length ? 'none' : 'block'
+  const L = getLeaflet()
+  if (!leafletMap || !boundsGroup || !L) return
 
-  boundsGroup.clearLayers();
+  boundsGroup.clearLayers()
 
   for (const { key, b } of boundsItems) {
-    const llb = toLatLngBounds(b);
-    if (!llb) continue;
+    const llb = toLatLngBounds(b)
+    if (!llb) continue
 
-    const focused = state.focusedKey === key;
-    const rect = (window as any).L.rectangle(llb, { ...rectStyle(focused), pane: 'bounds' });
+    const focused = state.focusedKey === key
+    const rect = L.rectangle(llb, {
+      ...rectStyle(focused),
+      pane: 'bounds'
+    })
     rect.on('click', () => {
-      state.focusedKey = key;
-      renderImportsFn?.();
-      focusBounds(b);
-    });
-    rect.addTo(boundsGroup);
+      state.focusedKey = key
+      renderImportsFn?.()
+      focusBounds(b as number[])
+    })
+    rect.addTo(boundsGroup)
   }
-};
+}
 
 export const setMapHidden = (hidden: boolean) => {
-  state.mapHidden = !!hidden;
-  if (mapWrap) mapWrap.style.display = state.mapHidden ? 'none' : 'block';
-  if (mapToggle) mapToggle.textContent = state.mapHidden ? 'Show' : 'Hide';
+  state.mapHidden = !!hidden
+  if (mapWrap) mapWrap.style.display = state.mapHidden ? 'none' : 'block'
+  if (mapToggle) mapToggle.textContent = state.mapHidden ? 'Show' : 'Hide'
   if (!state.mapHidden && leafletMap) {
-    setTimeout(() => leafletMap.invalidateSize(), 50);
+    setTimeout(() => leafletMap.invalidateSize(), 50)
   }
-};
+}
 
 const addLocalVectorBasemap = async () => {
-  if (!leafletMap || !(window as any).L) return;
-  if (basemapNote) basemapNote.style.display = 'none';
+  const L = getLeaflet()
+  if (!leafletMap || !L) return
+  if (basemapNote) basemapNote.style.display = 'none'
 
   try {
-    const r = await fetch(assetUrl('assets/world/ne_110m_admin_0_countries.geojson'), { cache: 'no-store' });
+    const r = await fetch(
+      assetUrl('assets/world/ne_110m_admin_0_countries.geojson'),
+      { cache: 'no-store' }
+    )
     if (r.ok) {
-      const gj = await r.json();
-      basemapLayer = (window as any).L.geoJSON(gj, {
+      const gj = await r.json()
+      L.geoJSON(gj, {
         pane: 'basemap',
         interactive: false,
         style: {
@@ -91,49 +159,51 @@ const addLocalVectorBasemap = async () => {
           fillColor: 'rgba(18,19,26,.06)',
           fillOpacity: 1
         }
-      }).addTo(leafletMap);
-      if (basemapNote) basemapNote.style.display = 'none';
-      return;
+      }).addTo(leafletMap)
+      if (basemapNote) basemapNote.style.display = 'none'
+      return
     }
-  } catch (_) {}
+  } catch (err) {
+    void err
+  }
 
-  if (basemapNote) basemapNote.style.display = 'block';
-};
+  if (basemapNote) basemapNote.style.display = 'block'
+}
 
 export const initMap = (opts: { renderImports: () => void }) => {
-  renderImportsFn = opts.renderImports;
+  renderImportsFn = opts.renderImports
 
-  if (!mapEl) return;
+  if (!mapEl) return
 
-  const L = (window as any).L;
+  const L = getLeaflet()
   if (!L) {
     mapEl.innerHTML = `
       <div style="padding:14px;color:var(--muted);font-size:13px;line-height:1.45;">
         <b>Leaflet not found.</b><br/>
         Place <code>assets/leaflet/leaflet.js</code> and <code>assets/leaflet/leaflet.css</code> next to this HTML file (same directory), then reload.
       </div>
-    `;
-    return;
+    `
+    return
   }
 
   leafletMap = L.map(mapEl, {
     zoomControl: true,
     attributionControl: true,
     worldCopyJump: true
-  });
+  })
 
-  leafletMap.createPane('basemap');
-  leafletMap.getPane('basemap').style.zIndex = 200;
-  leafletMap.getPane('basemap').style.pointerEvents = 'none';
+  leafletMap.createPane('basemap')
+  leafletMap.getPane('basemap').style.zIndex = '200'
+  leafletMap.getPane('basemap').style.pointerEvents = 'none'
 
-  leafletMap.createPane('bounds');
-  leafletMap.getPane('bounds').style.zIndex = 400;
+  leafletMap.createPane('bounds')
+  leafletMap.getPane('bounds').style.zIndex = '400'
 
-  boundsGroup = L.featureGroup().addTo(leafletMap);
-  leafletMap.setView([20, 0], 2);
+  boundsGroup = L.featureGroup().addTo(leafletMap)
+  leafletMap.setView([20, 0], 2)
 
-  addLocalVectorBasemap();
+  addLocalVectorBasemap()
 
-  mapReset?.addEventListener('click', () => resetView());
-  mapToggle?.addEventListener('click', () => setMapHidden(!state.mapHidden));
-};
+  mapReset?.addEventListener('click', () => resetView())
+  mapToggle?.addEventListener('click', () => setMapHidden(!state.mapHidden))
+}

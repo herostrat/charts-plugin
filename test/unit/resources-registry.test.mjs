@@ -94,14 +94,25 @@ describe('registerResourcesProvider', () => {
 describe('validateVectorProviders', () => {
   it('warns when vector providers have no layers', () => {
     let message = ''
-    const app = { debug: (msg) => { message = msg } }
-    validateVectorProviders({ vec: makeProvider({ v1: { chartLayers: [] }, v2: undefined }) }, app)
+    const app = {
+      debug: (msg) => {
+        message = msg
+      }
+    }
+    validateVectorProviders(
+      { vec: makeProvider({ v1: { chartLayers: [] }, v2: undefined }) },
+      app
+    )
     expect(message).to.include('no vector_layers')
   })
 
   it('skips non-vector providers', () => {
     let called = false
-    const app = { debug: () => { called = true } }
+    const app = {
+      debug: () => {
+        called = true
+      }
+    }
     validateVectorProviders({ raster: makeProvider({ format: 'png' }) }, app)
     expect(called).to.equal(false)
   })

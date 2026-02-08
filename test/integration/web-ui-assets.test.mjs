@@ -38,29 +38,32 @@ describe('Web UI assets', () => {
   })
 
   it('serves index.html', () => {
-    return getRequest(testServer, '/@signalk/charts-plugin/index.html')
-      .then((res) => {
+    return getRequest(testServer, '/@signalk/charts-plugin/index.html').then(
+      (res) => {
         expect(res.status).to.equal(200)
         expect(res.headers['content-type']).to.match(/text\/html/)
         expect(res.text).to.include('<title>Chart Imports</title>')
-      })
+      }
+    )
   })
 
   it('serves style.css', () => {
-    return getRequest(testServer, '/@signalk/charts-plugin/style.css')
-      .then((res) => {
+    return getRequest(testServer, '/@signalk/charts-plugin/style.css').then(
+      (res) => {
         expect(res.status).to.equal(200)
         expect(res.headers['content-type']).to.match(/text\/css/)
         expect(res.text.length).to.be.greaterThan(0)
-      })
+      }
+    )
   })
 
   it('serves index.js', () => {
-    return getRequest(testServer, '/@signalk/charts-plugin/index.js')
-      .then((res) => {
+    return getRequest(testServer, '/@signalk/charts-plugin/index.js').then(
+      (res) => {
         expect(res.status).to.equal(200)
         expect(res.headers['content-type']).to.match(/javascript/)
         expect(res.text.length).to.be.greaterThan(0)
-      })
+      }
+    )
   })
 })

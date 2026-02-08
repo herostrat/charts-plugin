@@ -25,7 +25,15 @@ describe('ChartDownloader getTilesForGeoJSON', () => {
           type: 'Feature',
           geometry: {
             type: 'Polygon',
-            coordinates: [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]
+            coordinates: [
+              [
+                [0, 0],
+                [1, 0],
+                [1, 1],
+                [0, 1],
+                [0, 0]
+              ]
+            ]
           },
           properties: {}
         }

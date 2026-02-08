@@ -1,5 +1,9 @@
 import { strict as assert } from 'assert'
-import { lonLatToTileXY, tileToBBox, getSubTiles } from '../../src/tiles/tile-utils.ts'
+import {
+  lonLatToTileXY,
+  tileToBBox,
+  getSubTiles
+} from '../../src/tiles/tile-utils.ts'
 
 describe('tile-utils', () => {
   describe('lonLatToTileXY', () => {
@@ -34,8 +38,8 @@ describe('tile-utils', () => {
       const subtiles = getSubTiles(tile, 2)
       // 1 (z=0) + 4 (z=1) + 16 (z=2) = 21
       assert.equal(subtiles.length, 21)
-      assert(subtiles.some(t => t.x === 0 && t.y === 0 && t.z === 0))
-      assert(subtiles.some(t => t.z === 2 && t.x === 3 && t.y === 3))
+      assert(subtiles.some((t) => t.x === 0 && t.y === 0 && t.z === 0))
+      assert(subtiles.some((t) => t.z === 2 && t.x === 3 && t.y === 3))
     })
   })
 })

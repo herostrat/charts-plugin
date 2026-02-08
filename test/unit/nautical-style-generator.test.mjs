@@ -72,21 +72,29 @@ describe('buildNauticalVectorStyle', () => {
     ]
 
     const style = buildNauticalVectorStyle(provider, catalog)
-    expect(style.layers.some((layer) => layer.id.includes('area-pattern'))).to.equal(true)
-    expect(style.layers.some((layer) => layer.id.includes('hazard-symbol'))).to.equal(true)
+    expect(
+      style.layers.some((layer) => layer.id.includes('area-pattern'))
+    ).to.equal(true)
+    expect(
+      style.layers.some((layer) => layer.id.includes('hazard-symbol'))
+    ).to.equal(true)
   })
 
   it('falls back to default POI and hazard icons', () => {
     const provider = createProvider(['BOYLAT', 'LIGHTS', 'WRECKS', 'OBSTRN'])
     const style = buildNauticalVectorStyle(provider, [])
-    const symbolLayers = style.layers.filter((layer) => layer.id.includes('symbol'))
+    const symbolLayers = style.layers.filter((layer) =>
+      layer.id.includes('symbol')
+    )
     expect(symbolLayers.length).to.be.greaterThan(0)
   })
 
   it('uses freeboard icon mapping for virtual ATON variants', () => {
     const provider = createProvider(['beacon_virtual_north'])
     const style = buildNauticalVectorStyle(provider, [])
-    const layer = style.layers.find((entry) => entry.id === 'poi-symbol-beacon_virtual_north')
+    const layer = style.layers.find(
+      (entry) => entry.id === 'poi-symbol-beacon_virtual_north'
+    )
     expect(layer).to.be.an('object')
     const iconImage = layer.layout['icon-image']
     expect(iconImage[3]).to.equal('virtual-north')
@@ -95,7 +103,9 @@ describe('buildNauticalVectorStyle', () => {
   it('uses default hazard icon mapping for rock hazards', () => {
     const provider = createProvider(['rock_hazard'])
     const style = buildNauticalVectorStyle(provider, [])
-    const layer = style.layers.find((entry) => entry.id === 'hazard-symbol-rock_hazard')
+    const layer = style.layers.find(
+      (entry) => entry.id === 'hazard-symbol-rock_hazard'
+    )
     expect(layer).to.be.an('object')
     const iconImage = layer.layout['icon-image']
     expect(iconImage[3]).to.equal('obstruction')

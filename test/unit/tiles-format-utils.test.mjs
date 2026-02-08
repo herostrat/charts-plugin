@@ -1,5 +1,10 @@
 import { expect } from 'chai'
-import { isAllowedTileFormat, resolveTileContentType, isGzipBuffer, isVectorFormat } from '../../src/tiles/format.ts'
+import {
+  isAllowedTileFormat,
+  resolveTileContentType,
+  isGzipBuffer,
+  isVectorFormat
+} from '../../src/tiles/format.ts'
 
 // Buffer helper for gzip
 const gzipBuffer = Buffer.from([0x1f, 0x8b, 0x08, 0x00])
@@ -8,7 +13,7 @@ const notGzipBuffer = Buffer.from([0x00, 0x00, 0x00, 0x00])
 describe('tiles/format utility functions', () => {
   describe('isAllowedTileFormat', () => {
     it('returns true for allowed formats', () => {
-      ['png', 'jpg', 'jpeg', 'pbf', 'mvt', 'webp', 'avif'].forEach(fmt => {
+      ;['png', 'jpg', 'jpeg', 'pbf', 'mvt', 'webp', 'avif'].forEach((fmt) => {
         expect(isAllowedTileFormat(fmt)).to.be.true
         expect(isAllowedTileFormat(fmt.toUpperCase())).to.be.true
       })
@@ -29,12 +34,18 @@ describe('tiles/format utility functions', () => {
       expect(resolveTileContentType('avif')).to.equal('image/avif')
     })
     it('returns correct content-type for vector formats', () => {
-      expect(resolveTileContentType('pbf')).to.equal('application/vnd.mapbox-vector-tile')
-      expect(resolveTileContentType('mvt')).to.equal('application/vnd.mapbox-vector-tile')
+      expect(resolveTileContentType('pbf')).to.equal(
+        'application/vnd.mapbox-vector-tile'
+      )
+      expect(resolveTileContentType('mvt')).to.equal(
+        'application/vnd.mapbox-vector-tile'
+      )
     })
     it('returns octet-stream for unknown', () => {
       expect(resolveTileContentType('svg')).to.equal('application/octet-stream')
-      expect(resolveTileContentType(undefined)).to.equal('application/octet-stream')
+      expect(resolveTileContentType(undefined)).to.equal(
+        'application/octet-stream'
+      )
     })
   })
 
