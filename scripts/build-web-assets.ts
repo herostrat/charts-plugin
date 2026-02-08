@@ -22,6 +22,9 @@ const copyDir = (fromDir: string, toDir: string) => {
       copyDir(fromPath, toPath)
       return
     }
+    if (entry.isFile() && entry.name.endsWith('.ts')) {
+      return
+    }
     fs.copyFileSync(fromPath, toPath)
   })
 }

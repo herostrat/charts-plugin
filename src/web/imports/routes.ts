@@ -16,7 +16,10 @@ import type {
   ImportItemMetadata,
   ImportStreamType
 } from '../../imports/types'
-import { getConvertersForType, isConversionSupported } from '../../imports/converters'
+import {
+  getConvertersForType,
+  isConversionSupported
+} from '../../imports/converters'
 import type { ConfigChange, ConfigService } from './config'
 import { defaultConfigService } from './config'
 import { registerImportEvents } from './sse'
@@ -75,14 +78,9 @@ const normalizeDetectedType = (value?: ImportFileType) => {
 }
 
 const isValidDetectedType = (value: string) => {
-  return [
-    'geotiff',
-    's57',
-    'mbtiles',
-    'pmtiles',
-    'folder',
-    'unknown'
-  ].includes(value)
+  return ['geotiff', 's57', 'mbtiles', 'pmtiles', 'folder', 'unknown'].includes(
+    value
+  )
 }
 
 const resolveFilename = (entry: ImportRequestItem) => {
@@ -150,9 +148,11 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
     if (!entry) {
       continue
     }
-    const sourceCount = [entry.sourcePath, entry.sourceUrl, entry.streamUrl]
-      .filter((value) => typeof value === 'string' && value.length > 0)
-      .length
+    const sourceCount = [
+      entry.sourcePath,
+      entry.sourceUrl,
+      entry.streamUrl
+    ].filter((value) => typeof value === 'string' && value.length > 0).length
     if (sourceCount !== 1) {
       return { items: [], error: 'Exactly one source must be provided' }
     }
@@ -163,8 +163,7 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
     }
 
     const detectedTypeRaw = normalizeDetectedType(entry.detectedType)
-    const detectedType =
-      detectedTypeRaw ?? detectTypeFromFilename(filename)
+    const detectedType = detectedTypeRaw ?? detectTypeFromFilename(filename)
     if (!isValidDetectedType(detectedType)) {
       return { items: [], error: 'Unsupported detectedType' }
     }

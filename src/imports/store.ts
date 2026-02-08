@@ -131,9 +131,7 @@ export const updateImportItem = (
     ...update
   }
   const nextBounds =
-    update.bounds ??
-    update.metadata?.bounds ??
-    update.metadataOverrides?.bounds
+    update.bounds ?? update.metadata?.bounds ?? update.metadataOverrides?.bounds
   if (nextBounds && Array.isArray(nextBounds) && nextBounds.length === 4) {
     nextItem.bounds = nextBounds as [number, number, number, number]
   }

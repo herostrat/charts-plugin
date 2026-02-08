@@ -1,98 +1,104 @@
+interface Window {
+  L?: unknown
+}
+
 (() => {
   'use strict';
 
   const API_BASE = '/@signalk/charts-plugin/imports';
-  const $ = (sel) => document.querySelector(sel);
+  const $ = <T extends Element = HTMLElement>(sel: string) => document.querySelector<T>(sel);
   const assetUrl = (() => {
-    const scriptEl = document.currentScript || document.querySelector('script[src$="index.js"]');
+    const scriptEl = (document.currentScript as HTMLScriptElement | null) ||
+      document.querySelector<HTMLScriptElement>('script[src$="index.js"]');
     const base = scriptEl?.src ? new URL('./', scriptEl.src) : new URL('./', window.location.href);
     return (rel) => new URL(rel, base).toString();
   })();
+  const L = window.L as any;
 
   const SUPPORTED_TYPES = ['geotiff','s57','mbtiles','pmtiles','folder'];
   const HEAVY_TYPES = new Set(['geotiff','s57']);
 
   // Tabs (right)
-  const sourceTabBtns = document.querySelectorAll('[data-tab]');
-  const sourcePanels = document.querySelectorAll('[data-panel]');
+  const sourceTabBtns = document.querySelectorAll<HTMLElement>('[data-tab]');
+  const sourcePanels = document.querySelectorAll<HTMLElement>('[data-panel]');
 
   // Filters (left)
-  const filterBtns = document.querySelectorAll('[data-filter]');
+  const filterBtns = document.querySelectorAll<HTMLElement>('[data-filter]');
 
   // Local FS
-  const fsListEl = $('#fsList');
-  const currentPathEl = $('#currentPath');
-  const upBtn = $('#upBtn');
-  const pathInput = $('#pathInput');
-  const goBtn = $('#goBtn');
+  const fsListEl = $('#fsList') as HTMLUListElement | null;
+  const currentPathEl = $('#currentPath') as HTMLElement | null;
+  const upBtn = $('#upBtn') as HTMLButtonElement | null;
+  const pathInput = $('#pathInput') as HTMLInputElement | null;
+  const goBtn = $('#goBtn') as HTMLButtonElement | null;
 
   // Local form
-  const selectedFileEl = $('#selectedFile');
-  const localTypeEl = $('#localType');
-  const localMetaBox = $('#localMetaBox');
-  const localMetaStatus = $('#localMetaStatus');
-  const localHeavyWarn = $('#localHeavyWarn');
-  const registerBtn = $('#registerBtn');
-  const registerStatus = $('#registerStatus');
+  const selectedFileEl = $('#selectedFile') as HTMLInputElement | null;
+  const localTypeEl = $('#localType') as HTMLSelectElement | null;
+  const localMetaBox = $('#localMetaBox') as HTMLElement | null;
+  const localMetaStatus = $('#localMetaStatus') as HTMLElement | null;
+  const localHeavyWarn = $('#localHeavyWarn') as HTMLElement | null;
+  const registerBtn = $('#registerBtn') as HTMLButtonElement | null;
+  const registerStatus = $('#registerStatus') as HTMLElement | null;
 
   // Download form
-  const downloadUrlEl = $('#downloadUrl');
-  const downloadTypeEl = $('#downloadType');
-  const downloadMetaBox = $('#downloadMetaBox');
-  const dlMetaStatus = $('#dlMetaStatus');
-  const downloadHeavyWarn = $('#downloadHeavyWarn');
-  const downloadBtn = $('#downloadBtn');
-  const downloadStatus = $('#downloadStatus');
+  const downloadUrlEl = $('#downloadUrl') as HTMLInputElement | null;
+  const downloadTypeEl = $('#downloadType') as HTMLSelectElement | null;
+  const downloadMetaBox = $('#downloadMetaBox') as HTMLElement | null;
+  const dlMetaStatus = $('#dlMetaStatus') as HTMLElement | null;
+  const downloadHeavyWarn = $('#downloadHeavyWarn') as HTMLElement | null;
+  const downloadBtn = $('#downloadBtn') as HTMLButtonElement | null;
+  const downloadStatus = $('#downloadStatus') as HTMLElement | null;
 
   // Stream form
-  const streamUrlEl = $('#streamUrl');
-  const streamTypeEl = $('#streamType');
-  const streamDetectedTypeEl = $('#streamDetectedType');
-  const streamMetaBox = $('#streamMetaBox');
-  const stMetaStatus = $('#stMetaStatus');
-  const streamHeavyWarn = $('#streamHeavyWarn');
-  const streamBtn = $('#streamBtn');
-  const streamStatus = $('#streamStatus');
+  const streamUrlEl = $('#streamUrl') as HTMLInputElement | null;
+  const streamTypeEl = $('#streamType') as HTMLSelectElement | null;
+  const streamDetectedTypeEl = $('#streamDetectedType') as HTMLSelectElement | null;
+  const streamMetaBox = $('#streamMetaBox') as HTMLElement | null;
+  const stMetaStatus = $('#stMetaStatus') as HTMLElement | null;
+  const streamHeavyWarn = $('#streamHeavyWarn') as HTMLElement | null;
+  const streamBtn = $('#streamBtn') as HTMLButtonElement | null;
+  const streamStatus = $('#streamStatus') as HTMLElement | null;
 
   // Global refresh
-  const refreshBtn = $('#refreshBtn');
-  const autoRefreshEl = $('#autoRefresh');
-  const liveStateEl = $('#liveState');
+  const refreshBtn = $('#refreshBtn') as HTMLButtonElement | null;
+  const autoRefreshEl = $('#autoRefresh') as HTMLInputElement | null;
+  const liveStateEl = $('#liveState') as HTMLElement | null;
 
   // Imports UI
-  const importsListEl = $('#importsList');
-  const importsEmptyEl = $('#importsEmpty');
-  const errorBanner = $('#errorBanner');
-  const kpiActive = $('#kpiActive');
-  const kpiAvailable = $('#kpiAvailable');
-  const kpiFailed = $('#kpiFailed');
-  const kpiTotal = $('#kpiTotal');
+  const importsListEl = $('#importsList') as HTMLElement | null;
+  const importsEmptyEl = $('#importsEmpty') as HTMLElement | null;
+  const errorBanner = $('#errorBanner') as HTMLElement | null;
+  const kpiActive = $('#kpiActive') as HTMLElement | null;
+  const kpiAvailable = $('#kpiAvailable') as HTMLElement | null;
+  const kpiFailed = $('#kpiFailed') as HTMLElement | null;
+  const kpiTotal = $('#kpiTotal') as HTMLElement | null;
 
   // Map
-  const mapEl = $('#leafletMap');
-  const mapWrap = $('#mapWrap');
-  const mapToggle = $('#mapToggle');
-  const mapEmpty = $('#mapEmpty');
-  const basemapNote = $('#basemapNote');
-  const resetViewBtn = $('#resetViewBtn');
+  const mapEl = $('#leafletMap') as HTMLDivElement | null;
+  const mapWrap = $('#mapWrap') as HTMLElement | null;
+  const mapToggle = $('#mapToggle') as HTMLButtonElement | null;
+  const mapEmpty = $('#mapEmpty') as HTMLElement | null;
+  const basemapNote = $('#basemapNote') as HTMLElement | null;
+  const resetViewBtn = $('#resetViewBtn') as HTMLButtonElement | null;
 
   // Details overlay
-  const detailsOverlay = $('#detailsOverlay');
-  const detailsClose = $('#detailsClose');
-  const detailsTitle = $('#detailsTitle');
-  const detailsSub = $('#detailsSub');
-  const detailsChip = $('#detailsChip');
-  const detailsMeta = $('#detailsMeta');
-  const detailsItemJson = $('#detailsItemJson');
-  const detailsJobJson = $('#detailsJobJson');
+  const detailsOverlay = $('#detailsOverlay') as HTMLElement | null;
+  const detailsClose = $('#detailsClose') as HTMLButtonElement | null;
+  const detailsTitle = $('#detailsTitle') as HTMLElement | null;
+  const detailsSub = $('#detailsSub') as HTMLElement | null;
+  const detailsChip = $('#detailsChip') as HTMLElement | null;
+  const detailsMeta = $('#detailsMeta') as HTMLElement | null;
+  const detailsItemJson = $('#detailsItemJson') as HTMLElement | null;
+  const detailsJobJson = $('#detailsJobJson') as HTMLElement | null;
 
   // Config overlay
-  const configBtn = $('#configBtn');
-  const configOverlay = $('#configOverlay');
-  const configClose = $('#configClose');
-  const configSave = $('#configSave');
-  const configStatus = $('#configStatus');
-  const configList = $('#configList');
+  const configBtn = $('#configBtn') as HTMLButtonElement | null;
+  const configOverlay = $('#configOverlay') as HTMLElement | null;
+  const configClose = $('#configClose') as HTMLButtonElement | null;
+  const configSave = $('#configSave') as HTMLButtonElement | null;
+  const configStatus = $('#configStatus') as HTMLElement | null;
+  const configList = $('#configList') as HTMLElement | null;
 
   let lastFocusEl = null;
 
@@ -256,8 +262,8 @@
   filterBtns.forEach((b) => b.addEventListener('click', () => setFilter(b.dataset.filter)));
 
   // ---------- Metadata helpers ----------
-  const readNum = (id) => {
-    const el = $(id);
+  const readNum = (id: string) => {
+    const el = $(id) as HTMLInputElement | null;
     if (!el) return null;
     const v = String(el.value ?? '').trim();
     if (!v) return null;
@@ -265,14 +271,14 @@
     return Number.isFinite(n) ? n : null;
   };
 
-  const readStr = (id) => {
-    const el = $(id);
+  const readStr = (id: string) => {
+    const el = $(id) as HTMLInputElement | null;
     const v = String(el?.value ?? '').trim();
     return v ? v : null;
   };
 
-  const readDateTimeLocalToIso = (id) => {
-    const el = $(id);
+  const readDateTimeLocalToIso = (id: string) => {
+    const el = $(id) as HTMLInputElement | null;
     const v = String(el?.value ?? '').trim();
     if (!v) return null;
     // datetime-local is local time without tz; convert to ISO.
@@ -494,7 +500,13 @@
     }
 
     try {
-      const item = {
+      const item: {
+        filename: string
+        sourcePath: string
+        sizeBytes?: number
+        detectedType: string
+        metadataOverrides?: unknown
+      } = {
         filename: sel.name,
         sourcePath: sel.path,
         sizeBytes: sel.size,
@@ -626,7 +638,12 @@
 
     try {
       const filename = (url.split('#')[0].split('?')[0].split('/').pop() || 'download');
-      const item = { filename, sourceUrl: url, detectedType: t };
+      const item: {
+        filename: string
+        sourceUrl: string
+        detectedType: string
+        metadataOverrides?: unknown
+      } = { filename, sourceUrl: url, detectedType: t };
 
       if (requiresMeta(t)) {
         const meta = folderMetaPayload('dl');
@@ -719,7 +736,12 @@
     }
 
     try {
-      const item = { streamUrl, streamType, detectedType };
+      const item: {
+        streamUrl: string
+        streamType: string
+        detectedType: string
+        metadataOverrides?: unknown
+      } = { streamUrl, streamType, detectedType };
 
       if (requiresMeta(detectedType)) {
         const meta = folderMetaPayload('st');
@@ -878,17 +900,17 @@
         openDetails(job, item, status);
       });
 
-      const cancelBtn = el.querySelector('button[data-cancel]');
+      const cancelBtn = el.querySelector('button[data-cancel]') as HTMLButtonElement | null;
       cancelBtn?.addEventListener('click', async (ev) => {
         ev.stopPropagation();
-        cancelBtn.disabled = true;
+        if (cancelBtn) cancelBtn.disabled = true;
         try {
           await api.cancelJob(job.id);
           if (!isSseConnected()) await refreshJobs();
         } catch (e) {
           showError(`Cancel failed: ${e.message}`);
         } finally {
-          cancelBtn.disabled = false;
+          if (cancelBtn) cancelBtn.disabled = false;
         }
       });
 
@@ -1093,8 +1115,9 @@
             <span style="font-weight:900; font-size:13px;">${v ? 'Enabled' : 'Disabled'}</span>
           </label>
         `;
-        const cb = host.querySelector('input[type="checkbox"]');
-        cb.addEventListener('change', () => {
+        const cb = host.querySelector('input[type="checkbox"]') as HTMLInputElement | null;
+        cb?.addEventListener('change', () => {
+          if (!cb) return;
           setValue(!!cb.checked);
           const label = host.querySelector('span');
           if (label) label.textContent = cb.checked ? 'Enabled' : 'Disabled';
@@ -1255,7 +1278,7 @@
   function initLeaflet() {
     if (!mapEl) return;
 
-    if (!window.L) {
+    if (!L) {
       mapEl.innerHTML = `
         <div style="padding:14px;color:var(--muted);font-size:13px;line-height:1.45;">
           <b>Leaflet not found.</b><br/>
@@ -1285,7 +1308,7 @@
   }
 
   async function addLocalVectorBasemap() {
-    if (!leafletMap || !window.L) return;
+    if (!leafletMap || !L) return;
     if (basemapNote) basemapNote.style.display = 'none';
 
     try {
@@ -1325,14 +1348,14 @@
   }
 
   function focusBounds(bounds) {
-    if (!leafletMap || !window.L) return;
+    if (!leafletMap || !L) return;
     const llb = toLatLngBounds(bounds);
     if (!llb) return;
     leafletMap.fitBounds(llb, { padding: [40, 40], maxZoom: 12 });
   }
 
   function resetView() {
-    if (!leafletMap || !window.L) return;
+    if (!leafletMap || !L) return;
     leafletMap.setView([20, 0], 2);
   }
 
@@ -1342,7 +1365,7 @@
       .filter((x) => Array.isArray(x.b) && x.b.length === 4);
 
     if (mapEmpty) mapEmpty.style.display = boundsItems.length ? 'none' : 'block';
-    if (!leafletMap || !boundsGroup || !window.L) return;
+    if (!leafletMap || !boundsGroup || !L) return;
 
     boundsGroup.clearLayers();
 
