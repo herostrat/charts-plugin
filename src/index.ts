@@ -14,6 +14,13 @@ import { convertOnlineProviderConfig } from './tiles/catalog/online'
 import { registerTileRoutes } from './tiles/routes'
 import { registerStyleRoutes } from './resources/style-routes'
 import { createImportsConfigService } from './web/imports/config'
+import {
+  buildChartsStorageLayout,
+  ensureChartsStorageLayout,
+  resolveChartsRoot,
+  setChartsStorageLayout
+} from './imports/storage'
+import { onImportEvent } from './imports/events'
 import { registerImportRoutes } from './web/imports/routes'
 import {
   registerResourcesProvider,
@@ -29,6 +36,7 @@ import type {
 } from '@signalk/server-api'
 
 interface Config {
+  chartsRoot?: string
   chartPaths: string[]
   cachePath: string
   onlineChartProviders: OnlineChartProvider[]
@@ -57,6 +65,7 @@ const plugin = (app: ChartProviderApp): Plugin => {
   let chartProviders: { [key: string]: ChartProvider } = {}
   let pluginStarted = false
   let vectorCatalogById = new Map<string, VectorCatalogChoice>()
+  let refreshListenerRegistered = false
   let props: Config = {
     chartPaths: [],
     cachePath: '',
@@ -65,13 +74,14 @@ const plugin = (app: ChartProviderApp): Plugin => {
 
   let urlBase = ''
   const configBasePath = app.config.configPath
-  const defaultChartsPath = path.join(configBasePath, '/charts')
+  const defaultChartsRoot = path.join(configBasePath, '/charts')
+  const defaultChartsDatabasePath = path.join(defaultChartsRoot, 'database')
   const serverMajorVersion = app.config.version
     ? parseInt(app.config.version.split('.')[0])
     : '1'
-  ensureDirectoryExists(defaultChartsPath)
+  ensureDirectoryExists(defaultChartsRoot)
 
-  let cachePath = defaultChartsPath
+  let cachePath = defaultChartsRoot
 
   // Check Node version for schema
   const nodeVersion = process.versions.node
@@ -94,17 +104,22 @@ const plugin = (app: ChartProviderApp): Plugin => {
       chartPaths: {
         type: 'array',
         title: 'Chart paths',
-        description: `Add one or more paths to find charts. Defaults to "${defaultChartsPath}"`,
+        description: `Add one or more paths to find charts. Defaults to "${defaultChartsDatabasePath}"`,
         items: {
           type: 'string',
           title: 'Path',
           description: `Path for chart files, relative to "${configBasePath}"`
         }
       },
+      chartsRoot: {
+        type: 'string',
+        title: 'Charts root',
+        description: `Root directory for imports storage layout. Defaults to "${defaultChartsRoot}"`
+      },
       cachePath: {
         type: 'string',
         title: 'Cache path',
-        description: `Directory for cached tiles. Defaults to "${defaultChartsPath}"`
+        description: `Directory for cached tiles. Defaults to "${defaultChartsRoot}"`
       },
       onlineChartProviders: {
         type: 'array',
@@ -266,11 +281,16 @@ const plugin = (app: ChartProviderApp): Plugin => {
     }`
     app.debug(`**urlBase** ${urlBase}`)
 
+    const chartsRoot = resolveChartsRoot(configBasePath, props.chartsRoot)
+    const layout = buildChartsStorageLayout(chartsRoot)
+    ensureChartsStorageLayout(layout)
+
     const chartPaths = isEmpty(props.chartPaths)
-      ? [defaultChartsPath]
+      ? [layout.databaseDir]
       : resolveUniqueChartPaths(props.chartPaths, configBasePath)
-    cachePath = props.cachePath || defaultChartsPath
+    cachePath = props.cachePath || chartsRoot
     ensureDirectoryExists(cachePath)
+    setChartsStorageLayout(layout)
 
     const onlineProviders = _.reduce(
       props.onlineChartProviders,
@@ -310,6 +330,44 @@ const plugin = (app: ChartProviderApp): Plugin => {
     })().then((list: Array<{ [key: string]: ChartProvider }>) =>
       _.reduce(list, (result, charts) => _.merge({}, result, charts), {})
     )
+
+    const refreshCharts = async () => {
+      const list = []
+      for (const chartPath of chartPaths) {
+        list.push(await findCharts(chartPath))
+      }
+      const charts = _.reduce(
+        list,
+        (result, charts) => _.merge({}, result, charts),
+        {}
+      ) as { [key: string]: ChartProvider }
+      chartProviders = _.merge({}, charts, onlineProviders) as {
+        [key: string]: ChartProvider
+      }
+      validateVectorProviders(chartProviders, app)
+    }
+
+    if (!refreshListenerRegistered) {
+      let refreshTimer: NodeJS.Timeout | null = null
+      onImportEvent((event) => {
+        if (event.type !== 'item') {
+          return
+        }
+        if (event.item.state !== 'AVAILABLE') {
+          return
+        }
+        if (refreshTimer) {
+          return
+        }
+        refreshTimer = setTimeout(() => {
+          refreshTimer = null
+          refreshCharts().catch((err) => {
+            console.error('Failed to refresh charts after import:', err)
+          })
+        }, 200)
+      })
+      refreshListenerRegistered = true
+    }
 
     return loadProviders
       .then((charts: { [key: string]: ChartProvider }) => {

@@ -13,6 +13,7 @@ export type ConfigChange = {
 }
 
 export type ImportsWebConfig = {
+  chartsRoot?: string
   chartPaths?: string[]
   cachePath?: string
 }
@@ -43,6 +44,13 @@ export const createImportsConfigService = (deps: {
     const config = deps.getConfig()
     return [
       {
+        key: 'chartsRoot',
+        name: 'Charts root',
+        description: 'Root directory used for imports storage layout.',
+        type: 'string',
+        value: config.chartsRoot ?? ''
+      },
+      {
         key: 'chartPaths',
         name: 'Chart paths',
         description: 'Comma-separated chart paths for local discovery.',
@@ -64,7 +72,9 @@ export const createImportsConfigService = (deps: {
     const next: ImportsWebConfig = { ...config }
 
     for (const change of changes) {
-      if (change.key === 'chartPaths') {
+      if (change.key === 'chartsRoot') {
+        next.chartsRoot = String(change.value ?? '')
+      } else if (change.key === 'chartPaths') {
         next.chartPaths = normalizeChartPaths(change.value)
       } else if (change.key === 'cachePath') {
         next.cachePath = String(change.value ?? '')

@@ -5,8 +5,16 @@ import {
   updateImportItem,
   updateImportJobState
 } from './store'
+import fs from 'fs/promises'
 import { runConversion } from './runner'
 import type { ImportItem } from './types'
+import {
+  buildStagingDir,
+  commitStagingDir,
+  getChartsStorageLayout,
+  safeMove
+} from './storage'
+import { writeChartsMetadataFile } from '../metadata/charts-metadata'
 
 const activeJobs = new Set<number>()
 
@@ -15,6 +23,35 @@ const resolveOutputDir = (sourcePath?: string) => {
     return path.resolve('.')
   }
   return path.dirname(sourcePath)
+}
+
+const buildBundleId = (jobId: number, itemId: string) => {
+  return `${jobId}-${itemId}`
+}
+
+const buildMetadataPayload = (item: ImportItem) => {
+  const meta = item.metadata ?? item.metadataOverrides
+  if (!meta || !meta.bounds || !meta.format) {
+    return null
+  }
+  return {
+    schemaVersion: 1 as const,
+    id: item.filename,
+    name: item.filename,
+    description: meta.description,
+    bounds: meta.bounds,
+    minzoom: meta.minZoom,
+    maxzoom: meta.maxZoom,
+    format: meta.format,
+    type: meta.type ?? 'tilelayer',
+    updatedAt: meta.updatedAt,
+    detectedType: item.detectedType,
+    source: {
+      path: item.sourcePath,
+      url: item.sourceUrl,
+      streamUrl: item.streamUrl
+    }
+  }
 }
 
 const processItem = async (jobId: number, item: ImportItem) => {
@@ -41,7 +78,7 @@ const processItem = async (jobId: number, item: ImportItem) => {
 
   if (streamUrl) {
     updateImportItem(jobId, item.id, {
-      state: 'COMPLETED',
+      state: 'AVAILABLE',
       output: streamUrl
     })
     return
@@ -55,26 +92,78 @@ const processItem = async (jobId: number, item: ImportItem) => {
     return
   }
 
-  updateImportItem(jobId, item.id, { state: 'RUNNING' })
+  const layout = getChartsStorageLayout()
+  let workingSourcePath = sourcePath
+  if (layout) {
+    const bundleId = buildBundleId(jobId, item.id)
+    const stagingDir = buildStagingDir(layout.inputDir, bundleId)
+    const finalDir = path.join(layout.inputDir, bundleId)
+    const targetPath = path.join(finalDir, path.basename(sourcePath))
+
+    await fs.mkdir(stagingDir, { recursive: true })
+    await fs.copyFile(sourcePath, path.join(stagingDir, path.basename(sourcePath)))
+
+    const metadataPayload = buildMetadataPayload(item)
+    if (metadataPayload) {
+      await writeChartsMetadataFile(stagingDir, metadataPayload)
+    }
+
+    await commitStagingDir(stagingDir, finalDir)
+    workingSourcePath = targetPath
+    updateImportItem(jobId, item.id, {
+      sourcePath: workingSourcePath,
+      state: 'DOWNLOADED'
+    })
+  }
+
+  if (!layout) {
+    updateImportItem(jobId, item.id, { state: 'COPYING' })
+    updateImportItem(jobId, item.id, { state: 'DOWNLOADED' })
+  }
 
   if (!convert) {
-    updateImportItem(jobId, item.id, { state: 'COMPLETED' })
+    if (layout) {
+      const bundleId = buildBundleId(jobId, item.id)
+      const inputDir = path.join(layout.inputDir, bundleId)
+      const databaseDir = path.join(layout.databaseDir, bundleId)
+      await safeMove(inputDir, databaseDir)
+      updateImportItem(jobId, item.id, {
+        output: databaseDir,
+        state: 'AVAILABLE'
+      })
+    } else {
+      updateImportItem(jobId, item.id, { state: 'AVAILABLE' })
+    }
     return
   }
 
   try {
-    const outcome = await runConversion(sourcePath, {
-      detectedType: item.detectedType ?? detectTypeFromPath(sourcePath),
-      outputDir: resolveOutputDir(sourcePath),
+    updateImportItem(jobId, item.id, { state: 'CONVERTING' })
+    const conversionOutputDir = layout
+      ? buildStagingDir(layout.conversionDir, buildBundleId(jobId, item.id))
+      : resolveOutputDir(workingSourcePath)
+    const outcome = await runConversion(workingSourcePath, {
+      detectedType: item.detectedType ?? detectTypeFromPath(workingSourcePath),
+      outputDir: conversionOutputDir,
       target: convert
     })
-    updateImportItem(jobId, item.id, {
-      state: 'STAGED',
-      stagingDir: outcome.stagingDir,
-      output: outcome.outputPath
-    })
+    if (layout) {
+      const bundleId = buildBundleId(jobId, item.id)
+      const databaseDir = path.join(layout.databaseDir, bundleId)
+      await commitStagingDir(conversionOutputDir, databaseDir)
+      updateImportItem(jobId, item.id, {
+        state: 'AVAILABLE',
+        stagingDir: outcome.stagingDir,
+        output: databaseDir
+      })
+    } else {
+      updateImportItem(jobId, item.id, {
+        state: 'AVAILABLE',
+        stagingDir: outcome.stagingDir,
+        output: outcome.outputPath
+      })
+    }
     // TODO: package staged tiles into PMTiles output.
-    updateImportItem(jobId, item.id, { state: 'COMPLETED' })
   } catch (err) {
     updateImportItem(jobId, item.id, {
       state: 'FAILED',
@@ -117,7 +206,11 @@ export const enqueueImportJob = (jobId: number) => {
         await processItem(jobId, item)
       }
       const refreshed = getImportJob(jobId)
-      if (refreshed?.items.some((item) => item.state === 'FAILED')) {
+      if (
+        refreshed?.items.some((item) =>
+          ['FAILED', 'METADATA_FAILED'].includes(item.state)
+        )
+      ) {
         updateImportJobState(jobId, 'FAILED')
       } else if (refreshed?.state !== 'CANCELED') {
         updateImportJobState(jobId, 'COMPLETED')

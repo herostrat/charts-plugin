@@ -279,19 +279,6 @@ export const registerImportRoutes = ({
     return res.status(200).json(listImportJobs())
   })
 
-  app.get(`${CHART_IMPORTS_PATH}/:id`, (req: Request, res: Response) => {
-    const idRaw = normalizeParam(req.params.id)
-    const id = parseInt(idRaw, 10)
-    if (!Number.isFinite(id)) {
-      return sendError(res, 400, 'Invalid job id')
-    }
-    const job = getImportJob(id)
-    if (!job) {
-      return sendError(res, 404, 'Import job not found')
-    }
-    return res.status(200).json(job)
-  })
-
   app.post(`${CHART_IMPORTS_PATH}`, (req: Request, res: Response) => {
     const body = req.body as ImportRequestBody
     const parsed = parseItems(body.items)
@@ -303,18 +290,24 @@ export const registerImportRoutes = ({
     return res.status(202).json(job)
   })
 
-  app.delete(`${CHART_IMPORTS_PATH}/:id`, (req: Request, res: Response) => {
-    const idRaw = normalizeParam(req.params.id)
-    const id = parseInt(idRaw, 10)
-    if (!Number.isFinite(id)) {
-      return sendError(res, 400, 'Invalid job id')
+  app.delete(
+    `${CHART_IMPORTS_PATH}/:id`,
+    (req: Request, res: Response, next) => {
+      const idRaw = normalizeParam(req.params.id)
+      if (['config', 'events', 'fs', 'converters'].includes(idRaw)) {
+        return next()
+      }
+      const id = parseInt(idRaw, 10)
+      if (!Number.isFinite(id)) {
+        return sendError(res, 400, 'Invalid job id')
+      }
+      const job = cancelImportJob(id)
+      if (!job) {
+        return sendError(res, 404, 'Import job not found')
+      }
+      return res.status(200).json(job)
     }
-    const job = cancelImportJob(id)
-    if (!job) {
-      return sendError(res, 404, 'Import job not found')
-    }
-    return res.status(200).json(job)
-  })
+  )
 
   app.get(`${CHART_IMPORTS_PATH}/config`, (req: Request, res: Response) => {
     const entries = configService.getEntries()
@@ -326,5 +319,21 @@ export const registerImportRoutes = ({
     const changes = Array.isArray(body?.changes) ? body.changes : []
     const entries = configService.applyChanges(changes)
     return res.status(200).json(entries)
+  })
+
+  app.get(`${CHART_IMPORTS_PATH}/:id`, (req: Request, res: Response, next) => {
+    const idRaw = normalizeParam(req.params.id)
+    if (['config', 'events', 'fs', 'converters'].includes(idRaw)) {
+      return next()
+    }
+    const id = parseInt(idRaw, 10)
+    if (!Number.isFinite(id)) {
+      return sendError(res, 400, 'Invalid job id')
+    }
+    const job = getImportJob(id)
+    if (!job) {
+      return sendError(res, 404, 'Import job not found')
+    }
+    return res.status(200).json(job)
   })
 }

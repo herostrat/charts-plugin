@@ -3,6 +3,7 @@ import * as xml2js from 'xml2js'
 import fs from 'fs/promises'
 import _ from 'lodash'
 import type { ChartProvider } from '../../types'
+import { readChartsMetadataFile } from '../../metadata/charts-metadata'
 
 /**
  * Loads chart metadata from a directory (tilemapresource.xml or metadata.json)
@@ -20,7 +21,7 @@ export async function loadDirectoryChartMetadata(
   } catch {
     try {
       await fs.stat(metadataJson)
-      return await parseMetadataJson(metadataJson, identifier, file)
+      return await readChartsMetadataFile(metadataJson, identifier, file)
     } catch {
       return null
     }
@@ -91,68 +92,3 @@ const parseTilemapResource = async (
   }
 }
 
-async function parseMetadataJson(
-  metadataJson: string,
-  identifier: string,
-  file: string
-): Promise<ChartProvider | null> {
-  try {
-    const txt = await fs.readFile(metadataJson, { encoding: 'utf8' })
-    const metadata = JSON.parse(txt)
-
-    const parseBounds = (
-      bounds: string | number[] | undefined
-    ): number[] | undefined => {
-      if (_.isString(bounds)) {
-        return bounds.split(',').map((b) => parseFloat(_.trim(b)))
-      }
-      if (_.isArray(bounds) && bounds.length === 4) {
-        return bounds.map((b) => (typeof b === 'string' ? parseFloat(b) : b))
-      }
-      return undefined
-    }
-
-    const parseIntSafe = (
-      value: string | number | undefined
-    ): number | undefined => {
-      if (typeof value === 'number') return value
-      if (typeof value === 'string') {
-        const parsed = parseInt(value, 10)
-        return Number.isFinite(parsed) ? parsed : undefined
-      }
-      return undefined
-    }
-
-    const bounds = parseBounds(metadata.bounds)
-    const format = metadata.format
-
-    if (!format || !bounds) {
-      return null
-    }
-
-    return {
-      _flipY: false,
-      name: metadata.name || metadata.id || '',
-      description: metadata.description || '',
-      bounds,
-      minzoom: parseIntSafe(metadata.minzoom),
-      maxzoom: parseIntSafe(metadata.maxzoom),
-      format,
-      type: metadata.type || 'tilelayer',
-      scale: parseIntSafe(metadata.scale) || 250000,
-      identifier,
-      _filePath: file,
-      _fileFormat: 'directory',
-      v1: {
-        tilemapUrl: `~tilePath~/${identifier}/{z}/{x}/{y}`,
-        chartLayers: []
-      },
-      v2: {
-        url: `~tilePath~/${identifier}/{z}/{x}/{y}`,
-        layers: []
-      }
-    }
-  } catch {
-    return null
-  }
-}

@@ -151,3 +151,8 @@ export const addImportJobError = (jobId: number, message: string) => {
   emitImportEvent({ type: 'job', job })
   return job
 }
+
+export const resetImportStore = () => {
+  jobs.clear()
+  nextJobId = 1
+}

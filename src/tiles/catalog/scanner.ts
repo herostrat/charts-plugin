@@ -8,6 +8,7 @@ import {
   openMbtilesFile
 } from './mbtiles'
 import { openDirectoryChart } from './directory'
+import { applyMetadataOverrides, readChartsMetadata } from '../../metadata/charts-metadata'
 
 export const findCharts = (chartBaseDir: string) => {
   return ensureMbtilesLoaded()
@@ -48,6 +49,67 @@ export const findCharts = (chartBaseDir: string) => {
           results.push(null)
         } else if (isDirectory) {
           console.log('findCharts: Directory found', filePath)
+          const entries = await fs.readdir(filePath, { withFileTypes: true })
+          const metadataPath = path.join(filePath, 'metadata.json')
+          const metadata = await readChartsMetadata(metadataPath)
+          const pmtilesEntry = entries.find((entry) =>
+            entry.isFile() && entry.name.match(/\.pmtiles$/i)
+          )
+          const mbtilesEntry = entries.find((entry) =>
+            entry.isFile() && entry.name.match(/\.mbtiles$/i)
+          )
+
+          if (pmtilesEntry) {
+            const provider = await openPmtilesFile(
+              path.join(filePath, pmtilesEntry.name),
+              pmtilesEntry.name
+            )
+            if (provider && metadata) {
+              const overridden = applyMetadataOverrides(provider, metadata)
+              overridden.identifier = file.name
+              overridden._filePath = path.join(filePath, pmtilesEntry.name)
+              if (overridden.v1) {
+                overridden.v1.tilemapUrl = `~tilePath~/${file.name}/{z}/{x}/{y}`
+              }
+              if (overridden.v2) {
+                overridden.v2.url = `~tilePath~/${file.name}/{z}/{x}/{y}`
+              }
+              results.push(overridden)
+            } else {
+              results.push(provider)
+            }
+            continue
+          }
+
+          if (mbtilesEntry) {
+            if (mbtilesError) {
+              console.warn(
+                `Skipping mbtiles file ${mbtilesEntry.name}: MBTiles module not available`
+              )
+              results.push(null)
+            } else {
+              const provider = await openMbtilesFile(
+                path.join(filePath, mbtilesEntry.name),
+                mbtilesEntry.name
+              )
+              if (provider && metadata) {
+                const overridden = applyMetadataOverrides(provider, metadata)
+                overridden.identifier = file.name
+                overridden._filePath = path.join(filePath, mbtilesEntry.name)
+                if (overridden.v1) {
+                  overridden.v1.tilemapUrl = `~tilePath~/${file.name}/{z}/{x}/{y}`
+                }
+                if (overridden.v2) {
+                  overridden.v2.url = `~tilePath~/${file.name}/{z}/{x}/{y}`
+                }
+                results.push(overridden)
+              } else {
+                results.push(provider)
+              }
+            }
+            continue
+          }
+
           results.push(await openDirectoryChart(filePath, file.name))
         } else {
           results.push(null)

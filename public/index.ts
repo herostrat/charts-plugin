@@ -197,6 +197,12 @@ interface Window {
 
   const normalizeStatus = (job, item) => {
     const s = String(item?.state || job?.state || '').toUpperCase();
+    if (s === 'DOWNLOADING') return 'uploading';
+    if (s === 'COPYING') return 'uploading';
+    if (s === 'DOWNLOADED') return 'queued';
+    if (s === 'CONVERTING') return 'converting';
+    if (s === 'AVAILABLE') return 'available';
+    if (s === 'METADATA_FAILED') return 'failed';
     if (s === 'RUNNING') return 'uploading';
     if (s === 'STAGED') return 'converting';
     if (s === 'COMPLETED') return 'available';
