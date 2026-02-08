@@ -45,6 +45,22 @@ const createTempDir = () => {
   return base
 }
 
+const createTempFile = (name, content = 'test') => {
+  const dir = createTempDir()
+  const filePath = path.join(dir, name)
+  fs.writeFileSync(filePath, content)
+  return filePath
+}
+
+const uploadRequest = (server, location, opts) => {
+  const baseUrl = `http://localhost:${server.address().port}`
+  let req = chaiRequest.execute(baseUrl).post(location)
+  if (opts?.detectedType) req = req.field('detectedType', opts.detectedType)
+  if (opts?.metadata) req = req.field('metadata', opts.metadata)
+  if (opts?.filePath) req = req.attach('file', opts.filePath, opts.filename)
+  return req
+}
+
 const parseSseBlock = (block) => {
   const lines = block.split('\n')
   const eventLine = lines.find((line) => line.startsWith('event:'))
@@ -145,7 +161,6 @@ describe('Imports Web API', () => {
           expect(res.body).to.include({ error: 'BadRequest' })
         })
     })
-
     it('rejects multiple sources', () => {
       return postRequest(testServer, '/@signalk/charts-plugin/imports', {
         items: [{
@@ -203,6 +218,66 @@ describe('Imports Web API', () => {
           expect(res.status).to.equal(202)
           expect(res.body).to.have.property('id')
           expect(res.body.items).to.have.length(1)
+        })
+    })
+  })
+
+  describe('POST /@signalk/charts-plugin/imports/upload', () => {
+    it('creates an import job from uploaded file', () => {
+      const filePath = createTempFile('upload.tif')
+      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
+        filePath,
+        filename: 'upload.tif',
+        detectedType: 'geotiff'
+      })
+        .then((res) => {
+          expect(res.status).to.equal(202)
+          expect(res.body).to.have.property('id')
+          expect(res.body.items).to.have.length(1)
+          expect(res.body.items[0].filename).to.equal('upload.tif')
+        })
+    })
+
+    it('rejects unsupported detectedType', () => {
+      const filePath = createTempFile('upload.tif')
+      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
+        filePath,
+        filename: 'upload.tif',
+        detectedType: 'nope'
+      })
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/detectedType/)
+        })
+    })
+
+    it('rejects folder uploads', () => {
+      const filePath = createTempFile('upload.tif')
+      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
+        filePath,
+        filename: 'upload.tif',
+        detectedType: 'folder'
+      })
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/Folder uploads/)
+        })
+    })
+
+    it('rejects invalid metadata JSON', () => {
+      const filePath = createTempFile('upload.tif')
+      return uploadRequest(testServer, '/@signalk/charts-plugin/imports/upload', {
+        filePath,
+        filename: 'upload.tif',
+        detectedType: 'geotiff',
+        metadata: '{bad json'
+      })
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/metadata/i)
         })
     })
   })
