@@ -3,7 +3,7 @@ import type { ResourcesApi } from '@signalk/server-api'
 import type { ChartProvider } from '../types'
 import type { Tile } from '../cache/chart-downloader'
 import { ChartSeedingManager } from '../cache/chart-downloader'
-import { CHART_TILES_PATH } from '../http/paths'
+import { CHART_TILES_PATH } from '../routes/paths'
 import { serveTileFromCacheOrRemote } from './sources/proxy'
 import { serveTileFromDirectory } from './sources/directory'
 import { serveTileFromMbtiles } from './sources/mbtiles'
@@ -71,7 +71,7 @@ export const registerTileRoutes = ({
         case 'pmtiles':
           return serveTileFromPmtiles(res, provider, iz, ix, iy)
         case 'geotiff':
-          return serveTileFromGeotiff(res, provider, iz, ix, iy)
+          return serveTileFromGeotiff(res, provider, iz, ix, iy, getCachePath())
         default:
           console.log(
             `Unknown chart provider fileformat ${provider._fileFormat}`

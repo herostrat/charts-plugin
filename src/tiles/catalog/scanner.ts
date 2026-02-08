@@ -15,6 +15,7 @@ export const findCharts = (chartBaseDir: string) => {
     .then(async (files) => {
       const results: Array<ChartProvider | null | undefined> = []
       const mbtilesError = getMbtilesLoadError()
+      const fileNames = new Set(files.map((file) => file.name))
       console.log(
         'findCharts: Scanning',
         chartBaseDir,
@@ -26,6 +27,7 @@ export const findCharts = (chartBaseDir: string) => {
         const isPmtilesFile = file.name.match(/\.pmtiles$/i)
         const filePath = path.resolve(chartBaseDir, file.name)
         const isDirectory = file.isDirectory()
+        const isGeotiffFile = file.name.match(/\.(tif|tiff)$/i)
         if (isMbtilesFile) {
           if (mbtilesError) {
             console.warn(
@@ -37,6 +39,13 @@ export const findCharts = (chartBaseDir: string) => {
           }
         } else if (isPmtilesFile) {
           results.push(await openPmtilesFile(filePath, file.name))
+        } else if (isGeotiffFile) {
+          const pmtilesName = file.name.replace(/\.(tif|tiff)$/i, '.pmtiles')
+          if (fileNames.has(pmtilesName)) {
+            continue
+          }
+          // GeoTIFFs are only exposed after conversion; import flow handles them.
+          results.push(null)
         } else if (isDirectory) {
           console.log('findCharts: Directory found', filePath)
           results.push(await openDirectoryChart(filePath, file.name))

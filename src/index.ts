@@ -11,8 +11,10 @@ import { findCharts } from './tiles/catalog/scanner'
 import { apiRoutePrefix } from './constants'
 import type { ChartProvider, OnlineChartProvider } from './types'
 import { convertOnlineProviderConfig } from './tiles/catalog/online'
-import { registerTileRoutes } from './tiles/router'
+import { registerTileRoutes } from './tiles/routes'
 import { registerStyleRoutes } from './resources/style-routes'
+import { createImportsConfigService } from './web/imports/config'
+import { registerImportRoutes } from './web/imports/routes'
 import {
   registerResourcesProvider,
   sanitizeProvider,
@@ -354,6 +356,15 @@ const plugin = (app: ChartProviderApp): Plugin => {
         vectorCatalogById.get(identifier) ?? defaultCatalogId,
       defaultCatalogId
     })
+
+    const configService = createImportsConfigService({
+      getConfig: () => props,
+      setConfig: (next) => {
+        props = { ...props, ...next }
+      }
+    })
+
+    registerImportRoutes({ app, configService })
 
     app.debug('** Registering v1 API paths **')
 

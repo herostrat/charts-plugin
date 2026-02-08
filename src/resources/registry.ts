@@ -1,7 +1,7 @@
 import merge from 'lodash/merge.js'
 import type { ChartProvider } from '../types'
 import type { ResourceProviderRegistry } from '@signalk/server-api'
-import { CHART_STYLE_PATH, CHART_TILES_PATH } from '../http/paths'
+import { CHART_STYLE_PATH, CHART_TILES_PATH } from '../routes/paths'
 import { isVectorFormat } from '../tiles/format'
 
 type ProviderMap = { [key: string]: ChartProvider }
@@ -62,11 +62,20 @@ export const sanitizeProvider = (provider: ChartProvider, version = 1) => {
     v.url = v.url ? v.url.replace('~tilePath~', CHART_TILES_PATH) : ''
   }
   // Remove internal fields and v1/v2
-  const { _filePath, _fileFormat, _mbtilesHandle, _flipY, v1, v2, ...rest } =
-    provider as ChartProvider
+  const {
+    _filePath,
+    _fileFormat,
+    _mbtilesHandle,
+    _geotiffMeta,
+    _flipY,
+    v1,
+    v2,
+    ...rest
+  } = provider as ChartProvider
   void _filePath
   void _fileFormat
   void _mbtilesHandle
+  void _geotiffMeta
   void _flipY
   void v1
   void v2

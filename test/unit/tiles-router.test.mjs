@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { registerTileRoutes } from '../../src/tiles/router.ts';
+import { registerTileRoutes } from '../../src/tiles/routes.ts';
 
 describe('registerTileRoutes', () => {
   it('should export a function', () => {

@@ -1,106 +1,404 @@
-<!DOCTYPE html>
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css" />
-    <title>Signalk charts-addin</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chart Imports</title>
+
+  <link rel="stylesheet" href="./assets/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
-
-    <fieldset>
-        <legend>Seed charts to prefetch tiles for offline usage.</legend>
-        <strong>Select chart provider:</strong><br>
-        <label for="chart">Chart:</label>
-        <select id="chart" name="chart" required>
-        </select>
-        <br>
-        <strong>Select region type:</strong>
-        <br>
-        <!-- Choice 1: Predefined Region -->
-        <label>
-            <input type="radio" name="inputType" value="region" checked>
-            Region
-        </label>
-        <select id="region" name="region">
-        </select>
-
-        <br>
-
-        <!-- Choice 2: Bounding Box -->
-        <label>
-            <input type="radio" name="inputType" value="bbox">
-            Bounding Box (minLon, minLat, maxLon, maxLat) West to East, South to North
-        </label>
-        <div>
-            <input type="number" id="bboxMinLon" placeholder="minLon" step="0.0001" disabled value="16.51">
-            <input type="number" id="bboxMinLat" placeholder="minLat" step="0.0001" disabled value="58.59">
-            <input type="number" id="bboxMaxLon" placeholder="maxLon" step="0.0001" disabled value="16.60">
-            <input type="number" id="bboxMaxLat" placeholder="maxLat" step="0.0001" disabled value="58.65">
-        </div>
-        <!-- Choice 3: Tile -->
-        <!-- <label>
-            <input type="radio" name="inputType" value="tile">
-            Tile (x, y, z)
-        </label>
-        <div>
-            <input type="number" id="tileX" placeholder="x" disabled>
-            <input type="number" id="tileY" placeholder="y" disabled>
-            <input type="number" id="tileZ" placeholder="z" disabled>
-        </div> -->
-
-        <strong>Select max zoom:</strong><br>
-        <label for="maxZoom">Max Zoom</label>
-        <select id="maxZoom" name="maxZoom" required>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15" selected="selected">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-        </select>
-
-        <br>
-        <button id="createJobButton">Create Seeding Job</button>
-    </fieldset>
-
-    <div id="output">
-        <table id="activeJobsTable" aria-live="polite">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Chart</th>
-                    <th>Region</th>
-                    <th>Total tiles</th>
-                    <th>Downloaded</th>
-                    <th>Cached</th>
-                    <th>Failed</th>
-                    <th>Progress</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="7" class="muted">Loading progress…</td>
-                </tr>
-            </tbody>
-        </table>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <div class="logo" aria-hidden="true">🗺️</div>
+      <div>
+        <div class="title">Chart Imports</div>
+        <div class="subtitle">Live job status updates — imports window + sources window (no page reload)</div>
+      </div>
     </div>
 
-    <script src="index.js"></script>
+    <div class="topbar__actions">
+      <label class="switch">
+        <input id="autoRefresh" type="checkbox" checked />
+        <span>Live updates</span>
+        <span id="liveState" class="live live--re">connecting</span>
+      </label>
+      <button id="configBtn" class="btn btn--ghost" title="Open configuration">Config</button>
+      <button id="refreshBtn" class="btn btn--ghost">Refresh</button>
+    </div>
+  </header>
 
+  <main class="shell">
+    <!-- LEFT: Imports + Map -->
+    <section class="stack">
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <h2>Imports</h2>
+            <p>Shows importing/converting items and completed ones. Click item → highlight & zoom.</p>
+          </div>
+          <div class="head-actions">
+            <div class="seg" aria-label="Filter">
+              <button class="is-active" data-filter="active">Active</button>
+              <button data-filter="all">All</button>
+              <button data-filter="available">Available</button>
+              <button data-filter="failed">Failed</button>
+            </div>
+            <button id="resetViewBtn" class="btn btn--ghost btn--sm">Reset view</button>
+          </div>
+        </div>
+
+        <div id="errorBanner" class="banner is-hidden" role="alert"></div>
+
+        <div class="kpis" aria-label="Import stats">
+          <div class="kpi"><div class="kpi__k">Active</div><div id="kpiActive" class="kpi__v">0</div></div>
+          <div class="kpi"><div class="kpi__k">Available</div><div id="kpiAvailable" class="kpi__v">0</div></div>
+          <div class="kpi"><div class="kpi__k">Failed</div><div id="kpiFailed" class="kpi__v">0</div></div>
+          <div class="kpi"><div class="kpi__k">Total</div><div id="kpiTotal" class="kpi__v">0</div></div>
+        </div>
+
+        <div id="importsEmpty" class="empty is-hidden">No items yet. Register/import something in the Sources window.</div>
+        <div id="importsList" class="imports" aria-live="polite"></div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <h2>Map Overview</h2>
+            <p></p>
+          </div>
+          <div class="head-actions">
+            <button id="mapToggle" class="btn btn--ghost btn--sm">Hide</button>
+          </div>
+        </div>
+
+        <div id="mapWrap" class="mapwrap">
+          <div id="leafletMap" class="map" role="img" aria-label="Leaflet map overview"></div>
+          <div id="basemapNote" class="mapnote" style="display:none;">
+            <b>No local basemap found.</b><br/>
+            Put <code>assets/world/ne_110m_admin_0_countries.geojson</code> next to this HTML file.
+          </div>
+          <div id="mapEmpty" class="mapempty">No bounds available yet.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Sources -->
+    <aside class="card">
+      <div class="card__head">
+        <div>
+          <h2>Sources</h2>
+          <p>Send file/source + detected type + (optional) metadata overrides to the backend. Converter selection is backend-only.</p>
+        </div>
+        <div class="head-actions">
+          <div class="seg" aria-label="Source mode">
+            <button class="is-active" data-tab="register">Local</button>
+            <button data-tab="download">Download</button>
+            <button data-tab="stream">Streaming</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <!-- Local register -->
+        <section class="panel is-active" data-panel="register">
+          <div class="browser" style="margin-bottom:12px;">
+            <div class="browser__head">
+              <button id="upBtn" class="btn btn--ghost btn--sm" title="Up">↑</button>
+              <div class="pathbox">
+                <div class="pathbox__label">Server path</div>
+                <div id="currentPath" class="pathbox__value">/</div>
+              </div>
+              <div class="browser__right">
+                <input id="pathInput" class="input" style="max-width:180px;" type="text" placeholder="/mnt/usb" />
+                <button id="goBtn" class="btn btn--ghost btn--sm">Go</button>
+              </div>
+            </div>
+            <ul id="fsList" class="fs" aria-label="Server filesystem entries"></ul>
+          </div>
+
+          <div class="form">
+            <div class="field">
+              <span>Selected</span>
+              <input id="selectedFile" class="input" disabled value="None" />
+            </div>
+
+            <div class="field">
+              <span>Detected type (override)</span>
+              <select id="localType" class="select" disabled>
+                <option value="unknown">unknown</option>
+                <option value="geotiff">geotiff</option>
+                <option value="s57">s57</option>
+                <option value="mbtiles">mbtiles</option>
+                <option value="pmtiles">pmtiles</option>
+                <option value="folder">folder</option>
+              </select>
+            </div>
+
+            <div id="localHeavyWarn" class="status is-warn is-hidden">
+              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
+            </div>
+
+            <div id="localMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
+              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
+
+              <div class="field">
+                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                <div class="grid4">
+                  <input id="localMinLon" class="input" type="number" step="any" placeholder="minLon" />
+                  <input id="localMinLat" class="input" type="number" step="any" placeholder="minLat" />
+                  <input id="localMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
+                  <input id="localMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
+                </div>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Min zoom</span>
+                  <input id="localMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
+                </label>
+                <label class="field">
+                  <span>Max zoom</span>
+                  <input id="localMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
+                </label>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Updated</span>
+                  <input id="localUpdated" class="input" type="datetime-local" />
+                </label>
+                <label class="field">
+                  <span>Format</span>
+                  <input id="localFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Description</span>
+                <input id="localDescription" class="input" type="text" placeholder="Short description" />
+              </label>
+
+              <div id="localMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
+            </div>
+
+            <button id="registerBtn" class="btn btn--primary" disabled>Register</button>
+            <div id="registerStatus" class="status" role="status">Select a file or folder to register.</div>
+
+            <div class="hint">Supported by extension: <code>.tif/.tiff</code>, <code>.mbtiles</code>, <code>.pmtiles</code>, <code>.000/.001/.s57</code>. Also supported: <code>folder</code> (requires metadata).</div>
+          </div>
+        </section>
+
+        <!-- Download -->
+        <section class="panel" data-panel="download">
+          <div class="form">
+            <label class="field">
+              <span>Source URL</span>
+              <input id="downloadUrl" class="input" type="url" placeholder="https://example.com/chart.tif" />
+            </label>
+
+            <label class="field">
+              <span>Detected type (override)</span>
+              <select id="downloadType" class="select">
+                <option value="unknown">unknown</option>
+                <option value="geotiff">geotiff</option>
+                <option value="s57">s57</option>
+                <option value="mbtiles">mbtiles</option>
+                <option value="pmtiles">pmtiles</option>
+                <option value="folder">folder</option>
+              </select>
+            </label>
+
+            <div id="downloadHeavyWarn" class="status is-warn is-hidden">
+              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
+            </div>
+
+            <div id="downloadMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
+              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
+
+              <div class="field">
+                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                <div class="grid4">
+                  <input id="dlMinLon" class="input" type="number" step="any" placeholder="minLon" />
+                  <input id="dlMinLat" class="input" type="number" step="any" placeholder="minLat" />
+                  <input id="dlMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
+                  <input id="dlMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
+                </div>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Min zoom</span>
+                  <input id="dlMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
+                </label>
+                <label class="field">
+                  <span>Max zoom</span>
+                  <input id="dlMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
+                </label>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Updated</span>
+                  <input id="dlUpdated" class="input" type="datetime-local" />
+                </label>
+                <label class="field">
+                  <span>Format</span>
+                  <input id="dlFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Description</span>
+                <input id="dlDescription" class="input" type="text" placeholder="Short description" />
+              </label>
+
+              <div id="dlMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
+            </div>
+
+            <button id="downloadBtn" class="btn btn--primary" disabled>Download</button>
+            <div id="downloadStatus" class="status" role="status">Enter a URL. Type is guessed from the URL but can be overridden.</div>
+          </div>
+        </section>
+
+        <!-- Streaming -->
+        <section class="panel" data-panel="stream">
+          <div class="form">
+            <label class="field">
+              <span>Stream URL</span>
+              <input id="streamUrl" class="input" type="url" placeholder="https://example.com/wms?…" />
+            </label>
+
+            <label class="field">
+              <span>Stream type</span>
+              <select id="streamType" class="select">
+                <option value="wms">WMS</option>
+                <option value="wmts">WMTS</option>
+                <option value="cog">COG</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Hint: detected type (override)</span>
+              <select id="streamDetectedType" class="select">
+                <option value="unknown">unknown</option>
+                <option value="geotiff">geotiff</option>
+                <option value="s57">s57</option>
+                <option value="mbtiles">mbtiles</option>
+                <option value="pmtiles">pmtiles</option>
+                <option value="folder">folder</option>
+              </select>
+            </label>
+
+            <div id="streamHeavyWarn" class="status is-warn is-hidden">
+              This conversion/import can be compute-intensive on an SBC. Consider converting on a dedicated PC and importing the result here.
+            </div>
+
+            <div id="streamMetaBox" class="metaBox is-hidden" aria-label="Metadata overrides">
+              <div class="metaBox__head">Metadata overrides (required for type: folder)</div>
+
+              <div class="field">
+                <span>Bounds (minLon, minLat, maxLon, maxLat)</span>
+                <div class="grid4">
+                  <input id="stMinLon" class="input" type="number" step="any" placeholder="minLon" />
+                  <input id="stMinLat" class="input" type="number" step="any" placeholder="minLat" />
+                  <input id="stMaxLon" class="input" type="number" step="any" placeholder="maxLon" />
+                  <input id="stMaxLat" class="input" type="number" step="any" placeholder="maxLat" />
+                </div>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Min zoom</span>
+                  <input id="stMinZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 0" />
+                </label>
+                <label class="field">
+                  <span>Max zoom</span>
+                  <input id="stMaxZoom" class="input" type="number" min="0" max="24" placeholder="e.g. 16" />
+                </label>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span>Updated</span>
+                  <input id="stUpdated" class="input" type="datetime-local" />
+                </label>
+                <label class="field">
+                  <span>Format</span>
+                  <input id="stFormat" class="input" type="text" placeholder="e.g. png/jpg/mvt" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Description</span>
+                <input id="stDescription" class="input" type="text" placeholder="Short description" />
+              </label>
+
+              <div id="stMetaStatus" class="status is-warn is-hidden">Please fill in all required metadata for folder imports.</div>
+            </div>
+
+            <button id="streamBtn" class="btn btn--primary" disabled>Register Stream</button>
+            <div id="streamStatus" class="status" role="status">Provide a stream URL and type hint.</div>
+          </div>
+        </section>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Details overlay -->
+  <div id="detailsOverlay" class="overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+    <div class="modal" role="document">
+      <div class="modal__head">
+        <div class="modal__title">
+          <h3 id="detailsTitle">Details</h3>
+          <p id="detailsSub">—</p>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span id="detailsChip" class="chip chip--queued">queued</span>
+          <button id="detailsClose" class="btn btn--ghost btn--sm" aria-label="Close">Close</button>
+        </div>
+      </div>
+      <div class="modal__body">
+        <div>
+          <div class="sectionTitle">Metadata</div>
+          <div id="detailsMeta" class="kvgrid" style="margin-top:10px;"></div>
+        </div>
+        <div>
+          <div class="sectionTitle">Raw ImportItem</div>
+          <pre id="detailsItemJson" class="json">{}</pre>
+        </div>
+        <div>
+          <div class="sectionTitle">Raw ImportJob</div>
+          <pre id="detailsJobJson" class="json">{}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Config overlay -->
+  <div id="configOverlay" class="overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="configTitle">
+    <div class="modal" role="document">
+      <div class="modal__head">
+        <div class="modal__title">
+          <h3 id="configTitle">Configuration</h3>
+          <p id="configSub">Settings provided by the backend</p>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button id="configSave" class="btn btn--primary btn--sm" disabled>Save</button>
+          <button id="configClose" class="btn btn--ghost btn--sm" aria-label="Close">Close</button>
+        </div>
+      </div>
+      <div class="modal__body">
+        <div id="configStatus" class="status" role="status">Open to load configuration…</div>
+        <div id="configList" class="cfgList" aria-label="Configuration entries"></div>
+        <div class="cfgFooterNote">Close without saving is always possible. “Save” only sends changed values.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/leaflet/leaflet.js"></script>
+  <script src="./index.js"></script>
 </body>
-
 </html>

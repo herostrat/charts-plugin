@@ -8,11 +8,24 @@ type MapSourceType =
   | 'mapstyleJSON'
   | 'tileJSON'
 
+export type GeotiffMetadata = {
+  width?: number
+  height?: number
+  samplesPerPixel?: number
+  tileWidth?: number
+  tileHeight?: number
+  bbox?: number[]
+  origin?: number[]
+  resolution?: number[]
+  geoKeys?: Record<string, unknown>
+}
+
 export interface ChartProvider {
   _fileFormat?: 'mbtiles' | 'directory' | 'pmtiles' | 'geotiff'
   _filePath: string
   _mbtilesHandle?: unknown
   _pmtilesHandle?: PMTiles
+  _geotiffMeta?: GeotiffMetadata
   _flipY?: boolean
   identifier: string
   name: string

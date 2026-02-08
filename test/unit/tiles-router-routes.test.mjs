@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { request as chaiRequest } from 'chai-http'
-import { registerTileRoutes } from '../../src/tiles/router.ts'
+import { registerTileRoutes } from '../../src/tiles/routes.ts'
 import { ChartSeedingManager } from '../../src/cache/chart-downloader.ts'
 import { ChartDownloader } from '../../src/cache/chart-downloader.ts'
 import { createTestServer } from '../helpers/test-server.mjs'

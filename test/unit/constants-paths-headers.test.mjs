@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { apiRoutePrefix } from '../../src/constants.ts'
-import { CHART_TILES_PATH, CHART_STYLE_PATH } from '../../src/http/paths.ts'
+import { CHART_TILES_PATH, CHART_STYLE_PATH } from '../../src/routes/paths.ts'
 import { DEFAULT_CACHE_HEADERS } from '../../src/tiles/headers.ts'
 
 describe('core constants', () => {

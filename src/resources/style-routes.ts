@@ -1,6 +1,6 @@
 import type { Application, Request, Response } from 'express'
 import type { ChartProvider } from '../types'
-import { CHART_STYLE_PATH } from '../http/paths'
+import { CHART_STYLE_PATH } from '../routes/paths'
 import {
   buildNauticalVectorStyle,
   type ThemeId
