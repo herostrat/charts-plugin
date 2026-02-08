@@ -171,7 +171,7 @@ describe('Imports Web API', () => {
         .catch((err) => err.response)
         .then((res) => {
           expect(res.status).to.equal(400)
-          expect(res.body.message).to.match(/metadataOverrides/)
+          expect(res.body.message).to.match(/metadata/)
         })
     })
 

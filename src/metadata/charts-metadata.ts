@@ -101,10 +101,8 @@ export const applyMetadataOverrides = (
   metadata: ChartsMetadata
 ) => {
   const bounds = parseBounds(metadata.bounds) ?? provider.bounds
-  const minzoom =
-    parseIntSafe(metadata.minzoom) ?? provider.minzoom
-  const maxzoom =
-    parseIntSafe(metadata.maxzoom) ?? provider.maxzoom
+  const minzoom = parseIntSafe(metadata.minzoom) ?? provider.minzoom
+  const maxzoom = parseIntSafe(metadata.maxzoom) ?? provider.maxzoom
   const scale = parseIntSafe(metadata.scale) ?? provider.scale
   const format = metadata.format || provider.format
 

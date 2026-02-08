@@ -55,8 +55,6 @@ export type ImportItem = {
   streamUrl?: string
   streamType?: ImportStreamType
   metadata?: ImportItemMetadata
-  metadataOverrides?: ImportItemMetadata
-  bounds?: [number, number, number, number]
   output?: string
   errors: string[]
 }

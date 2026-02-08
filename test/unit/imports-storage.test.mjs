@@ -57,7 +57,7 @@ describe('Imports storage pipeline', () => {
         filename: 'sample.mbtiles',
         detectedType: 'mbtiles',
         sourcePath,
-        metadataOverrides: {
+        metadata: {
           bounds: [1, 2, 3, 4],
           minZoom: 0,
           maxZoom: 5,
@@ -79,5 +79,23 @@ describe('Imports storage pipeline', () => {
     expect(fs.existsSync(metadataPath)).to.equal(true)
     expect(fs.existsSync(dataPath)).to.equal(true)
     expect(updated.items[0].output).to.equal(databaseDir)
+  })
+
+  it('marks items as METADATA_FAILED when metadata is missing', async () => {
+    const sourceDir = createTempDir()
+    const sourcePath = path.join(sourceDir, 'bad.tif')
+    fs.writeFileSync(sourcePath, 'data')
+
+    const job = createImportJob([
+      {
+        filename: 'bad.tif',
+        detectedType: 'geotiff',
+        sourcePath
+      }
+    ])
+
+    enqueueImportJob(job.id)
+    const updated = await waitForJob(job.id, (j) => j.items[0].state === 'METADATA_FAILED')
+    expect(updated.items[0].state).to.equal('METADATA_FAILED')
   })
 })

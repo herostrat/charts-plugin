@@ -113,6 +113,9 @@ export const buildStagingDir = (parentDir: string, id: string) => {
   return path.join(parentDir, `${id}.staging`)
 }
 
-export const commitStagingDir = async (stagingDir: string, finalDir: string) => {
+export const commitStagingDir = async (
+  stagingDir: string,
+  finalDir: string
+) => {
   await safeMove(stagingDir, finalDir)
 }

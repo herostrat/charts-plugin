@@ -7,7 +7,11 @@ import {
 } from './store'
 import fs from 'fs/promises'
 import { runConversion } from './runner'
-import type { ImportItem } from './types'
+import type {
+  ImportConversionOptions,
+  ImportItem,
+  ImportItemMetadata
+} from './types'
 import {
   buildStagingDir,
   commitStagingDir,
@@ -15,6 +19,13 @@ import {
   safeMove
 } from './storage'
 import { writeChartsMetadataFile } from '../metadata/charts-metadata'
+import {
+  ensureMbtilesLoaded,
+  getMbtilesLoadError,
+  openMbtilesFile
+} from '../tiles/catalog/mbtiles'
+import { openPmtilesFile } from '../tiles/catalog/pmtiles'
+import { openGeotiffFile } from '../tiles/catalog/geotiff'
 
 const activeJobs = new Set<number>()
 
@@ -29,9 +40,114 @@ const buildBundleId = (jobId: number, itemId: string) => {
   return `${jobId}-${itemId}`
 }
 
-const buildMetadataPayload = (item: ImportItem) => {
-  const meta = item.metadata ?? item.metadataOverrides
-  if (!meta || !meta.bounds || !meta.format) {
+const isValidBounds = (
+  bounds: unknown
+): bounds is [number, number, number, number] => {
+  return (
+    Array.isArray(bounds) &&
+    bounds.length === 4 &&
+    bounds.every((v) => typeof v === 'number' && Number.isFinite(v))
+  )
+}
+
+const isValidMetadata = (
+  meta?: ImportItemMetadata | null
+): meta is ImportItemMetadata & {
+  bounds: [number, number, number, number]
+  format: string
+} => {
+  if (!meta) {
+    return false
+  }
+  if (!isValidBounds(meta.bounds)) {
+    return false
+  }
+  if (!meta.format || typeof meta.format !== 'string') {
+    return false
+  }
+  return true
+}
+
+const isConversionSupported = (
+  detectedType: string,
+  target: ImportConversionOptions
+) => {
+  return detectedType === 'geotiff' && target.target === 'pmtiles'
+}
+
+const extractMetadata = async (
+  item: ImportItem
+): Promise<ImportItemMetadata | null> => {
+  if (!item.sourcePath) {
+    return null
+  }
+
+  if (item.detectedType === 'pmtiles') {
+    const provider = await openPmtilesFile(
+      item.sourcePath,
+      path.basename(item.sourcePath)
+    )
+    if (!provider || !isValidBounds(provider.bounds) || !provider.format) {
+      return null
+    }
+    return {
+      bounds: provider.bounds as [number, number, number, number],
+      minZoom: provider.minzoom,
+      maxZoom: provider.maxzoom,
+      updatedAt: new Date().toISOString(),
+      format: provider.format,
+      description: provider.description || provider.name || '',
+      type: item.detectedType
+    }
+  }
+
+  if (item.detectedType === 'mbtiles') {
+    await ensureMbtilesLoaded()
+    if (getMbtilesLoadError()) {
+      return null
+    }
+    const provider = await openMbtilesFile(
+      item.sourcePath,
+      path.basename(item.sourcePath)
+    )
+    if (!provider || !isValidBounds(provider.bounds) || !provider.format) {
+      return null
+    }
+    return {
+      bounds: provider.bounds as [number, number, number, number],
+      minZoom: provider.minzoom,
+      maxZoom: provider.maxzoom,
+      updatedAt: new Date().toISOString(),
+      format: provider.format,
+      description: provider.description || provider.name || '',
+      type: item.detectedType
+    }
+  }
+
+  if (item.detectedType === 'geotiff') {
+    const provider = await openGeotiffFile(
+      item.sourcePath,
+      path.basename(item.sourcePath)
+    )
+    if (!provider || !isValidBounds(provider.bounds) || !provider.format) {
+      return null
+    }
+    return {
+      bounds: provider.bounds as [number, number, number, number],
+      minZoom: provider.minzoom,
+      maxZoom: provider.maxzoom,
+      updatedAt: new Date().toISOString(),
+      format: provider.format,
+      description: provider.description || provider.name || '',
+      type: item.detectedType
+    }
+  }
+
+  return null
+}
+
+const buildMetadataPayload = (item: ImportItem, meta: ImportItemMetadata) => {
+  if (!isValidMetadata(meta)) {
     return null
   }
   return {
@@ -92,6 +208,41 @@ const processItem = async (jobId: number, item: ImportItem) => {
     return
   }
 
+  const detectedType = item.detectedType ?? detectTypeFromPath(sourcePath)
+
+  if (convert && !isConversionSupported(detectedType, convert)) {
+    updateImportItem(jobId, item.id, {
+      state: 'FAILED',
+      errors: ['Conversion not supported for this file type']
+    })
+    return
+  }
+
+  let resolvedMeta: ImportItemMetadata | null | undefined =
+    item.metadata ?? null
+  if (!isValidMetadata(resolvedMeta)) {
+    try {
+      resolvedMeta = await extractMetadata(item)
+    } catch {
+      resolvedMeta = null
+    }
+  }
+
+  if (!isValidMetadata(resolvedMeta)) {
+    updateImportItem(jobId, item.id, {
+      state: 'METADATA_FAILED',
+      errors: ['Missing or invalid metadata (bounds/format)']
+    })
+    return
+  }
+
+  const validMeta = resolvedMeta as ImportItemMetadata
+  if (!item.metadata) {
+    updateImportItem(jobId, item.id, {
+      metadata: validMeta
+    })
+  }
+
   const layout = getChartsStorageLayout()
   let workingSourcePath = sourcePath
   if (layout) {
@@ -101,9 +252,12 @@ const processItem = async (jobId: number, item: ImportItem) => {
     const targetPath = path.join(finalDir, path.basename(sourcePath))
 
     await fs.mkdir(stagingDir, { recursive: true })
-    await fs.copyFile(sourcePath, path.join(stagingDir, path.basename(sourcePath)))
+    await fs.copyFile(
+      sourcePath,
+      path.join(stagingDir, path.basename(sourcePath))
+    )
 
-    const metadataPayload = buildMetadataPayload(item)
+    const metadataPayload = buildMetadataPayload(item, validMeta)
     if (metadataPayload) {
       await writeChartsMetadataFile(stagingDir, metadataPayload)
     }
@@ -143,7 +297,7 @@ const processItem = async (jobId: number, item: ImportItem) => {
       ? buildStagingDir(layout.conversionDir, buildBundleId(jobId, item.id))
       : resolveOutputDir(workingSourcePath)
     const outcome = await runConversion(workingSourcePath, {
-      detectedType: item.detectedType ?? detectTypeFromPath(workingSourcePath),
+      detectedType: detectedType,
       outputDir: conversionOutputDir,
       target: convert
     })

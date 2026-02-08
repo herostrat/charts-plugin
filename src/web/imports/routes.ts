@@ -6,6 +6,7 @@ import { CHART_IMPORTS_PATH } from '../../routes/paths'
 import {
   cancelImportJob,
   createImportJob,
+  deleteImportJob,
   getImportJob,
   listImportJobs
 } from '../../imports/store'
@@ -38,7 +39,7 @@ type ImportRequestItem = {
   detectedType?: ImportFileType
   sizeBytes?: number
   convert?: ImportConversionOptions
-  metadataOverrides?: ImportItemMetadata
+  metadata?: ImportItemMetadata
 }
 
 type ImportRequestBody = {
@@ -104,7 +105,7 @@ const resolveFilename = (entry: ImportRequestItem) => {
   return ''
 }
 
-const validateMetadataOverrides = (metadata?: ImportItemMetadata) => {
+const validateMetadata = (metadata?: ImportItemMetadata) => {
   if (!metadata) {
     return false
   }
@@ -141,7 +142,7 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
     detectedType: ImportFileType
     sizeBytes?: number
     convert?: ImportConversionOptions
-    metadataOverrides?: ImportItemMetadata
+    metadata?: ImportItemMetadata
   }>
 
   for (const entry of items) {
@@ -169,8 +170,8 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
     }
 
     if (detectedType === 'folder') {
-      if (!validateMetadataOverrides(entry.metadataOverrides)) {
-        return { items: [], error: 'metadataOverrides is required for folder' }
+      if (!validateMetadata(entry.metadata)) {
+        return { items: [], error: 'metadata is required for folder' }
       }
     }
 
@@ -188,7 +189,7 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
       detectedType,
       sizeBytes: entry.sizeBytes,
       convert,
-      metadataOverrides: entry.metadataOverrides
+      metadata: entry.metadata
     })
   }
 
@@ -300,6 +301,18 @@ export const registerImportRoutes = ({
       const id = parseInt(idRaw, 10)
       if (!Number.isFinite(id)) {
         return sendError(res, 400, 'Invalid job id')
+      }
+      const action = String(req.query.action || '').toLowerCase()
+      if (action === 'delete') {
+        const existing = getImportJob(id)
+        if (!existing) {
+          return sendError(res, 404, 'Import job not found')
+        }
+        const job = deleteImportJob(id)
+        if (!job) {
+          return sendError(res, 409, 'Import job is still in progress')
+        }
+        return res.status(200).json(job)
       }
       const job = cancelImportJob(id)
       if (!job) {

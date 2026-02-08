@@ -8,7 +8,10 @@ import {
   openMbtilesFile
 } from './mbtiles'
 import { openDirectoryChart } from './directory'
-import { applyMetadataOverrides, readChartsMetadata } from '../../metadata/charts-metadata'
+import {
+  applyMetadataOverrides,
+  readChartsMetadata
+} from '../../metadata/charts-metadata'
 
 export const findCharts = (chartBaseDir: string) => {
   return ensureMbtilesLoaded()
@@ -52,11 +55,11 @@ export const findCharts = (chartBaseDir: string) => {
           const entries = await fs.readdir(filePath, { withFileTypes: true })
           const metadataPath = path.join(filePath, 'metadata.json')
           const metadata = await readChartsMetadata(metadataPath)
-          const pmtilesEntry = entries.find((entry) =>
-            entry.isFile() && entry.name.match(/\.pmtiles$/i)
+          const pmtilesEntry = entries.find(
+            (entry) => entry.isFile() && entry.name.match(/\.pmtiles$/i)
           )
-          const mbtilesEntry = entries.find((entry) =>
-            entry.isFile() && entry.name.match(/\.mbtiles$/i)
+          const mbtilesEntry = entries.find(
+            (entry) => entry.isFile() && entry.name.match(/\.mbtiles$/i)
           )
 
           if (pmtilesEntry) {

@@ -21,7 +21,14 @@ import {
   setChartsStorageLayout
 } from './imports/storage'
 import { onImportEvent } from './imports/events'
+import { startDebugInputWatcher } from './imports/debug-watcher'
 import { registerImportRoutes } from './web/imports/routes'
+import {
+  loadImportStoreFromFile,
+  seedImportJobsFromDatabase,
+  setImportStorePersistence,
+  listImportJobs
+} from './imports/store'
 import {
   registerResourcesProvider,
   sanitizeProvider,
@@ -291,6 +298,24 @@ const plugin = (app: ChartProviderApp): Plugin => {
     cachePath = props.cachePath || chartsRoot
     ensureDirectoryExists(cachePath)
     setChartsStorageLayout(layout)
+
+    const storePath = path.join(chartsRoot, 'imports-store.json')
+    setImportStorePersistence(storePath)
+    loadImportStoreFromFile(storePath)
+      .then(async () => {
+        if (listImportJobs().length === 0) {
+          await seedImportJobsFromDatabase(layout.databaseDir)
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to initialize import store:', err)
+      })
+
+    startDebugInputWatcher(path.join(chartsRoot, 'debug_input')).catch(
+      (err) => {
+        console.error('Failed to start debug input watcher:', err)
+      }
+    )
 
     const onlineProviders = _.reduce(
       props.onlineChartProviders,

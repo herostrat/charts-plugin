@@ -41,21 +41,20 @@
           </div>
           <div class="head-actions">
             <div class="seg" aria-label="Filter">
-              <button class="is-active" data-filter="active">Active</button>
-              <button data-filter="all">All</button>
+              <button class="is-active" data-filter="all">All</button>
+              <button data-filter="progress">In progress</button>
               <button data-filter="available">Available</button>
-              <button data-filter="failed">Failed</button>
+              <button data-filter="error">Error</button>
             </div>
-            <button id="resetViewBtn" class="btn btn--ghost btn--sm">Reset view</button>
           </div>
         </div>
 
         <div id="errorBanner" class="banner is-hidden" role="alert"></div>
 
         <div class="kpis" aria-label="Import stats">
-          <div class="kpi"><div class="kpi__k">Active</div><div id="kpiActive" class="kpi__v">0</div></div>
+          <div class="kpi"><div class="kpi__k">In progress</div><div id="kpiActive" class="kpi__v">0</div></div>
           <div class="kpi"><div class="kpi__k">Available</div><div id="kpiAvailable" class="kpi__v">0</div></div>
-          <div class="kpi"><div class="kpi__k">Failed</div><div id="kpiFailed" class="kpi__v">0</div></div>
+          <div class="kpi"><div class="kpi__k">Error</div><div id="kpiFailed" class="kpi__v">0</div></div>
           <div class="kpi"><div class="kpi__k">Total</div><div id="kpiTotal" class="kpi__v">0</div></div>
         </div>
 
@@ -366,11 +365,11 @@
           <div id="detailsMeta" class="kvgrid" style="margin-top:10px;"></div>
         </div>
         <div>
-          <div class="sectionTitle">Raw ImportItem</div>
+          <div class="sectionTitle">Import Item (raw)</div>
           <pre id="detailsItemJson" class="json">{}</pre>
         </div>
         <div>
-          <div class="sectionTitle">Raw ImportJob</div>
+          <div class="sectionTitle">Import Job (summary)</div>
           <pre id="detailsJobJson" class="json">{}</pre>
         </div>
       </div>
@@ -399,6 +398,6 @@
   </div>
 
   <script src="./assets/leaflet/leaflet.js"></script>
-  <script src="./index.js"></script>
+  <script type="module" src="./index.js"></script>
 </body>
 </html>

@@ -90,6 +90,7 @@ body{ margin:0; font-family: var(--sans); background: var(--page); color: var(--
 .btn--sm{ padding: 8px 10px; border-radius: 12px; font-size: 12px; }
 .btn--primary{ border-color: rgba(42,103,255,.25); background: var(--primary); color:#fff; }
 .btn--ghost{ background: rgba(18,19,26,.04); border-color: var(--border); }
+.btn--danger{ border-color: rgba(180,35,24,.28); background: rgba(180,35,24,.10); color: var(--bad); }
 .btn:disabled{ opacity:.55; cursor:not-allowed; }
 
 .seg{
@@ -150,12 +151,12 @@ body{ margin:0; font-family: var(--sans); background: var(--page); color: var(--
 .rowActions{ display:flex; gap: 8px; align-items:center; justify-content: flex-end; }
 
 .chip{ display:inline-flex; align-items:center; gap: 6px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 950; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--border); }
-.chip--queued{ color: #3f4656; background: rgba(18,19,26,.06); }
-.chip--uploading{ color: #0a6b5c; background: rgba(10,107,92,.10); border-color: rgba(10,107,92,.18); }
-.chip--converting{ color: var(--warn); background: rgba(177,93,0,.10); border-color: rgba(177,93,0,.18); }
-.chip--available{ color: var(--good); background: rgba(26,127,55,.10); border-color: rgba(26,127,55,.18); }
-.chip--failed{ color: var(--bad); background: rgba(180,35,24,.08); border-color: rgba(180,35,24,.18); }
-.chip--canceled{ color: #525866; background: rgba(82,88,102,.10); border-color: rgba(82,88,102,.18); }
+.chip--queued{ color: #2f3750; background: rgba(47,55,80,.08); border-color: rgba(47,55,80,.18); }
+.chip--uploading{ color: #0f5b55; background: rgba(15,91,85,.12); border-color: rgba(15,91,85,.24); }
+.chip--converting{ color: #965e0a; background: rgba(150,94,10,.12); border-color: rgba(150,94,10,.22); }
+.chip--available{ color: #1b6e3b; background: rgba(27,110,59,.12); border-color: rgba(27,110,59,.24); }
+.chip--failed{ color: #9b1c1c; background: rgba(155,28,28,.10); border-color: rgba(155,28,28,.22); }
+.chip--canceled{ color: #5a616f; background: rgba(90,97,111,.12); border-color: rgba(90,97,111,.22); }
 
 .details{ color: var(--muted); font-size: 12px; }
 .details code{ font-family: var(--mono); font-size: 11px; }
@@ -258,7 +259,7 @@ body{ margin:0; font-family: var(--sans); background: var(--page); color: var(--
   display: grid;
   place-items: center;
   padding: 18px;
-  z-index: 50;
+  z-index: 4000;
 }
 .overlay.is-hidden{ display:none; }
 

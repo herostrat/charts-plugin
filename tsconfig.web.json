@@ -12,5 +12,5 @@
     "skipLibCheck": true,
     "types": []
   },
-  "include": ["public/index.ts"]
+  "include": ["public/**/*.ts"]
 }
