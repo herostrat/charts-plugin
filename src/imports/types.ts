@@ -32,6 +32,12 @@ export type ImportConversionOptions = {
   maxZoom?: number
 }
 
+export type ImportExtractOptions = {
+  kind: 'pmtiles'
+  bbox: [number, number, number, number]
+  maxZoom?: number
+}
+
 export type ImportItemMetadata = {
   bounds?: [number, number, number, number]
   minZoom?: number
@@ -49,6 +55,7 @@ export type ImportItem = {
   sizeBytes?: number
   state: ImportJobState
   convert?: ImportConversionOptions
+  extract?: ImportExtractOptions
   stagingDir?: string
   sourcePath?: string
   sourceUrl?: string

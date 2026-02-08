@@ -8,7 +8,8 @@ import type {
   ImportJobState,
   ImportConversionOptions,
   ImportItemMetadata,
-  ImportStreamType
+  ImportStreamType,
+  ImportExtractOptions
 } from './types'
 import { emitImportEvent } from './events'
 import type { ChartsMetadata } from '../metadata/charts-metadata'
@@ -54,6 +55,7 @@ const buildItem = (input: {
   detectedType: ImportFileType
   sizeBytes?: number
   convert?: ImportConversionOptions
+  extract?: ImportExtractOptions
   sourcePath?: string
   sourceUrl?: string
   streamUrl?: string
@@ -72,6 +74,7 @@ const buildItem = (input: {
     sizeBytes: input.sizeBytes,
     state: 'QUEUED',
     convert: input.convert,
+    extract: input.extract,
     metadata: input.metadata,
     errors: []
   }
@@ -140,6 +143,7 @@ export const createImportJob = (
     detectedType: ImportFileType
     sizeBytes?: number
     convert?: ImportConversionOptions
+    extract?: ImportExtractOptions
     sourcePath?: string
     sourceUrl?: string
     streamUrl?: string

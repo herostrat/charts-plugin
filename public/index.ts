@@ -24,6 +24,7 @@ import { initStream, updateStreamState } from './features/stream.js'
 import { initImports, refreshJobs, renderImports } from './features/imports.js'
 import { initDetails, closeDetails, openDetails } from './features/details.js'
 import { initConfig } from './features/config.js'
+import { initBboxPicker, closeBboxPicker } from './features/bbox.js'
 import {
   initMap,
   renderMap,
@@ -53,6 +54,7 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
 
   initDetails()
   const { closeConfig } = initConfig()
+  initBboxPicker()
 
   initMap({ renderImports: () => renderImports(state.jobs) })
   initImports({ renderMap, focusBounds, openDetails, isSseConnected })
@@ -73,6 +75,11 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
     }
     if (configOverlay && !configOverlay.classList.contains('is-hidden')) {
       closeConfig()
+      return
+    }
+    const bboxOverlay = document.querySelector('#bboxOverlay')
+    if (bboxOverlay && !bboxOverlay.classList.contains('is-hidden')) {
+      closeBboxPicker()
     }
   })
 

@@ -17,9 +17,11 @@
     "ci-lint": "eslint \"src/**/*.{ts,js}\" \"scripts/**/*.{ts,js}\" \"test/**/*.{ts,js,mjs}\" \"public/**/*.{ts,js}\" && prettier --check \"src/**/*.{ts,js,css,html,json,md}\" \"scripts/**/*.{ts,js,json,md}\" \"test/**/*.{ts,js,mjs,json,md}\" \"public/**/*.{ts,js,css,html}\"",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.web.json --noEmit && tsc -p tsconfig.test.json --noEmit",
     "test": "mocha --node-option import=tsx \"test/**/*.mjs\" \"test/**/*.ts\"",
+    "posttest": "node scripts/cleanup-test-uploads.mjs",
     "coverage": "npx c8 --reporter=lcov --reporter=text --exclude test --exclude \"**/*.d.ts\" mocha --node-option import=tsx \"test/**/*.mjs\" \"test/**/*.ts\"",
     "coverage:report": "c8 report --reporter=html && echo 'Coverage report generated at coverage/index.html'",
-    "build:sprites": "tsx scripts/build-sprites.ts"
+    "build:sprites": "tsx scripts/build-sprites.ts",
+    "sources:generate": "tsx scripts/generate-curated-sources.ts"
   },
   "c8": {
     "exclude": [
@@ -53,6 +55,7 @@
     "jpeg-js": "^0.4.4",
     "lodash": "^4.17.23",
     "multer": "^2.0.2",
+    "node-html-parser": "^7.0.1",
     "p-limit": "^7",
     "pmtiles": "^4.4.0",
     "pngjs": "^7.0.0",

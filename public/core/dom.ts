@@ -32,6 +32,25 @@ export let registerStatus = $('#registerStatus') as HTMLElement | null
 // Download form
 export let downloadUrlEl = $('#downloadUrl') as HTMLInputElement | null
 export let downloadTypeEl = $('#downloadType') as HTMLSelectElement | null
+export let downloadDeliveryEl = $('#downloadDelivery') as HTMLSelectElement | null
+export let downloadCatalogEl = $('#downloadCatalog') as HTMLSelectElement | null
+export let downloadCatalogBody = $('#downloadCatalogBody') as HTMLElement | null
+export let downloadChartEl = $('#downloadChart') as HTMLSelectElement | null
+export let downloadChartRow = $('#downloadChartRow') as HTMLElement | null
+export let downloadCatalogDetails = $(
+  '#downloadCatalogDetails'
+) as HTMLButtonElement | null
+export let downloadCatalogInfo = $('#downloadCatalogInfo') as HTMLElement | null
+export let downloadCatalogStatus = $(
+  '#downloadCatalogStatus'
+) as HTMLElement | null
+export let downloadCatalogRefresh = $(
+  '#downloadCatalogRefresh'
+) as HTMLButtonElement | null
+export let downloadUrlHome = $('#downloadUrlHome') as HTMLElement | null
+export let downloadUrlRow = $('#downloadUrlRow') as HTMLElement | null
+export let downloadBboxEl = $('#downloadBbox') as HTMLInputElement | null
+export let downloadBboxPick = $('#downloadBboxPick') as HTMLButtonElement | null
 export let downloadMetaBox = $('#downloadMetaBox') as HTMLElement | null
 export let dlMetaStatus = $('#dlMetaStatus') as HTMLElement | null
 export let downloadHeavyWarn = $('#downloadHeavyWarn') as HTMLElement | null
@@ -90,6 +109,13 @@ export let detailsMeta = $('#detailsMeta') as HTMLElement | null
 export let detailsItemJson = $('#detailsItemJson') as HTMLElement | null
 export let detailsJobJson = $('#detailsJobJson') as HTMLElement | null
 
+// Bbox overlay
+export let bboxOverlay = $('#bboxOverlay') as HTMLElement | null
+export let bboxClose = $('#bboxClose') as HTMLButtonElement | null
+export let bboxConfirm = $('#bboxConfirm') as HTMLButtonElement | null
+export let bboxMapEl = $('#bboxMap') as HTMLDivElement | null
+export let bboxValue = $('#bboxValue') as HTMLElement | null
+
 // Config overlay
 export let configBtn = $('#configBtn') as HTMLButtonElement | null
 export let configOverlay = $('#configOverlay') as HTMLElement | null
@@ -119,6 +145,23 @@ export const refreshDom = () => {
 
   downloadUrlEl = $('#downloadUrl') as HTMLInputElement | null
   downloadTypeEl = $('#downloadType') as HTMLSelectElement | null
+  downloadDeliveryEl = $('#downloadDelivery') as HTMLSelectElement | null
+  downloadCatalogEl = $('#downloadCatalog') as HTMLSelectElement | null
+  downloadCatalogBody = $('#downloadCatalogBody') as HTMLElement | null
+  downloadChartEl = $('#downloadChart') as HTMLSelectElement | null
+  downloadChartRow = $('#downloadChartRow') as HTMLElement | null
+  downloadCatalogDetails = $(
+    '#downloadCatalogDetails'
+  ) as HTMLButtonElement | null
+  downloadCatalogInfo = $('#downloadCatalogInfo') as HTMLElement | null
+  downloadCatalogStatus = $('#downloadCatalogStatus') as HTMLElement | null
+  downloadCatalogRefresh = $(
+    '#downloadCatalogRefresh'
+  ) as HTMLButtonElement | null
+  downloadUrlHome = $('#downloadUrlHome') as HTMLElement | null
+  downloadUrlRow = $('#downloadUrlRow') as HTMLElement | null
+  downloadBboxEl = $('#downloadBbox') as HTMLInputElement | null
+  downloadBboxPick = $('#downloadBboxPick') as HTMLButtonElement | null
   downloadMetaBox = $('#downloadMetaBox') as HTMLElement | null
   dlMetaStatus = $('#dlMetaStatus') as HTMLElement | null
   downloadHeavyWarn = $('#downloadHeavyWarn') as HTMLElement | null
@@ -168,6 +211,12 @@ export const refreshDom = () => {
   detailsMeta = $('#detailsMeta') as HTMLElement | null
   detailsItemJson = $('#detailsItemJson') as HTMLElement | null
   detailsJobJson = $('#detailsJobJson') as HTMLElement | null
+
+  bboxOverlay = $('#bboxOverlay') as HTMLElement | null
+  bboxClose = $('#bboxClose') as HTMLButtonElement | null
+  bboxConfirm = $('#bboxConfirm') as HTMLButtonElement | null
+  bboxMapEl = $('#bboxMap') as HTMLDivElement | null
+  bboxValue = $('#bboxValue') as HTMLElement | null
 
   configBtn = $('#configBtn') as HTMLButtonElement | null
   configOverlay = $('#configOverlay') as HTMLElement | null

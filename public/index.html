@@ -154,10 +154,6 @@
         <div class="card__head">
           <div>
             <h2>Sources</h2>
-            <p>
-              Send file/source + detected type + (optional) metadata overrides
-              to the backend. Converter selection is backend-only.
-            </p>
           </div>
           <div class="head-actions">
             <div class="seg" aria-label="Source mode">
@@ -484,15 +480,79 @@
           <!-- Download -->
           <section class="panel" data-panel="download">
             <div class="form">
-              <label class="field">
-                <span>Source URL</span>
-                <input
-                  id="downloadUrl"
-                  class="input"
-                  type="url"
-                  placeholder="https://example.com/chart.tif"
-                />
-              </label>
+              <div class="catalog">
+                <div class="catalog__head">
+                  <span>Curated sources</span>
+                  <button
+                    id="downloadCatalogRefresh"
+                    class="btn btn--ghost btn--sm"
+                  >
+                    Refresh
+                  </button>
+                </div>
+                <select id="downloadCatalog" class="select"></select>
+                <div id="downloadCatalogBody" class="catalog__body">
+                  <label id="downloadChartRow" class="field is-hidden">
+                    <span>Chart</span>
+                    <select id="downloadChart" class="select"></select>
+                  </label>
+                  <label id="downloadDeliveryRow" class="field is-hidden">
+                    <span>Delivery</span>
+                    <select id="downloadDelivery" class="select"></select>
+                  </label>
+
+                  <div id="downloadBboxRow" class="field is-hidden">
+                    <span>Bounding box (minLon, minLat, maxLon, maxLat)</span>
+                    <div class="field__row">
+                      <input
+                        id="downloadBbox"
+                        class="input"
+                        type="text"
+                        placeholder="minLon,minLat,maxLon,maxLat"
+                      />
+                      <button
+                        id="downloadBboxPick"
+                        class="btn btn--ghost btn--sm"
+                        type="button"
+                      >
+                        Choose
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  id="downloadCatalogStatus"
+                  class="status is-warn is-hidden"
+                  role="status"
+                ></div>
+              </div>
+
+              <div id="downloadUrlHome">
+                <label id="downloadUrlRow" class="field">
+                  <div class="field__head">
+                    <span>Source URL</span>
+                    <button
+                      id="downloadCatalogDetails"
+                      class="iconBtn"
+                      type="button"
+                      aria-label="Show source details"
+                      title="Show source details"
+                    >
+                      i
+                    </button>
+                  </div>
+                  <input
+                    id="downloadUrl"
+                    class="input"
+                    type="url"
+                    placeholder="https://example.com/chart.tif"
+                  />
+                </label>
+                <div
+                  id="downloadCatalogInfo"
+                  class="catalog__info is-hidden"
+                ></div>
+              </div>
 
               <label class="field">
                 <span>Detected type (override)</span>
@@ -852,6 +912,49 @@
           <div class="cfgFooterNote">
             Close without saving is always possible. “Save” only sends changed
             values.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bbox overlay -->
+    <div
+      id="bboxOverlay"
+      class="overlay is-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bboxTitle"
+    >
+      <div class="modal" role="document">
+        <div class="modal__head">
+          <div class="modal__title">
+            <h3 id="bboxTitle">Select bounding box</h3>
+            <p>Left-click and drag to draw a rectangle. Right-click drags the map.</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <button id="bboxConfirm" class="btn btn--primary btn--sm" disabled>
+              Confirm
+            </button>
+            <button
+              id="bboxClose"
+              class="btn btn--ghost btn--sm"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="modal__body">
+          <div class="bboxPanel">
+            <div id="bboxMap" class="bboxMap" aria-label="BBox map"></div>
+            <div class="bboxInfo">
+              <div class="sectionTitle">Selected bounds</div>
+              <div id="bboxValue" class="bboxValue">-</div>
+              <div class="hint">
+                Left-click and drag to draw a rectangle. Right-click drag to
+                pan the map. Use the Confirm button to apply the bounds.
+              </div>
+            </div>
           </div>
         </div>
       </div>

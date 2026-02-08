@@ -1,4 +1,8 @@
 import path from 'path'
+import os from 'os'
+import { createWriteStream } from 'fs'
+import { pipeline } from 'stream/promises'
+import { spawn } from 'child_process'
 import {
   addImportJobError,
   getImportJob,
@@ -10,7 +14,8 @@ import { runConversion } from './runner'
 import type {
   ImportConversionOptions,
   ImportItem,
-  ImportItemMetadata
+  ImportItemMetadata,
+  ImportExtractOptions
 } from './types'
 import {
   buildStagingDir,
@@ -34,6 +39,84 @@ const resolveOutputDir = (sourcePath?: string) => {
     return path.resolve('.')
   }
   return path.dirname(sourcePath)
+}
+
+const safeFilename = (name: string) => name.replace(/[^a-zA-Z0-9._-]/g, '_')
+
+const downloadToTempFile = async (sourceUrl: string, filename: string) => {
+  const res = await fetch(sourceUrl)
+  if (!res.ok) {
+    throw new Error(`Download failed: ${res.status} ${res.statusText}`)
+  }
+  const baseName = safeFilename(path.basename(filename || 'download'))
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'charts-download-'))
+  const outPath = path.join(tempDir, baseName)
+
+  if (res.body) {
+    const stream = createWriteStream(outPath)
+    await pipeline(res.body as unknown as NodeJS.ReadableStream, stream)
+  } else {
+    const buffer = Buffer.from(await res.arrayBuffer())
+    await fs.writeFile(outPath, buffer)
+  }
+
+  const stats = await fs.stat(outPath)
+  return { outPath, sizeBytes: stats.size, tempDir }
+}
+
+const runPmtilesExtract = (
+  sourceUrl: string,
+  outPath: string,
+  bbox: [number, number, number, number],
+  maxZoom?: number
+) => {
+  return new Promise<void>((resolve, reject) => {
+    const args = [
+      'extract',
+      sourceUrl,
+      outPath,
+      `--bbox=${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]}`
+    ]
+    if (Number.isFinite(maxZoom)) {
+      args.push(`--maxzoom=${maxZoom}`)
+    }
+
+    const proc = spawn('pmtiles', args)
+    let stderr = ''
+    proc.stderr.on('data', (data) => {
+      stderr += data.toString()
+    })
+    proc.on('error', (err) => reject(err))
+    proc.on('close', (code) => {
+      if (code === 0) {
+        resolve()
+        return
+      }
+      const hint = stderr.trim()
+      reject(
+        new Error(
+          `pmtiles extract failed (${code ?? 'unknown'}): ${hint || 'unknown error'}`
+        )
+      )
+    })
+  })
+}
+
+const extractPmtilesToTempFile = async (
+  sourceUrl: string,
+  filename: string,
+  extract: ImportExtractOptions
+) => {
+  const baseName = safeFilename(path.basename(filename || 'extract.pmtiles'))
+  const outputName = baseName.endsWith('.pmtiles')
+    ? baseName
+    : `${baseName}.pmtiles`
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'charts-extract-'))
+  const outPath = path.join(tempDir, outputName)
+
+  await runPmtilesExtract(sourceUrl, outPath, extract.bbox, extract.maxZoom)
+  const stats = await fs.stat(outPath)
+  return { outPath, sizeBytes: stats.size, tempDir }
 }
 
 const buildBundleId = (jobId: number, itemId: string) => {
@@ -171,10 +254,12 @@ const buildMetadataPayload = (item: ImportItem, meta: ImportItemMetadata) => {
 }
 
 const processItem = async (jobId: number, item: ImportItem) => {
-  const sourcePath = item.sourcePath
+  let sourcePath = item.sourcePath
   const sourceUrl = item.sourceUrl
   const streamUrl = item.streamUrl
   const convert = item.convert
+  const extract = item.extract
+  let tempDownloadDir: string | null = null
 
   if (!sourcePath && !sourceUrl && !streamUrl) {
     updateImportItem(jobId, item.id, {
@@ -184,12 +269,64 @@ const processItem = async (jobId: number, item: ImportItem) => {
     return
   }
 
-  if (sourceUrl) {
-    updateImportItem(jobId, item.id, {
-      state: 'FAILED',
-      errors: ['Download workflow not implemented yet']
-    })
-    return
+  if (extract?.kind === 'pmtiles') {
+    if (!sourceUrl) {
+      updateImportItem(jobId, item.id, {
+        state: 'FAILED',
+        errors: ['Extract requires sourceUrl']
+      })
+      return
+    }
+    updateImportItem(jobId, item.id, { state: 'DOWNLOADING' })
+    try {
+      const result = await extractPmtilesToTempFile(
+        sourceUrl,
+        item.filename,
+        extract
+      )
+      updateImportItem(jobId, item.id, {
+        sourcePath: result.outPath,
+        sizeBytes: result.sizeBytes,
+        state: 'DOWNLOADED'
+      })
+      item.sourcePath = result.outPath
+      sourcePath = result.outPath
+      tempDownloadDir = result.tempDir
+    } catch (err) {
+      updateImportItem(jobId, item.id, {
+        state: 'FAILED',
+        errors: [String((err as Error).message || err)]
+      })
+      return
+    }
+  } else if (sourceUrl) {
+    const layout = getChartsStorageLayout()
+    if (!layout) {
+      updateImportItem(jobId, item.id, {
+        state: 'FAILED',
+        errors: ['Download requires charts storage layout']
+      })
+      return
+    }
+
+    updateImportItem(jobId, item.id, { state: 'DOWNLOADING' })
+    try {
+      const result = await downloadToTempFile(sourceUrl, item.filename)
+      updateImportItem(jobId, item.id, {
+        sourcePath: result.outPath,
+        sizeBytes: result.sizeBytes,
+        state: 'DOWNLOADED'
+      })
+      item.sourcePath = result.outPath
+      sourcePath = result.outPath
+      tempDownloadDir = result.tempDir
+    } catch (err) {
+      updateImportItem(jobId, item.id, {
+        state: 'FAILED',
+        errors: [String((err as Error).message || err)]
+      })
+      return
+    }
   }
 
   if (streamUrl) {
@@ -268,6 +405,10 @@ const processItem = async (jobId: number, item: ImportItem) => {
       sourcePath: workingSourcePath,
       state: 'DOWNLOADED'
     })
+    if (tempDownloadDir) {
+      await fs.rm(tempDownloadDir, { recursive: true, force: true })
+      tempDownloadDir = null
+    }
   }
 
   if (!layout) {

@@ -18,7 +18,8 @@ import type {
   ImportConversionOptions,
   ImportFileType,
   ImportItemMetadata,
-  ImportStreamType
+  ImportStreamType,
+  ImportExtractOptions
 } from '../../imports/types'
 import {
   getConvertersForType,
@@ -27,6 +28,7 @@ import {
 import type { ConfigChange, ConfigService } from './config'
 import { defaultConfigService } from './config'
 import { registerImportEvents } from './sse'
+import { getCuratedSources } from '../../imports/curated-sources'
 
 type ImportRouteDeps = {
   app: Application
@@ -42,6 +44,7 @@ type ImportRequestItem = {
   detectedType?: ImportFileType
   sizeBytes?: number
   convert?: ImportConversionOptions
+  extract?: ImportExtractOptions
   metadata?: ImportItemMetadata
 }
 
@@ -135,6 +138,16 @@ const validateMetadata = (metadata?: ImportItemMetadata) => {
   return true
 }
 
+const isValidBounds = (
+  bounds: unknown
+): bounds is [number, number, number, number] => {
+  return (
+    Array.isArray(bounds) &&
+    bounds.length === 4 &&
+    bounds.every((v) => typeof v === 'number' && Number.isFinite(v))
+  )
+}
+
 const parseItems = (items: ImportRequestItem[] | undefined) => {
   if (!Array.isArray(items) || items.length === 0) {
     return { items: [], error: 'No import items provided' }
@@ -149,6 +162,7 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
     detectedType: ImportFileType
     sizeBytes?: number
     convert?: ImportConversionOptions
+    extract?: ImportExtractOptions
     metadata?: ImportItemMetadata
   }>
 
@@ -176,6 +190,24 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
       return { items: [], error: 'Unsupported detectedType' }
     }
 
+    if (entry.extract) {
+      if (entry.extract.kind !== 'pmtiles') {
+        return { items: [], error: 'Unsupported extract kind' }
+      }
+      if (!isValidBounds(entry.extract.bbox)) {
+        return { items: [], error: 'extract bbox is required' }
+      }
+      if (!entry.sourceUrl) {
+        return { items: [], error: 'extract requires sourceUrl' }
+      }
+      if (
+        entry.extract.maxZoom != null &&
+        !Number.isFinite(entry.extract.maxZoom)
+      ) {
+        return { items: [], error: 'extract maxZoom must be a number' }
+      }
+    }
+
     if (detectedType === 'folder') {
       if (!validateMetadata(entry.metadata)) {
         return { items: [], error: 'metadata is required for folder' }
@@ -196,6 +228,7 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
       detectedType,
       sizeBytes: entry.sizeBytes,
       convert,
+      extract: entry.extract,
       metadata: entry.metadata
     })
   }
@@ -223,6 +256,7 @@ const normalizeFsPath = (input: string | undefined) => {
   }
   return path.resolve('/', safeInput)
 }
+
 
 const listDirectory = async (dirPath: string) => {
   const entries = await fsp.readdir(dirPath, { withFileTypes: true })
@@ -257,6 +291,21 @@ export const registerImportRoutes = ({
 }: ImportRouteDeps) => {
   app.use(CHART_IMPORTS_PATH, express.json({ limit: '10mb' }))
   registerImportEvents(app)
+
+  app.get(
+    `${CHART_IMPORTS_PATH}/sources`,
+    async (req: Request, res: Response) => {
+      try {
+        const refresh = String(req.query?.refresh ?? '') === '1'
+        const payload = await getCuratedSources({ refresh })
+        return res.json(payload)
+      } catch (err) {
+        return sendError(res, 500, 'Failed to load curated sources', {
+          error: String((err as Error).message || err)
+        })
+      }
+    }
+  )
 
   const upload = multer({
     storage: multer.diskStorage({

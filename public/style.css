@@ -473,6 +473,27 @@ body {
   gap: 6px;
   font-size: 13px;
 }
+.field__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.field__head > span {
+  color: var(--muted);
+  font-weight: 950;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.field__row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.field__row .input {
+  flex: 1;
+}
 .field > span {
   color: var(--muted);
   font-weight: 950;
@@ -690,6 +711,78 @@ body {
   text-transform: uppercase;
   color: var(--muted);
 }
+.catalog {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  background: rgba(18, 19, 26, 0.02);
+}
+.catalog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.catalog__info {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+}
+.catalog__info.is-hidden {
+  display: none;
+}
+.catalogDetails {
+  display: grid;
+  gap: 6px;
+}
+.catalogDetails__row {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.45fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+.catalogDetails__row > span {
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.catalogDetails__row > div {
+  color: #1a1d29;
+}
+.catalog__body {
+  display: grid;
+  gap: 10px;
+}
+.iconBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.iconBtn:hover {
+  color: #2a67ff;
+  border-color: rgba(42, 103, 255, 0.45);
+}
 .grid2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -815,6 +908,32 @@ body {
   white-space: pre;
 }
 
+/* Bbox overlay */
+.bboxPanel {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(220px, 320px);
+  gap: 12px;
+  align-items: start;
+}
+.bboxMap {
+  height: 380px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fafbff;
+}
+.bboxInfo {
+  display: grid;
+  gap: 10px;
+}
+.bboxValue {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(18, 19, 26, 0.02);
+}
+
 /* Config modal */
 .cfgList {
   display: grid;
@@ -912,6 +1031,9 @@ body {
   }
   .modal {
     max-height: 88vh;
+  }
+  .bboxPanel {
+    grid-template-columns: 1fr;
   }
   .grid4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
