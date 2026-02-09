@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Chart Imports</title>
+    <title>Chart Database</title>
 
     <link rel="stylesheet" href="./assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="./style.css" />
@@ -14,10 +14,9 @@
       <div class="topbar__brand">
         <div class="logo" aria-hidden="true">🗺️</div>
         <div>
-          <div class="title">Chart Imports</div>
+          <div class="title">Chart Database</div>
           <div class="subtitle">
-            Live job status updates — imports window + sources window (no page
-            reload)
+            Live job status updates — database + sources popup (no page reload)
           </div>
         </div>
       </div>
@@ -66,105 +65,105 @@
       </div>
     </header>
 
-    <main class="shell">
-      <!-- LEFT: Imports + Map -->
-      <section class="stack">
-        <div class="card">
-          <div class="card__head">
-            <div>
-              <h2>Imports</h2>
-              <p>
-                Shows importing/converting items and completed ones. Click item
-                → highlight & zoom.
-              </p>
-            </div>
-            <div class="head-actions">
-              <div class="seg" aria-label="Filter">
-                <button class="is-active" data-filter="all">All</button>
-                <button data-filter="progress">In progress</button>
-                <button data-filter="available">Available</button>
-                <button data-filter="error">Error</button>
-              </div>
+    <main class="shell shell--split">
+      <!-- LEFT: Database -->
+      <section class="card database" aria-label="Database">
+        <div class="card__head">
+          <div>
+            <h2>Database</h2>
+            <p>
+              Shows importing/converting items and completed ones. Click item
+              → highlight & zoom.
+            </p>
+          </div>
+          <div class="head-actions">
+            <div class="seg" aria-label="Filter">
+              <button class="is-active" data-filter="all">All</button>
+              <button data-filter="progress">In progress</button>
+              <button data-filter="available">Available</button>
+              <button data-filter="error">Error</button>
             </div>
           </div>
+        </div>
 
-          <div id="errorBanner" class="banner is-hidden" role="alert"></div>
-
-          <div class="kpis" aria-label="Import stats">
-            <div class="kpi">
-              <div class="kpi__k">In progress</div>
-              <div id="kpiActive" class="kpi__v">0</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__k">Available</div>
-              <div id="kpiAvailable" class="kpi__v">0</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__k">Error</div>
-              <div id="kpiFailed" class="kpi__v">0</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__k">Total</div>
-              <div id="kpiTotal" class="kpi__v">0</div>
-            </div>
+        <div class="kpis" aria-label="Import stats">
+          <div class="kpi">
+            <div class="kpi__k">In progress</div>
+            <div id="kpiActive" class="kpi__v">0</div>
           </div>
+          <div class="kpi">
+            <div class="kpi__k">Available</div>
+            <div id="kpiAvailable" class="kpi__v">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__k">Error</div>
+            <div id="kpiFailed" class="kpi__v">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__k">Total</div>
+            <div id="kpiTotal" class="kpi__v">0</div>
+          </div>
+        </div>
 
+        <div id="errorBanner" class="banner is-hidden" role="alert"></div>
+
+        <div class="database__body">
           <div id="importsEmpty" class="empty is-hidden">
-            No items yet. Register/import something in the Sources window.
+            No items yet. Register/import something in Sources.
           </div>
           <div id="importsList" class="imports" aria-live="polite"></div>
         </div>
 
-        <div class="card">
+        <div class="database__footer">
+          <button
+            id="sourcesOpen"
+            class="fab"
+            type="button"
+            aria-label="Open sources"
+            aria-expanded="false"
+            title="Open sources"
+          >
+            +
+          </button>
+        </div>
+
+        <div
+          id="sourcesPopup"
+          class="card sources-pop is-hidden"
+          role="dialog"
+          aria-label="Sources"
+        >
           <div class="card__head">
             <div>
-              <h2>Map Overview</h2>
-              <p></p>
+              <h2>Sources</h2>
             </div>
             <div class="head-actions">
-              <button id="mapReset" class="btn btn--ghost btn--sm">
-                Zoom out
+              <div class="seg" aria-label="Source mode">
+                <button class="is-active" data-tab="download">Download</button>
+                <button data-tab="upload">Upload</button>
+                <button data-tab="stream">Streaming</button>
+              </div>
+              <button
+                id="sourcesClose"
+                class="btn btn--ghost sourcesClose"
+                type="button"
+                aria-label="Close sources"
+                title="Close"
+              >
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
-              <button id="mapToggle" class="btn btn--ghost btn--sm">
-                Hide
-              </button>
             </div>
           </div>
 
-          <div id="mapWrap" class="mapwrap">
-            <div
-              id="leafletMap"
-              class="map"
-              role="img"
-              aria-label="Leaflet map overview"
-            ></div>
-            <div id="basemapNote" class="mapnote" style="display: none">
-              <b>No local basemap found.</b><br />
-              Put
-              <code>assets/world/ne_110m_admin_0_countries.geojson</code> next
-              to this HTML file.
-            </div>
-            <div id="mapEmpty" class="mapempty">No bounds available yet.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- RIGHT: Sources -->
-      <aside class="card">
-        <div class="card__head">
-          <div>
-            <h2>Sources</h2>
-          </div>
-          <div class="head-actions">
-            <div class="seg" aria-label="Source mode">
-              <button class="is-active" data-tab="download">Download</button>
-              <button data-tab="upload">Upload</button>
-              <button data-tab="stream">Streaming</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
+          <div class="section">
           <!-- Upload -->
           <section class="panel" data-panel="upload">
             <div class="form">
@@ -356,7 +355,37 @@
             </div>
           </section>
         </div>
-      </aside>
+      </section>
+
+      <!-- RIGHT: Map Overview -->
+      <section class="card mapcard" aria-label="Map overview">
+        <div class="card__head">
+          <div>
+            <h2>Map Overview</h2>
+            <p></p>
+          </div>
+          <div class="head-actions">
+            <button id="mapReset" class="btn btn--ghost btn--sm">Zoom out</button>
+            <button id="mapToggle" class="btn btn--ghost btn--sm">Hide</button>
+          </div>
+        </div>
+
+        <div id="mapWrap" class="mapwrap">
+          <div
+            id="leafletMap"
+            class="map"
+            role="img"
+            aria-label="Leaflet map overview"
+          ></div>
+          <div id="basemapNote" class="mapnote" style="display: none">
+            <b>No local basemap found.</b><br />
+            Put
+            <code>assets/world/ne_110m_admin_0_countries.geojson</code> next to
+            this HTML file.
+          </div>
+          <div id="mapEmpty" class="mapempty">No bounds available yet.</div>
+        </div>
+      </section>
     </main>
 
     <!-- Details overlay -->

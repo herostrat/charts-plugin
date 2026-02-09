@@ -70,6 +70,9 @@ export let kpiActive = $('#kpiActive') as HTMLElement | null
 export let kpiAvailable = $('#kpiAvailable') as HTMLElement | null
 export let kpiFailed = $('#kpiFailed') as HTMLElement | null
 export let kpiTotal = $('#kpiTotal') as HTMLElement | null
+export let sourcesOpenBtn = $('#sourcesOpen') as HTMLButtonElement | null
+export let sourcesCloseBtn = $('#sourcesClose') as HTMLButtonElement | null
+export let sourcesPopup = $('#sourcesPopup') as HTMLElement | null
 
 // Map
 export let mapEl = $('#leafletMap') as HTMLDivElement | null
@@ -155,6 +158,9 @@ export const refreshDom = () => {
   kpiAvailable = $('#kpiAvailable') as HTMLElement | null
   kpiFailed = $('#kpiFailed') as HTMLElement | null
   kpiTotal = $('#kpiTotal') as HTMLElement | null
+  sourcesOpenBtn = $('#sourcesOpen') as HTMLButtonElement | null
+  sourcesCloseBtn = $('#sourcesClose') as HTMLButtonElement | null
+  sourcesPopup = $('#sourcesPopup') as HTMLElement | null
 
   mapEl = $('#leafletMap') as HTMLDivElement | null
   mapWrap = $('#mapWrap') as HTMLElement | null

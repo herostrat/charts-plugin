@@ -55,6 +55,7 @@ const getLeaflet = (): LeafletGlobal | null =>
 let renderImportsFn: () => void
 let leafletMap: LeafletMap | null = null
 let boundsGroup: LeafletFeatureGroup | null = null
+let lastBounds: [number, number, number, number] | null = null
 
 const assetUrl = (() => {
   const scriptEl =
@@ -97,6 +98,13 @@ export const focusBounds = (bounds: number[]) => {
 export const resetView = () => {
   const L = getLeaflet()
   if (!leafletMap || !L) return
+  if (lastBounds) {
+    const llb = toLatLngBounds(lastBounds)
+    if (llb) {
+      leafletMap.fitBounds(llb, { padding: [40, 40], maxZoom: 12 })
+      return
+    }
+  }
   leafletMap.setView([20, 0], 2)
 }
 
@@ -104,6 +112,31 @@ export const renderMap = (itemsWithJob: MapItem[]) => {
   const boundsItems = (Array.isArray(itemsWithJob) ? itemsWithJob : [])
     .map(({ jobId, item, key }) => ({ jobId, item, key, b: getBounds(item) }))
     .filter((x) => Array.isArray(x.b) && x.b.length === 4)
+
+  lastBounds = null
+  if (boundsItems.length) {
+    let minLon = Infinity
+    let minLat = Infinity
+    let maxLon = -Infinity
+    let maxLat = -Infinity
+    for (const { b } of boundsItems) {
+      const [lonMin, latMin, lonMax, latMax] = (b as number[]).map(Number)
+      if ([lonMin, latMin, lonMax, latMax].some((v) => !Number.isFinite(v))) {
+        continue
+      }
+      minLon = Math.min(minLon, lonMin)
+      minLat = Math.min(minLat, latMin)
+      maxLon = Math.max(maxLon, lonMax)
+      maxLat = Math.max(maxLat, latMax)
+    }
+    if (
+      [minLon, minLat, maxLon, maxLat].every((v) => Number.isFinite(v)) &&
+      minLon <= maxLon &&
+      minLat <= maxLat
+    ) {
+      lastBounds = [minLon, minLat, maxLon, maxLat]
+    }
+  }
 
   if (mapEmpty) mapEmpty.style.display = boundsItems.length ? 'none' : 'block'
   const L = getLeaflet()

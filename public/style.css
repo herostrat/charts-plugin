@@ -4,8 +4,8 @@
   --card: #ffffff;
   --ink: #12131a;
   --muted: #5a6072;
-  --border: rgba(18, 19, 26, 0.1);
-  --border2: rgba(18, 19, 26, 0.16);
+  --border: rgba(18, 19, 26, 0.22);
+  --border2: rgba(18, 19, 26, 0.32);
   --shadow: 0 10px 30px rgba(18, 19, 26, 0.08);
   --primary: #2a67ff;
   --good: #1a7f37;
@@ -151,10 +151,52 @@ body {
   gap: 16px;
   align-items: start;
 }
+.shell--split {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  height: calc(100vh - var(--topbar-height, 0px) - 36px);
+  max-height: calc(100vh - var(--topbar-height, 0px) - 36px);
+}
 
 .stack {
   display: grid;
   gap: 16px;
+}
+
+.database,
+.mapcard {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  max-height: calc(100vh - var(--topbar-height, 0px) - 36px);
+}
+
+.database {
+  position: relative;
+}
+
+.database__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 16px 16px 16px;
+}
+
+.database__footer {
+  padding: 10px 16px 16px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  background: var(--card);
+}
+
+.database__body .imports {
+  padding: 0;
+}
+
+.database__body .empty {
+  margin: 0 0 16px 0;
 }
 
 .card {
@@ -232,6 +274,20 @@ body {
 .btn--ghost {
   background: rgba(18, 19, 26, 0.04);
   border-color: var(--border);
+}
+.sourcesClose {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+}
+
+.sourcesClose .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.5;
 }
 .btn--danger {
   border-color: rgba(180, 35, 24, 0.28);
@@ -656,13 +712,46 @@ body {
 .mapwrap {
   padding: 0 16px 16px 16px;
   position: relative;
+  flex: 1;
+  display: flex;
+  min-height: 0;
 }
 .map {
   width: 100%;
-  height: 360px;
+  height: 100%;
+  min-height: 360px;
   border-radius: 16px;
   border: 1px solid var(--border);
   background: #fafbff;
+}
+.fab {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  border: none;
+  background: var(--good);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 16px 30px rgba(26, 127, 55, 0.24);
+}
+.fab:hover {
+  filter: brightness(1.04);
+}
+
+.sources-pop {
+  position: absolute;
+  right: 16px;
+  bottom: 84px;
+  width: min(420px, calc(100% - 32px));
+  max-height: calc(100% - 96px);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  z-index: 20;
+}
+.sources-pop .section {
+  overflow: auto;
 }
 .mapnote {
   position: absolute;
@@ -1008,20 +1097,35 @@ body {
 }
 
 @media (max-width: 1060px) {
-  .shell {
+  .shell,
+  .shell--split {
     grid-template-columns: 1fr;
+  }
+  .shell--split {
+    height: auto;
+    max-height: none;
+  }
+  .database,
+  .mapcard {
+    height: auto;
+    max-height: calc(100vh - var(--topbar-height, 0px) - 36px);
   }
   .kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .map {
-    height: 300px;
+    min-height: 300px;
   }
   .metaGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .kvgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sources-pop {
+    left: 16px;
+    right: 16px;
+    width: auto;
   }
 }
 

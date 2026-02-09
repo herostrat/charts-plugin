@@ -4,7 +4,10 @@ import {
   refreshBtn,
   detailsOverlay,
   configOverlay,
-  refreshDom
+  refreshDom,
+  sourcesCloseBtn,
+  sourcesOpenBtn,
+  sourcesPopup
 } from './core/dom.js'
 import { state } from './core/state.js'
 import {
@@ -32,6 +35,17 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
 
   refreshDom()
 
+  const setViewportOffsets = () => {
+    const topbar = document.querySelector('.topbar') as HTMLElement | null
+    const topbarHeight = topbar?.offsetHeight ?? 0
+    document.documentElement.style.setProperty(
+      '--topbar-height',
+      `${topbarHeight}px`
+    )
+  }
+  setViewportOffsets()
+  window.addEventListener('resize', setViewportOffsets)
+
   const setActiveSourceTab = (name: string) => {
     sourceTabBtns.forEach((b) =>
       b.classList.toggle('is-active', b.dataset.tab === name)
@@ -58,6 +72,19 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
   initUpload({ refreshJobs, isSseConnected })
   initStream({ refreshJobs, isSseConnected })
 
+  const isSourcesOpen = () =>
+    !sourcesPopup?.classList.contains('is-hidden')
+
+  const setSourcesOpen = (open: boolean) => {
+    sourcesPopup?.classList.toggle('is-hidden', !open)
+    sourcesOpenBtn?.setAttribute('aria-expanded', open ? 'true' : 'false')
+  }
+
+  sourcesOpenBtn?.addEventListener('click', () =>
+    setSourcesOpen(!isSourcesOpen())
+  )
+  sourcesCloseBtn?.addEventListener('click', () => setSourcesOpen(false))
+
   refreshBtn?.addEventListener('click', refreshJobs)
 
   window.addEventListener('keydown', (e) => {
@@ -68,6 +95,10 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
     }
     if (configOverlay && !configOverlay.classList.contains('is-hidden')) {
       closeConfig()
+      return
+    }
+    if (sourcesPopup && !sourcesPopup.classList.contains('is-hidden')) {
+      setSourcesOpen(false)
       return
     }
     const bboxOverlay = document.querySelector('#bboxOverlay')
