@@ -21,10 +21,12 @@ import {
 import { api } from '../core/api.js'
 import { setHeavyWarn, setStatus } from '../core/ui.js'
 import {
+  blockedTypeMessage,
   detectTypeFromName,
   fmtBytes,
   getErrorMessage,
-  isSupportedType
+  isSupportedType,
+  isTypeAvailable
 } from '../core/utils.js'
 import { state } from '../core/state.js'
 import { openBboxPicker } from './bbox.js'
@@ -471,6 +473,17 @@ export const updateDownloadState = () => {
     return
   }
 
+  if (!isTypeAvailable(t, state.capabilities)) {
+    if (downloadBtn) downloadBtn.disabled = true
+    const reason = blockedTypeMessage(t, state.capabilities)
+    setStatus(
+      downloadStatus,
+      'status is-warn',
+      reason ? `Type unavailable. ${reason}` : 'Type unavailable.'
+    )
+    return
+  }
+
   if (downloadBtn) downloadBtn.disabled = false
   setStatus(downloadStatus, 'status', 'Ready to create download job.')
 }
@@ -579,7 +592,8 @@ export const initDownload = (opts: {
   downloadBtn?.addEventListener('click', async () => {
     const url = downloadUrlEl?.value.trim() || ''
     const t = downloadTypeEl?.value || 'unknown'
-    if (!url || !isSupportedType(t)) return
+    if (!url || !isSupportedType(t) || !isTypeAvailable(t, state.capabilities))
+      return
 
     if (downloadBtn) downloadBtn.disabled = true
     setStatus(downloadStatus, 'status', 'Creating download job...')

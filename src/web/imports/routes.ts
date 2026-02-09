@@ -4,6 +4,7 @@ import fs from 'fs'
 import fsp from 'fs/promises'
 import path from 'path'
 import multer from 'multer'
+import { execFile } from 'child_process'
 import { CHART_IMPORTS_PATH } from '../../routes/paths'
 import {
   cancelImportJob,
@@ -22,6 +23,7 @@ import type {
   ImportExtractOptions,
   ImportJob
 } from '../../imports/types'
+import type { MapSourceType } from '../../types'
 import {
   getConvertersForType,
   isConversionSupported
@@ -30,10 +32,16 @@ import type { ConfigChange, ConfigService } from './config'
 import { defaultConfigService } from './config'
 import { registerImportEvents } from './sse'
 import { getCuratedSources } from '../../imports/curated-sources'
+import {
+  addOnlineProvider,
+  deleteOnlineProvider,
+  listOnlineProviders
+} from '../../online/providers-store'
 
 type ImportRouteDeps = {
   app: Application
   configService?: ConfigService
+  onOnlineProvidersChanged?: () => void
 }
 
 type ImportRequestItem = {
@@ -106,6 +114,18 @@ const sanitizeFilename = (name: string) => {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_')
 }
 
+const checkTool = (cmd: string, args: string[] = ['--version']) => {
+  return new Promise<{ available: boolean; details?: string }>((resolve) => {
+    execFile(cmd, args, { timeout: 5000 }, (err, stdout, stderr) => {
+      if (err) {
+        resolve({ available: false, details: stderr?.toString().trim() })
+        return
+      }
+      resolve({ available: true, details: stdout?.toString().trim() })
+    })
+  })
+}
+
 const resolveFilename = (entry: ImportRequestItem) => {
   if (entry.filename && entry.filename.trim().length > 0) {
     return entry.filename.trim()
@@ -135,6 +155,94 @@ const isValidBounds = (
     bounds.length === 4 &&
     bounds.every((v) => typeof v === 'number' && Number.isFinite(v))
   )
+}
+
+const parseStringList = (value: unknown) => {
+  if (!value) return undefined
+  if (Array.isArray(value)) {
+    const items = value
+      .map((entry) => String(entry).trim())
+      .filter((entry) => entry.length > 0)
+    return items.length > 0 ? items : undefined
+  }
+  if (typeof value === 'string') {
+    const items = value
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0)
+    return items.length > 0 ? items : undefined
+  }
+  return undefined
+}
+
+const parseNumber = (value: unknown) => {
+  if (value === null || value === undefined || value === '') return undefined
+  const num = Number(value)
+  return Number.isFinite(num) ? num : undefined
+}
+
+const isValidServerType = (value: string) => {
+  return [
+    'tilelayer',
+    'S-57',
+    'WMS',
+    'WMTS',
+    'mapstyleJSON',
+    'tileJSON'
+  ].includes(value)
+}
+
+const parseOnlineProvider = (input: unknown) => {
+  if (!input || typeof input !== 'object') {
+    return { error: 'Invalid provider payload' }
+  }
+  const data = input as Record<string, unknown>
+  const name = String(data.name ?? '').trim()
+  const url = String(data.url ?? '').trim()
+  const description = String(data.description ?? '').trim()
+  const format = String(data.format ?? '').toLowerCase()
+  const serverType = String(data.serverType ?? 'tilelayer')
+  const minzoom = parseNumber(data.minzoom) ?? 1
+  const maxzoom = parseNumber(data.maxzoom) ?? 15
+  const proxy = data.proxy === undefined ? true : Boolean(data.proxy)
+  const headers = parseStringList(data.headers)
+  const layers = parseStringList(data.layers)
+  const bounds = isValidBounds(data.bounds) ? data.bounds : undefined
+
+  if (!name) return { error: 'name is required' }
+  if (!url) return { error: 'url is required' }
+  if (!['png', 'jpg'].includes(format)) {
+    return { error: 'format must be png or jpg' }
+  }
+  if (!isValidServerType(serverType)) {
+    return { error: 'serverType is invalid' }
+  }
+  if (!Number.isFinite(minzoom) || !Number.isFinite(maxzoom)) {
+    return { error: 'minzoom/maxzoom must be numbers' }
+  }
+  if (minzoom < 1 || maxzoom > 24 || minzoom > maxzoom) {
+    return { error: 'minzoom/maxzoom out of range' }
+  }
+  if ((serverType === 'WMS' || serverType === 'WMTS') && !layers?.length) {
+    return { error: 'layers are required for WMS/WMTS sources' }
+  }
+
+  return {
+    provider: {
+      id: typeof data.id === 'string' ? data.id : undefined,
+      name,
+      description,
+      minzoom,
+      maxzoom,
+      serverType: serverType as MapSourceType,
+      format: format as 'png' | 'jpg',
+      url,
+      proxy,
+      headers,
+      layers,
+      bounds
+    }
+  }
 }
 
 const parseItems = (items: ImportRequestItem[] | undefined) => {
@@ -233,10 +341,89 @@ const sendError = (
 
 export const registerImportRoutes = ({
   app,
-  configService = defaultConfigService
+  configService = defaultConfigService,
+  onOnlineProvidersChanged
 }: ImportRouteDeps) => {
   app.use(CHART_IMPORTS_PATH, express.json({ limit: '10mb' }))
   registerImportEvents(app)
+
+  app.get(
+    `${CHART_IMPORTS_PATH}/capabilities`,
+    async (_req: Request, res: Response) => {
+      const ogr2ogr = await checkTool('ogr2ogr')
+      const tippecanoe = await checkTool('tippecanoe', ['--version'])
+      const supported: ImportFileType[] = [
+        'geotiff',
+        'mbtiles',
+        'pmtiles',
+        'unknown'
+      ]
+      const blocked: Array<{
+        type: ImportFileType
+        reason: string
+        missing?: string[]
+      }> = []
+
+      if (ogr2ogr.available && tippecanoe.available) {
+        supported.push('s57')
+      } else {
+        const missing = [
+          ...(ogr2ogr.available ? [] : ['ogr2ogr']),
+          ...(tippecanoe.available ? [] : ['tippecanoe'])
+        ]
+        blocked.push({
+          type: 's57',
+          reason: 'Missing required tools',
+          missing
+        })
+      }
+
+      return res.status(200).json({
+        supported,
+        blocked,
+        tools: {
+          ogr2ogr,
+          tippecanoe
+        }
+      })
+    }
+  )
+
+  app.get(
+    `${CHART_IMPORTS_PATH}/providers`,
+    async (_req: Request, res: Response) => {
+      return res.status(200).json({ providers: listOnlineProviders() })
+    }
+  )
+
+  app.post(
+    `${CHART_IMPORTS_PATH}/providers`,
+    (req: Request, res: Response) => {
+      const parsed = parseOnlineProvider(req.body)
+      if (!parsed.provider) {
+        return sendError(res, 400, parsed.error || 'Invalid provider payload')
+      }
+      const record = addOnlineProvider(parsed.provider)
+      onOnlineProvidersChanged?.()
+      return res.status(201).json(record)
+    }
+  )
+
+  app.delete(
+    `${CHART_IMPORTS_PATH}/providers/:id`,
+    (req: Request, res: Response) => {
+      const id = normalizeParam(req.params.id)
+      if (!id) {
+        return sendError(res, 400, 'Provider id is required')
+      }
+      const deleted = deleteOnlineProvider(id)
+      if (!deleted) {
+        return sendError(res, 404, 'Provider not found')
+      }
+      onOnlineProvidersChanged?.()
+      return res.status(200).json(deleted)
+    }
+  )
 
   app.get(
     `${CHART_IMPORTS_PATH}/sources`,

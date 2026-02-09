@@ -8,9 +8,11 @@ import {
 import { api } from '../core/api.js'
 import { setHeavyWarn, setStatus } from '../core/ui.js'
 import {
+  blockedTypeMessage,
   detectTypeFromName,
   getErrorMessage,
-  isSupportedType
+  isSupportedType,
+  isTypeAvailable
 } from '../core/utils.js'
 import { state } from '../core/state.js'
 
@@ -44,6 +46,17 @@ export const updateUploadState = () => {
     return
   }
 
+  if (!isTypeAvailable(t, state.capabilities)) {
+    if (uploadBtn) uploadBtn.disabled = true
+    const reason = blockedTypeMessage(t, state.capabilities)
+    setStatus(
+      uploadStatus,
+      'status is-warn',
+      reason ? `Type unavailable. ${reason}` : 'Type unavailable.'
+    )
+    return
+  }
+
   if (uploadBtn) uploadBtn.disabled = false
   setStatus(uploadStatus, 'status', `Ready to upload ${file.name}.`)
 }
@@ -65,7 +78,8 @@ export const initUpload = (opts: {
   uploadBtn?.addEventListener('click', async () => {
     const file = getSelectedFile()
     const t = uploadTypeEl?.value || 'unknown'
-    if (!file || !isSupportedType(t)) return
+    if (!file || !isSupportedType(t) || !isTypeAvailable(t, state.capabilities))
+      return
 
     if (uploadBtn) uploadBtn.disabled = true
     setStatus(uploadStatus, 'status', 'Uploading...')

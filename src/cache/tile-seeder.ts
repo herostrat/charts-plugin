@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import pLimit from 'p-limit'
 import type {
@@ -17,46 +16,55 @@ import checkDiskSpace from 'check-disk-space'
 import type { ResourcesApi } from '@signalk/server-api'
 import { lonLatToTileXY, tileToBBox, getSubTiles } from '../tiles/tile-utils'
 import type { ChartProvider } from '../types'
-
-export interface Tile {
-  x: number
-  y: number
-  z: number
-}
+import type { TileCache } from './tile-cache'
+import type { Tile } from './tile-types'
+import { MbtilesTileCache } from './tile-cache-mbtiles'
+import {
+  createPmtilesTileFetcher,
+  createRemoteTileFetcher,
+  type TileFetcher
+} from './tile-fetcher'
 
 export const Status = {
   Stopped: 0,
   Running: 1
 }
 
-export class ChartSeedingManager {
-  public static ActiveJobs: { [key: number]: ChartDownloader } = {}
+export class TileSeedingManager {
+  public static ActiveJobs: { [key: number]: TileSeeder } = {}
 
   public static async createJob(
     resourcesApi: ResourcesApi,
     chartsPath: string,
     provider: ChartProvider,
     maxZoom: number,
-    regionGUI: string | undefined = undefined,
+    regionGUID: string | undefined = undefined,
     bbox: BBox | undefined = undefined,
     tile: Tile | undefined = undefined
-  ): Promise<ChartDownloader> {
-    const downloader = new ChartDownloader(resourcesApi, chartsPath, provider)
-    if (regionGUI) downloader.initalizeJobFromRegion(regionGUI, maxZoom)
-    else if (bbox) downloader.initializeJobFromBBox(bbox, maxZoom)
-    else if (tile) {
-      downloader.initializeJobFromTile(tile, maxZoom)
-    }
-    this.ActiveJobs[downloader.ID] = downloader
-    return downloader
+  ): Promise<TileSeeder> {
+    const cache = new MbtilesTileCache(chartsPath, provider.identifier)
+    const fetcher = provider._fileFormat === 'pmtiles'
+      ? (() => {
+          if (!provider._filePath) {
+            throw new Error('PMTiles file path not available for hotloading')
+          }
+          return createPmtilesTileFetcher(provider._filePath)
+        })()
+      : createRemoteTileFetcher(provider)
+    const seeder = new TileSeeder(resourcesApi, provider, cache, fetcher, chartsPath)
+    if (regionGUID) seeder.initializeJobFromRegion(regionGUID, maxZoom)
+    else if (bbox) seeder.initializeJobFromBBox(bbox, maxZoom)
+    else if (tile) seeder.initializeJobFromTile(tile, maxZoom)
+    this.ActiveJobs[seeder.ID] = seeder
+    return seeder
   }
 }
 
-export class ChartDownloader {
+export class TileSeeder {
   private static MINIMUM_FREE_DISK_SPACE = 1024 * 1024 * 1024 // 1 GB
   private static nextJobId = 1
 
-  private id: number = ChartDownloader.nextJobId++
+  private id: number = TileSeeder.nextJobId++
   private maxZoom = 15
   private status: number = Status.Stopped
   private totalTiles = 0
@@ -73,23 +81,29 @@ export class ChartDownloader {
 
   constructor(
     resourcesApi: ResourcesApi,
-    chartsPath: string,
-    provider: ChartProvider
+    provider: ChartProvider,
+    cache: TileCache,
+    fetcher: TileFetcher,
+    cacheBasePath: string
   ) {
     this.resourcesApi = resourcesApi
-    this.chartsPath = chartsPath
     this.provider = provider
+    this.cache = cache
+    this.fetcher = fetcher
+    this.cacheBasePath = cacheBasePath
   }
 
   resourcesApi: ResourcesApi
-  chartsPath: string
   provider: ChartProvider
+  cache: TileCache
+  fetcher: TileFetcher
+  cacheBasePath: string
 
   get ID(): number {
     return this.id
   }
 
-  public async initalizeJobFromRegion(
+  public async initializeJobFromRegion(
     regionGUID: string,
     maxZoom: number
   ): Promise<void> {
@@ -160,8 +174,8 @@ export class ChartDownloader {
         if (tileCounter % 1000 === 0) {
           await new Promise((r) => setTimeout(r, 0))
           try {
-            const { free } = await checkDiskSpace(this.chartsPath)
-            if (free < ChartDownloader.MINIMUM_FREE_DISK_SPACE) {
+            const { free } = await checkDiskSpace(this.getCacheBasePath())
+            if (free < TileSeeder.MINIMUM_FREE_DISK_SPACE) {
               console.warn(`Low disk space. Stopping download.`)
               this.status = Status.Stopped
               return
@@ -173,15 +187,26 @@ export class ChartDownloader {
           }
         }
         tileCounter++
-        const buffer = await ChartDownloader.getTileFromCacheOrRemote(
-          this.chartsPath,
-          this.provider,
-          tile
-        )
-        if (buffer === null) {
+        const buffer = await this.fetcher.getTile(tile)
+        if (!buffer) {
           this.failedTiles++
-        } else {
+          return
+        }
+        try {
+          await this.cache.set(
+            {
+              sourceId: this.provider.identifier,
+              z: tile.z,
+              x: tile.x,
+              y: tile.y,
+              format: this.provider.format || 'png'
+            },
+            { data: buffer }
+          )
           this.downloadedTiles++
+        } catch (err) {
+          console.error('Error writing tile cache:', err)
+          this.failedTiles++
         }
       })
     )
@@ -198,19 +223,26 @@ export class ChartDownloader {
     this.status = Status.Running
     for (const tile of this.tiles) {
       if (this.cancelRequested) break
-      const tilePath = path.join(
-        this.chartsPath,
-        `${this.provider.name}`,
-        `${tile.z}`,
-        `${tile.x}`,
-        `${tile.y}.${this.provider.format}`
-      )
+      const key = {
+        sourceId: this.provider.identifier,
+        z: tile.z,
+        x: tile.x,
+        y: tile.y,
+        format: this.provider.format || 'png'
+      }
 
       try {
-        await fs.promises.unlink(tilePath)
+        await this.cache.remove?.(key)
         this.cachedTiles = Math.max(this.cachedTiles - 1, 0)
       } catch (err: unknown) {
         if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
+          const tilePath = path.join(
+            this.getCacheBasePath(),
+            `${this.provider.name}`,
+            `${tile.z}`,
+            `${tile.x}`,
+            `${tile.y}.${this.provider.format}`
+          )
           console.error(`Error deleting cached tile ${tilePath}:`, err)
         }
       }
@@ -224,22 +256,22 @@ export class ChartDownloader {
 
   private async filterCachedTiles(allTiles: Tile[]): Promise<Tile[]> {
     const checks = allTiles.map(async (tile) => {
-      const tilePath = path.join(
-        this.chartsPath,
-        this.provider.name,
-        `${tile.z}`,
-        `${tile.x}`,
-        `${tile.y}.${this.provider.format}`
-      )
+      const key = {
+        sourceId: this.provider.identifier,
+        z: tile.z,
+        x: tile.x,
+        y: tile.y,
+        format: this.provider.format || 'png'
+      }
 
       try {
-        await fs.promises.access(tilePath)
-        return null
-      } catch (err: unknown) {
-        if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-          return tile
+        if (this.cache.has) {
+          const exists = await this.cache.has(key)
+          return exists ? null : tile
         }
-        console.error('Unexpected fs error:', err)
+        const result = await this.cache.get(key)
+        return result.hit ? null : tile
+      } catch {
         return tile
       }
     })
@@ -263,72 +295,6 @@ export class ChartDownloader {
             this.totalTiles
           : 0,
       status: this.status
-    }
-  }
-
-  static async getTileFromCacheOrRemote(
-    chartsPath: string,
-    provider: ChartProvider,
-    tile: Tile
-  ): Promise<Buffer | null> {
-    const tilePath = path.join(
-      chartsPath,
-      `${provider.name}`,
-      `${tile.z}`,
-      `${tile.x}`,
-      `${tile.y}.${provider.format}`
-    )
-
-    try {
-      const data = await fs.promises.readFile(tilePath)
-      return data
-    } catch {
-      // Cache miss, proceed to fetch from remote
-    }
-    const buffer = await this.fetchTileFromRemote(provider, tile)
-    if (buffer) {
-      try {
-        await fs.promises.mkdir(path.dirname(tilePath), { recursive: true })
-        await fs.promises.writeFile(tilePath, buffer)
-      } catch (err) {
-        console.error(`Error writing tile ${tilePath}:`, err)
-      }
-    }
-    return buffer
-  }
-
-  static async fetchTileFromRemote(
-    provider: ChartProvider,
-    tile: Tile,
-    timeoutMs = 5000
-  ): Promise<Buffer | null> {
-    if (!provider.remoteUrl) {
-      console.error(`No remote URL defined for provider ${provider.name}`)
-      return null
-    }
-    const url = provider.remoteUrl
-      .replace('{z}', tile.z.toString())
-      .replace('{z-2}', (tile.z - 2).toString())
-      .replace('{x}', tile.x.toString())
-      .replace('{y}', tile.y.toString())
-      .replace('{-y}', (Math.pow(2, tile.z) - 1 - tile.y).toString())
-    const controller = new AbortController()
-    const id = setTimeout(() => controller.abort(), timeoutMs)
-    try {
-      const response = await fetch(url, {
-        headers: provider.headers,
-        signal: controller.signal
-      })
-      if (!response.ok) {
-        return null
-      }
-      const arrayBuffer = await response.arrayBuffer()
-      const buffer = Buffer.from(arrayBuffer)
-      return buffer
-    } catch {
-      return null
-    } finally {
-      clearTimeout(id)
     }
   }
 
@@ -399,8 +365,6 @@ export class ChartDownloader {
         for (let x = minX; x <= maxX; x++) {
           for (let y = minY; y <= maxY; y++) {
             const tileBbox = tileToBBox(x, y, z)
-            // bboxPolygon expects a tuple with 4 or 6 numbers; tileBbox is number[]
-            // Cast to [number, number, number, number] as returned by tileToBBox
             const tilePoly = this.bboxPolygon(
               tileBbox as [number, number, number, number]
             )
@@ -493,5 +457,9 @@ export class ChartDownloader {
         [minLon, minLat]
       ]
     ])
+  }
+
+  private getCacheBasePath(): string {
+    return this.cacheBasePath
   }
 }

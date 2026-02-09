@@ -48,8 +48,14 @@ const apiUpload = async (
 export const api = {
   listJobs: () => apiGet(`${API_BASE}`),
   createJob: (payload: unknown) => apiSend(`${API_BASE}`, 'POST', payload),
+  getCapabilities: () => apiGet(`${API_BASE}/capabilities`),
   listSources: (opts?: { refresh?: boolean }) =>
     apiGet(`${API_BASE}/sources${opts?.refresh ? '?refresh=1' : ''}`),
+  listOnlineProviders: () => apiGet(`${API_BASE}/providers`),
+  createOnlineProvider: (payload: unknown) =>
+    apiSend(`${API_BASE}/providers`, 'POST', payload),
+  deleteOnlineProvider: (id: string) =>
+    apiSend(`${API_BASE}/providers/${encodeURIComponent(id)}`, 'DELETE', null),
   upload: apiUpload,
   cancelJob: (id: string | number) =>
     apiSend(`${API_BASE}/${encodeURIComponent(id)}`, 'DELETE', null),

@@ -14,9 +14,16 @@ import { convertOnlineProviderConfig } from './tiles/catalog/online'
 import { registerTileRoutes } from './tiles/routes'
 import { registerStyleRoutes } from './resources/style-routes'
 import { createImportsConfigService } from './web/imports/config'
+import { registerCacheRoutes } from './web/cache/routes'
+import {
+  listOnlineProviders,
+  loadOnlineProvidersFromFile,
+  setOnlineProvidersPersistence
+} from './online/providers-store'
 import {
   buildChartsStorageLayout,
   ensureChartsStorageLayout,
+  getChartsStorageLayout,
   resolveChartsRoot,
   setChartsStorageLayout
 } from './imports/storage'
@@ -47,6 +54,9 @@ interface Config {
   chartPaths: string[]
   cachePath: string
   onlineChartProviders: OnlineChartProvider[]
+  sidecarEnabled?: boolean
+  sidecarBaseUrl?: string
+  sidecarTileTemplate?: string
   vectorCatalogs?: Array<{
     identifier: string
     catalog: string
@@ -70,6 +80,7 @@ type VectorCatalogChoice = typeof defaultCatalogId | 'none'
 
 const plugin = (app: ChartProviderApp): Plugin => {
   let chartProviders: { [key: string]: ChartProvider } = {}
+  let refreshChartsFn: (() => Promise<void>) | null = null
   let pluginStarted = false
   let vectorCatalogById = new Map<string, VectorCatalogChoice>()
   let refreshListenerRegistered = false
@@ -126,7 +137,26 @@ const plugin = (app: ChartProviderApp): Plugin => {
       cachePath: {
         type: 'string',
         title: 'Cache path',
-        description: `Directory for cached tiles. Defaults to "${defaultChartsRoot}"`
+        description: `Directory for cached tiles. Defaults to "${path.join(defaultChartsRoot, 'cache')}"`
+      },
+      sidecarEnabled: {
+        type: 'boolean',
+        title: 'Enable sidecar proxy/cache',
+        description:
+          'Use a sidecar service for online proxy/cache/seeding instead of the built-in proxy.',
+        default: false
+      },
+      sidecarBaseUrl: {
+        type: 'string',
+        title: 'Sidecar base URL',
+        description:
+          'Base URL for the sidecar service, e.g. "http://localhost:8080".'
+      },
+      sidecarTileTemplate: {
+        type: 'string',
+        title: 'Sidecar tile URL template',
+        description:
+          'Template for sidecar tile URLs. Use {id}, {z}, {x}, {y}. Default: /tiles/{id}/{z}/{x}/{y}'
       },
       onlineChartProviders: {
         type: 'array',
@@ -268,7 +298,7 @@ const plugin = (app: ChartProviderApp): Plugin => {
     }
   }
 
-  const doStartup = (config: Config) => {
+  const doStartup = async (config: Config) => {
     // Check Node version
     const nodeVersion = process.versions.node
     const majorVersion = parseInt(nodeVersion.split('.')[0])
@@ -295,7 +325,8 @@ const plugin = (app: ChartProviderApp): Plugin => {
     const chartPaths = isEmpty(props.chartPaths)
       ? [layout.databaseDir]
       : resolveUniqueChartPaths(props.chartPaths, configBasePath)
-    cachePath = props.cachePath || chartsRoot
+    cachePath =
+      props.cachePath || path.join(getChartsStorageLayout()?.root || chartsRoot, 'cache')
     ensureDirectoryExists(cachePath)
     setChartsStorageLayout(layout)
 
@@ -311,21 +342,55 @@ const plugin = (app: ChartProviderApp): Plugin => {
         console.error('Failed to initialize import store:', err)
       })
 
+    const onlineStorePath = path.join(chartsRoot, 'online-providers.json')
+    setOnlineProvidersPersistence(onlineStorePath)
+    await loadOnlineProvidersFromFile(onlineStorePath).catch((err) => {
+      console.error('Failed to load online providers store:', err)
+    })
+
     startDebugInputWatcher(path.join(chartsRoot, 'debug_input')).catch(
       (err) => {
         console.error('Failed to start debug input watcher:', err)
       }
     )
 
-    const onlineProviders = _.reduce(
-      props.onlineChartProviders,
-      (result: { [key: string]: object }, data) => {
-        const provider = convertOnlineProviderConfig(data)
-        result[provider.identifier] = provider
-        return result
-      },
-      {}
-    )
+    const buildOnlineProviders = () => {
+      const sidecarConfig = resolveSidecarConfig(props)
+      const combined = [
+        ...(props.onlineChartProviders ?? []),
+        ...listOnlineProviders()
+      ]
+      return _.reduce(
+        combined,
+        (result: { [key: string]: ChartProvider }, data) => {
+          const provider = convertOnlineProviderConfig(data) as ChartProvider
+          if (sidecarConfig.enabled) {
+            const sidecarUrl = buildSidecarTileUrl(
+              sidecarConfig.baseUrl,
+              sidecarConfig.template,
+              provider.identifier
+            )
+            provider.v1 = {
+              ...(provider.v1 ?? {}),
+              tilemapUrl: sidecarUrl
+            }
+            provider.v2 = {
+              ...(provider.v2 ?? {}),
+              url: sidecarUrl
+            }
+            provider.proxy = false
+            provider.remoteUrl = undefined
+            provider.sidecar = true
+            provider.sidecarUrl = sidecarUrl
+          }
+          result[provider.identifier] = provider
+          return result
+        },
+        {}
+      )
+    }
+
+    let onlineProviders = buildOnlineProviders()
     app.debug(
       `Start charts plugin. Chart paths: ${chartPaths.join(
         ', '
@@ -366,11 +431,13 @@ const plugin = (app: ChartProviderApp): Plugin => {
         (result, charts) => _.merge({}, result, charts),
         {}
       ) as { [key: string]: ChartProvider }
+      onlineProviders = buildOnlineProviders()
       chartProviders = _.merge({}, charts, onlineProviders) as {
         [key: string]: ChartProvider
       }
       validateVectorProviders(chartProviders, app)
     }
+    refreshChartsFn = refreshCharts
 
     if (!refreshListenerRegistered) {
       let refreshTimer: NodeJS.Timeout | null = null
@@ -401,6 +468,7 @@ const plugin = (app: ChartProviderApp): Plugin => {
             _.keys(charts).length
           } charts from ${chartPaths.join(', ')}.`
         )
+        onlineProviders = buildOnlineProviders()
         chartProviders = _.merge({}, charts, onlineProviders)
         validateVectorProviders(chartProviders, app)
       })
@@ -454,7 +522,21 @@ const plugin = (app: ChartProviderApp): Plugin => {
       }
     })
 
-    registerImportRoutes({ app, configService })
+    registerImportRoutes({
+      app,
+      configService,
+      onOnlineProvidersChanged: () => {
+        refreshChartsFn?.().catch((err) => {
+          console.error('Failed to refresh charts after provider change:', err)
+        })
+      }
+    })
+
+    registerCacheRoutes({
+      app,
+      getProviders: () => chartProviders,
+      getCachePath: () => cachePath
+    })
 
     app.debug('** Registering v1 API paths **')
 
@@ -521,4 +603,28 @@ const ensureDirectoryExists = (path: string) => {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path)
   }
+}
+
+const resolveSidecarConfig = (config: Config) => {
+  const enabled = Boolean(config.sidecarEnabled)
+  const baseUrl = (config.sidecarBaseUrl || '').trim()
+  const template =
+    (config.sidecarTileTemplate || '/tiles/{id}/{z}/{x}/{y}').trim()
+  if (!enabled || baseUrl.length === 0) {
+    return { enabled: false, baseUrl: '', template }
+  }
+  return { enabled: true, baseUrl, template }
+}
+
+const buildSidecarTileUrl = (
+  baseUrl: string,
+  template: string,
+  identifier: string
+) => {
+  const normalizedBase = baseUrl.replace(/\/+$/, '')
+  const normalizedTemplate = template.startsWith('/')
+    ? template
+    : `/${template}`
+  return `${normalizedBase}${normalizedTemplate}`
+    .replace('{id}', identifier)
 }

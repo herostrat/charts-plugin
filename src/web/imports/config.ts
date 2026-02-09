@@ -60,7 +60,8 @@ export const createImportsConfigService = (deps: {
       {
         key: 'cachePath',
         name: 'Cache path',
-        description: 'Directory used for cached tiles.',
+        description:
+          'Directory used for cached tiles. Defaults to "<chartsRoot>/cache".',
         type: 'string',
         value: config.cachePath ?? ''
       }

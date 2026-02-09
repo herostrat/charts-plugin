@@ -1,12 +1,8 @@
 # Signal K server Charts plugin
 
-Signal K Node server plugin to provide chart metadata, such as name, description and location of the actual chart tile data.
+Signal K Node server plugin to provide chart metadata, imports, proxying, caching, and tile serving for chart data.
 
-Chart metadata is derived from the following supported chart file types:
-- MBTiles _(.mbtiles)_
-- TMS _(tilemapresource.xml and tiles)_
-
-Additionally, chart metadata can be entered via the plugin configuration for other chart sources and types _(e.g. WMS, WMTS, S-57 tiles and tilejson)_.
+This README describes the current behavior and capabilities of the plugin.
 
 Chart metadata is made available to both v1 and v2 Signal K `resources` api paths.
 
@@ -27,7 +23,8 @@ _Note: Version 2 resource paths will only be made available on Signal K server v
 3. Activate the plugin
 
 > [!TIP]
-> On Victron Venus devices you [need to install some dependencies manually](https://github.com/SignalK/charts-plugin/issues/40#issuecomment-3396744642) before installing the plugin.
+> On Victron Venus devices you may need to install additional system dependencies manually. See
+> https://github.com/SignalK/charts-plugin/issues/40#issuecomment-3396744642
 
 Chart metadata will then be available to client apps via the resources api `/resources/charts` for example:
 - [Freeboard SK](https://www.npmjs.com/package/@signalk/freeboard-sk)
@@ -37,47 +34,108 @@ Chart metadata will then be available to client apps via the resources api `/res
 ## Configuration
 
 
-### Local Chart Files
+### Local chart files
 
-To use chart files stored on the Signal K Server the plugin needs to know where your local chart files
-are stored to generate the chart metadata.
+The plugin scans one or more chart paths for local files. By default it scans:
+
+```
+/home/<user>/.signalk/charts/database
+```
 
 You can either:
-1. Put the chart files in the default location _(`/home/<user>/.signalk/charts`)_ 
-2. Add configuration entries for the folders where the chart files are stored. 
+1. Put chart files inside the default database folder shown above.
+2. Add configuration entries for the folders where your chart files are stored.
 
 <img src="https://user-images.githubusercontent.com/1435910/39382493-57c1e4dc-4a6e-11e8-93e1-cedb4c7662f4.png" alt="Chart paths configuration" width="450"/>
 
->**Note:** After chart files have been added to folders they will be processed after the plugin has been restarted! _(disable / enable the plugin)_ 
+>**Note:** After chart files have been added to folders they will be processed after the plugin has been restarted. _(disable / enable the plugin)_
 
 
 ### Online chart providers
 
-If your chart source is not local to the Signal K Server you can add "Online Chart Providers" and enter the required charts metadata for the source.
+If your chart source is not local to the Signal K Server you can add "Online Chart Providers" and enter the required metadata for the source.
 
-You will need to provide the following information:
+Required fields:
 1. A chart name for client applications to display
-2. The URL to the chart source
-3. Select the chart image format
-4. The minimum and maximum zoom levels where chart data is available.
+2. The URL to the chart source (XYZ/TMS template or service endpoint)
+3. The tile format (png, jpg, or pbf)
+4. Minimum and maximum zoom levels
 
-You can also provide a description detailing the chart content.
+Optional fields:
+- Description
+- Map source type (tilelayer, WMS, WMTS, mapstyleJSON, tileJSON)
+- Request headers
 
 <img src="https://github.com/user-attachments/assets/77cb3aaf-5471-4e55-b05d-aad70cacab6a" alt="Online chart providers configuration" width="450"/>
 
-For WMS & WMTS sources you can specify the layers you wish to display.
+For WMS and WMTS sources you can specify the layers you wish to display.
+For WMTS, the first entry is treated as the layer name and the second entry
+is used as the TileMatrixSet (defaults to GoogleMapsCompatible).
 
 <img src="https://github.com/user-attachments/assets/b9bfba38-8468-4eca-aeb3-96a80fcbc7a6" alt="Online chart provider layers" width="450"/>
 
-A proxy for online charts can be created using the "Proxy through SignalK server" option. If enabled tiles will be fetched from the remote server and cached by the SignalK server making it possible to store the tiles for offline usage. Additional http headers can be passed to the remote server by adding colon separated headers, e.g. User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64). User-Agent is the header name and Mozilla... will be the value.
+A proxy for online charts can be created using the "Proxy through SignalK server" option. If enabled, tiles are fetched from the remote server and cached by the Signal K server (MBTiles cache). Additional HTTP headers can be passed to the remote server by adding colon separated headers, e.g. User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64).
 
-### Supported chart formats
+COG sources can be configured as tilelayer providers that point to a remote
+GeoTIFF URL and have proxy enabled.
 
-- [MBTiles](https://github.com/mapbox/mbtiles-spec) files
+### Configuration overview
+
+Key configuration fields used by current features:
+- Chart paths: folders scanned for local charts
+- Charts root: root directory for imports and storage layout
+- Cache path: defaults to `<chartsRoot>/cache`
+- Online chart providers: remote sources and proxy settings
+
+### Supported chart formats and imports
+
+Local files and directories:
 - [PMTiles](https://protomaps.com/docs/pmtiles) files
+- [MBTiles](https://github.com/mapbox/mbtiles-spec) files
 - Directory with cached [TMS](https://wiki.osgeo.org/wiki/Tile_Map_Service_Specification) tiles and `tilemapresource.xml`
 - Directory with XYZ tiles and `metadata.json`
-- Online [TMS](https://wiki.osgeo.org/wiki/Tile_Map_Service_Specification)
+
+Imports and conversions:
+- GeoTIFF -> MBTiles -> PMTiles (built-in)
+- S-57 -> GeoJSON -> MBTiles -> PMTiles (requires external tools)
+- PMTiles subset extraction from remote PMTiles (bbox)
+
+Online sources (proxied and cached when proxy is enabled):
+- XYZ/TMS
+- WMS (GetMap to XYZ)
+- WMTS (GetTile)
+- COG (remote GeoTIFF, tiled on demand)
+
+### S-57 conversion requirements
+
+S-57 imports require external tools that are not bundled with the npm plugin:
+
+- `ogr2ogr` (from GDAL/OGR)
+- `tippecanoe`
+
+If these tools are missing, S-57 import will be blocked and the UI will show
+a clear error. Install them via your system package manager before importing
+S-57 charts.
+
+### Caching and hotloading
+
+Online sources and PMTiles hotloading use an MBTiles cache stored under the charts root:
+
+```
+<chartsRoot>/cache/mbtiles/<provider-identifier>.mbtiles
+```
+
+Hotloading is implemented by seeding tiles into the cache. You can seed:
+- A bounding box
+- A single tile (with sub-tiles)
+- A course corridor using position and heading
+
+### Streaming methods
+
+When online sources are proxied, the server adapts them to XYZ tiles:
+- WMS: builds GetMap requests using EPSG:3857 BBOX
+- WMTS: builds GetTile requests using TileMatrix/Row/Col
+- COG: reads windowed data from a remote GeoTIFF and resamples to 256x256 tiles
 
 ### Vector sprites demo
 
@@ -104,7 +162,8 @@ The vector style endpoint uses this sprite base URL:
 
 For vector charts (PMTiles or MBTiles with `format: "pbf"`), the plugin serves:
 
-- Tile data: `/signalk/chart-tiles/${identifier}/{z}/{x}/{y}`
+- Tile data (XYZ): `/signalk/chart-tiles/${identifier}/{z}/{x}/{y}`
+- PMTiles range endpoint: `/signalk/chart-pmtiles/${identifier}.pmtiles`
 - Style JSON: `/signalk/chart-style/${identifier}`
 - Sprite sheets: `/@signalk/charts-plugin/styles/sprites/nautical` (+ `@2x`)
 
@@ -137,12 +196,18 @@ GET /signalk/v2/api/resources/charts/${identifier}`
 ```
 
 #### Chart Tiles
-Chart tiles are retrieved using the url defined in the chart metadata.
+Chart tiles are retrieved using the URL defined in the chart metadata.
 
-For local chart files located in the Chart Path(s) defined in the plugin configuration, the url will be:
+For proxied online sources, the URL is:
 
 ```bash
 /signalk/chart-tiles/${identifier}/${z}/${x}/${y}
+```
+
+For local PMTiles, the range endpoint is:
+
+```bash
+/signalk/chart-pmtiles/${identifier}.pmtiles
 ```
 
 #### Vector chart style (v2 only)
@@ -157,6 +222,22 @@ Notes:
 - `theme` is optional and defaults to `day`.
 - Experimental: `theme` is reserved and currently ignored (server always returns day).
 - This endpoint is not yet in the Signal K spec; we plan to propose it.
+
+#### Cache and hotload API
+
+```bash
+POST /@signalk/charts-plugin/cache/seed/{id}
+POST /@signalk/charts-plugin/cache/seed-course/{id}
+GET  /@signalk/charts-plugin/cache/jobs
+POST /@signalk/charts-plugin/cache/jobs/{id}
+POST /@signalk/charts-plugin/cache/snapshot/{id}
+```
+
+#### Import capabilities API
+
+```bash
+GET /@signalk/charts-plugin/imports/capabilities
+```
 
 License
 -------

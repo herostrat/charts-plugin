@@ -1,5 +1,6 @@
 import { SUPPORTED_TYPES } from './constants.js'
 import type { ImportItem, ImportJob } from './state.js'
+import type { ImportCapabilities } from './state.js'
 
 export const fmtBytes = (n: number) => {
   if (!Number.isFinite(n) || n <= 0) return '-'
@@ -43,6 +44,31 @@ export const detectTypeFromName = (name?: string) => {
 
 export const isSupportedType = (t?: string) =>
   SUPPORTED_TYPES.includes(String(t || 'unknown'))
+
+export const isTypeAvailable = (t: string, caps?: ImportCapabilities | null) => {
+  if (!caps) return true
+  const blocked = caps.blocked || []
+  if (blocked.some((entry) => entry.type === t)) {
+    return false
+  }
+  if (Array.isArray(caps.supported) && caps.supported.length > 0) {
+    return caps.supported.includes(t)
+  }
+  return true
+}
+
+export const blockedTypeMessage = (
+  t: string,
+  caps?: ImportCapabilities | null
+) => {
+  if (!caps) return ''
+  const entry = (caps.blocked || []).find((item) => item.type === t)
+  if (!entry) return ''
+  const missing = Array.isArray(entry.missing) ? entry.missing.join(', ') : ''
+  return missing
+    ? `Missing required tools: ${missing}.`
+    : entry.reason || 'Unavailable.'
+}
 
 export const escapeHtml = (s: unknown) =>
   String(s ?? '').replace(

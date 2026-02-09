@@ -9,6 +9,7 @@
  */
 
 import type { ChartProvider } from '../types'
+import { CHART_TILES_PATH } from '../routes/paths'
 import { classifyLayers } from '../catalog/schema'
 import type { ChartObjectDefinition } from '../catalog/schema'
 
@@ -661,15 +662,21 @@ export function buildNauticalVectorStyle(
   // 4. Combine with base style
   const baseStyle = getNauticalBaseStyle(theme)
 
+  const sourceBase = {
+    type: 'vector' as const,
+    minzoom: provider.minzoom || 0,
+    maxzoom: provider.maxzoom || 16
+  }
+
+  const vectorSource = {
+    ...sourceBase,
+    tiles: [`${CHART_TILES_PATH}/${provider.identifier}/{z}/{x}/{y}`]
+  }
+
   return {
     ...baseStyle,
     sources: {
-      'charts-vector': {
-        type: 'vector' as const,
-        tiles: [`/signalk/chart-tiles/${provider.identifier}/{z}/{x}/{y}`],
-        minzoom: provider.minzoom || 0,
-        maxzoom: provider.maxzoom || 16
-      }
+      'charts-vector': vectorSource
     },
     layers: generatedLayers
   }

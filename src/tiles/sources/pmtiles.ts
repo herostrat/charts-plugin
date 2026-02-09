@@ -22,8 +22,9 @@ export const serveTileFromPmtiles = async (
     res.status(500).send('PMTiles handle not available')
     return
   }
+  const resolvedY = provider._flipY ? Math.pow(2, z) - 1 - y : y
   try {
-    const tile = await provider._pmtilesHandle.getZxy(z, x, y)
+    const tile = await provider._pmtilesHandle.getZxy(z, x, resolvedY)
     if (!tile) {
       res.sendStatus(404)
       return

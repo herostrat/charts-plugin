@@ -83,6 +83,14 @@ const parseScale = (metaData: unknown): number => {
   return 250000
 }
 
+const parseScheme = (metaData: unknown): 'xyz' | 'tms' => {
+  if (!metaData || typeof metaData !== 'object') {
+    return 'xyz'
+  }
+  const raw = (metaData as { scheme?: unknown }).scheme
+  return raw === 'tms' ? 'tms' : 'xyz'
+}
+
 const parseName = (metaData: unknown, fallback: string): string => {
   if (!metaData || typeof metaData !== 'object') {
     return fallback
@@ -129,11 +137,13 @@ export const openPmtilesFile = async (
       return null
     }
 
+    const scheme = parseScheme(metaData)
+
     return {
       _fileFormat: 'pmtiles',
       _filePath: filePath,
       _pmtilesHandle: handle,
-      _flipY: false,
+      _flipY: scheme === 'tms',
       identifier,
       name: parseName(metaData, identifier),
       description: parseDescription(metaData),

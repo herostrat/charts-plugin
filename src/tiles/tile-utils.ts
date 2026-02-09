@@ -37,6 +37,28 @@ export function tileToBBox(
   return [lon1, lat2, lon2, lat1]
 }
 
+const EARTH_RADIUS = 6378137
+
+const toWebMercator = (lon: number, lat: number): [number, number] => {
+  const clampedLat = Math.max(Math.min(lat, 85.0511), -85.0511)
+  const x = (lon * Math.PI * EARTH_RADIUS) / 180
+  const y =
+    Math.log(Math.tan(Math.PI / 4 + (clampedLat * Math.PI) / 360)) *
+    EARTH_RADIUS
+  return [x, y]
+}
+
+export function tileToBBoxMercator(
+  x: number,
+  y: number,
+  z: number
+): [number, number, number, number] {
+  const [lon1, lat1, lon2, lat2] = tileToBBox(x, y, z)
+  const [minX, minY] = toWebMercator(lon1, lat1)
+  const [maxX, maxY] = toWebMercator(lon2, lat2)
+  return [minX, minY, maxX, maxY]
+}
+
 export interface Tile {
   x: number
   y: number

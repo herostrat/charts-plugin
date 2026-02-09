@@ -43,6 +43,29 @@ export type ImportJob = {
   errors?: unknown
 }
 
+export type ImportCapabilities = {
+  supported?: string[]
+  blocked?: Array<{ type: string; reason?: string; missing?: string[] }>
+  tools?: Record<string, { available?: boolean; details?: string }>
+}
+
+export type OnlineProviderRecord = {
+  id: string
+  name: string
+  description?: string
+  minzoom: number
+  maxzoom: number
+  serverType?: string
+  format?: string
+  url: string
+  proxy?: boolean
+  headers?: string[]
+  layers?: string[]
+  bounds?: number[]
+  createdAt?: string
+  updatedAt?: string
+}
+
 export const cfg = {
   loaded: false,
   entries: [] as ConfigEntry[],
@@ -52,6 +75,8 @@ export const cfg = {
 
 export const state = {
   jobs: [] as ImportJob[],
+  providers: [] as OnlineProviderRecord[],
+  capabilities: null as ImportCapabilities | null,
   focusedKey: null as string | null,
   mapHidden: false,
   filter: 'active',

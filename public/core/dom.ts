@@ -51,9 +51,17 @@ export let uploadStatus = $('#uploadStatus') as HTMLElement | null
 // Stream form
 export let streamUrlEl = $('#streamUrl') as HTMLInputElement | null
 export let streamTypeEl = $('#streamType') as HTMLSelectElement | null
-export let streamDetectedTypeEl = $(
-  '#streamDetectedType'
-) as HTMLSelectElement | null
+export let streamNameEl = $('#streamName') as HTMLInputElement | null
+export let streamDescriptionEl = $('#streamDescription') as HTMLInputElement | null
+export let streamFormatEl = $('#streamFormat') as HTMLSelectElement | null
+export let streamMinZoomEl = $('#streamMinZoom') as HTMLInputElement | null
+export let streamMaxZoomEl = $('#streamMaxZoom') as HTMLInputElement | null
+export let streamBoundsEl = $('#streamBounds') as HTMLInputElement | null
+export let streamLayersEl = $('#streamLayers') as HTMLInputElement | null
+export let streamTileMatrixSetEl =
+  $('#streamTileMatrixSet') as HTMLInputElement | null
+export let streamHeadersEl = $('#streamHeaders') as HTMLTextAreaElement | null
+export let streamProxyEl = $('#streamProxy') as HTMLInputElement | null
 export let streamHeavyWarn = $('#streamHeavyWarn') as HTMLElement | null
 export let streamBtn = $('#streamBtn') as HTMLButtonElement | null
 export let streamStatus = $('#streamStatus') as HTMLElement | null
@@ -65,6 +73,8 @@ export let liveStateEl = $('#liveState') as HTMLElement | null
 // Imports UI
 export let importsListEl = $('#importsList') as HTMLElement | null
 export let importsEmptyEl = $('#importsEmpty') as HTMLElement | null
+export let providersListEl = $('#providersList') as HTMLElement | null
+export let providersEmptyEl = $('#providersEmpty') as HTMLElement | null
 export let errorBanner = $('#errorBanner') as HTMLElement | null
 export let kpiActive = $('#kpiActive') as HTMLElement | null
 export let kpiAvailable = $('#kpiAvailable') as HTMLElement | null
@@ -143,7 +153,17 @@ export const refreshDom = () => {
 
   streamUrlEl = $('#streamUrl') as HTMLInputElement | null
   streamTypeEl = $('#streamType') as HTMLSelectElement | null
-  streamDetectedTypeEl = $('#streamDetectedType') as HTMLSelectElement | null
+  streamNameEl = $('#streamName') as HTMLInputElement | null
+  streamDescriptionEl = $('#streamDescription') as HTMLInputElement | null
+  streamFormatEl = $('#streamFormat') as HTMLSelectElement | null
+  streamMinZoomEl = $('#streamMinZoom') as HTMLInputElement | null
+  streamMaxZoomEl = $('#streamMaxZoom') as HTMLInputElement | null
+  streamBoundsEl = $('#streamBounds') as HTMLInputElement | null
+  streamLayersEl = $('#streamLayers') as HTMLInputElement | null
+  streamTileMatrixSetEl =
+    $('#streamTileMatrixSet') as HTMLInputElement | null
+  streamHeadersEl = $('#streamHeaders') as HTMLTextAreaElement | null
+  streamProxyEl = $('#streamProxy') as HTMLInputElement | null
   streamHeavyWarn = $('#streamHeavyWarn') as HTMLElement | null
   streamBtn = $('#streamBtn') as HTMLButtonElement | null
   streamStatus = $('#streamStatus') as HTMLElement | null
@@ -153,6 +173,8 @@ export const refreshDom = () => {
 
   importsListEl = $('#importsList') as HTMLElement | null
   importsEmptyEl = $('#importsEmpty') as HTMLElement | null
+  providersListEl = $('#providersList') as HTMLElement | null
+  providersEmptyEl = $('#providersEmpty') as HTMLElement | null
   errorBanner = $('#errorBanner') as HTMLElement | null
   kpiActive = $('#kpiActive') as HTMLElement | null
   kpiAvailable = $('#kpiAvailable') as HTMLElement | null

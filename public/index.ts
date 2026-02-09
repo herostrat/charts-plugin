@@ -22,6 +22,8 @@ import { initImports, refreshJobs, renderImports } from './features/imports.js'
 import { initDetails, closeDetails, openDetails } from './features/details.js'
 import { initConfig } from './features/config.js'
 import { initBboxPicker, closeBboxPicker } from './features/bbox.js'
+import { initProviders, refreshProviders } from './features/providers.js'
+import { loadCapabilities } from './features/capabilities.js'
 import {
   initMap,
   renderMap,
@@ -70,7 +72,8 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
 
   initDownload({ refreshJobs, isSseConnected })
   initUpload({ refreshJobs, isSseConnected })
-  initStream({ refreshJobs, isSseConnected })
+  initStream({ refreshProviders })
+  initProviders()
 
   const isSourcesOpen = () =>
     !sourcesPopup?.classList.contains('is-hidden')
@@ -137,6 +140,13 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
   updateUploadState()
   updateStreamState()
 
+  void loadCapabilities().finally(() => {
+    updateDownloadState()
+    updateUploadState()
+    updateStreamState()
+  })
+
   refreshJobs()
+  refreshProviders()
   connectSse()
 })()

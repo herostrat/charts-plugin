@@ -3,7 +3,13 @@ import kebabCase from 'lodash/kebabCase.js'
 import type { OnlineChartProvider } from '../../types'
 
 export function convertOnlineProviderConfig(provider: OnlineChartProvider) {
-  const id = kebabCase(deburr(provider.name))
+  const nameId = kebabCase(deburr(provider.name))
+  const id = provider.id && provider.id.trim().length > 0 ? provider.id : nameId
+
+  const bounds =
+    Array.isArray(provider.bounds) && provider.bounds.length === 4
+      ? provider.bounds
+      : [-180, -90, 180, 90]
 
   const parseHeaders = (
     arr: string[] | undefined
@@ -34,7 +40,7 @@ export function convertOnlineProviderConfig(provider: OnlineChartProvider) {
     identifier: id,
     name: provider.name,
     description: provider.description,
-    bounds: [-180, -90, 180, 90],
+    bounds,
     minzoom: Math.min(Math.max(1, provider.minzoom), 24),
     maxzoom: Math.min(Math.max(1, provider.maxzoom), 24),
     format: provider.format,

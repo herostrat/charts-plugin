@@ -108,6 +108,14 @@
         <div id="errorBanner" class="banner is-hidden" role="alert"></div>
 
         <div class="database__body">
+          <div class="dbSection">
+            <div class="sectionTitle">Online providers</div>
+            <div id="providersEmpty" class="empty is-hidden">
+              No online providers yet. Register a streaming source.
+            </div>
+            <div id="providersList" class="imports"></div>
+          </div>
+
           <div id="importsEmpty" class="empty is-hidden">
             No items yet. Register/import something in Sources.
           </div>
@@ -311,6 +319,26 @@
           <section class="panel" data-panel="stream">
             <div class="form">
               <label class="field">
+                <span>Name</span>
+                <input
+                  id="streamName"
+                  class="input"
+                  type="text"
+                  placeholder="WMS: My Harbor Charts"
+                />
+              </label>
+
+              <label class="field">
+                <span>Description (optional)</span>
+                <input
+                  id="streamDescription"
+                  class="input"
+                  type="text"
+                  placeholder="Short description shown in the catalog"
+                />
+              </label>
+
+              <label class="field">
                 <span>Stream URL</span>
                 <input
                   id="streamUrl"
@@ -330,14 +358,81 @@
               </label>
 
               <label class="field">
-                <span>Hint: detected type (override)</span>
-                <select id="streamDetectedType" class="select">
-                  <option value="unknown">unknown</option>
-                  <option value="geotiff">geotiff</option>
-                  <option value="s57">s57</option>
-                  <option value="mbtiles">mbtiles</option>
-                  <option value="pmtiles">pmtiles</option>
+                <span>Format</span>
+                <select id="streamFormat" class="select">
+                  <option value="png">png</option>
+                  <option value="jpg">jpg</option>
                 </select>
+              </label>
+
+              <div class="field__row">
+                <label class="field">
+                  <span>Min zoom</span>
+                  <input
+                    id="streamMinZoom"
+                    class="input"
+                    type="number"
+                    min="1"
+                    max="24"
+                    value="1"
+                  />
+                </label>
+                <label class="field">
+                  <span>Max zoom</span>
+                  <input
+                    id="streamMaxZoom"
+                    class="input"
+                    type="number"
+                    min="1"
+                    max="24"
+                    value="15"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Bounds (optional)</span>
+                <input
+                  id="streamBounds"
+                  class="input"
+                  type="text"
+                  placeholder="minLon,minLat,maxLon,maxLat"
+                />
+              </label>
+
+              <label class="field">
+                <span>Layers (comma-separated)</span>
+                <input
+                  id="streamLayers"
+                  class="input"
+                  type="text"
+                  placeholder="layer1,layer2"
+                />
+              </label>
+
+              <label class="field">
+                <span>WMTS TileMatrixSet (optional)</span>
+                <input
+                  id="streamTileMatrixSet"
+                  class="input"
+                  type="text"
+                  placeholder="GoogleMapsCompatible"
+                />
+              </label>
+
+              <label class="field">
+                <span>Headers (optional, one per line)</span>
+                <textarea
+                  id="streamHeaders"
+                  class="input"
+                  rows="3"
+                  placeholder="Authorization: Bearer …"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span>Use proxy + cache</span>
+                <input id="streamProxy" type="checkbox" checked />
               </label>
 
               <div id="streamHeavyWarn" class="status is-warn is-hidden">

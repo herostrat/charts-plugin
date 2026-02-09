@@ -1,6 +1,6 @@
 import type { PMTiles } from 'pmtiles'
 
-type MapSourceType =
+export type MapSourceType =
   | 'tilelayer'
   | 'S-57'
   | 'WMS'
@@ -47,11 +47,14 @@ export interface ChartProvider {
   style?: string
   layers?: string[]
   proxy?: boolean
+  sidecar?: boolean
+  sidecarUrl?: string
   remoteUrl?: string
   headers?: { [key: string]: string }
 }
 
 export interface OnlineChartProvider {
+  id?: string
   name: string
   description: string
   minzoom: number
@@ -63,4 +66,5 @@ export interface OnlineChartProvider {
   headers?: string[]
   style?: string
   layers?: string[]
+  bounds?: number[]
 }
