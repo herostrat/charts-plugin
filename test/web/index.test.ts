@@ -167,14 +167,19 @@ describe('Web UI bootstrap', () => {
       '#streamUrl'
     ) as HTMLInputElement
     const streamType = dom.window.document.querySelector(
-      '#streamDetectedType'
+      '#streamType'
     ) as HTMLSelectElement
+    const streamName = dom.window.document.querySelector(
+      '#streamName'
+    ) as HTMLInputElement
     const streamBtn = dom.window.document.querySelector(
       '#streamBtn'
     ) as HTMLButtonElement
 
+    streamName.value = 'Example stream'
     streamUrl.value = 'https://example.com/service'
-    streamType.value = 'mbtiles'
+    streamType.value = 'cog'
+    streamName.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
     streamUrl.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
     streamType.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
 

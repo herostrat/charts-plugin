@@ -6,6 +6,10 @@ import { request as chaiRequest } from 'chai-http'
 import { fileURLToPath } from 'url'
 import plugin from '../../src/index.ts'
 import { createTestServer } from '../helpers/test-server.mjs'
+import {
+  createChartsRoot,
+  removeChartsRoot
+} from '../helpers/charts-root.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -22,6 +26,14 @@ const fixturesRoot = path.resolve(__dirname, '..', 'fixtures')
 describe('Charts API & Tile Provider', () => {
   let pluginInstance
   let testServer
+  let chartsRoots = []
+
+  const startWithFixtures = async (fixtures, extraConfig = {}) => {
+    const chartsRoot = createChartsRoot({ fixturesRoot, fixtures })
+    chartsRoots.push(chartsRoot)
+    await pluginInstance.start({ chartsRoot, ...extraConfig })
+    return chartsRoot
+  }
 
   beforeEach(async () => {
     const { app, server } = await createDefaultApp()
@@ -30,6 +42,8 @@ describe('Charts API & Tile Provider', () => {
   })
 
   afterEach((done) => {
+    chartsRoots.forEach(removeChartsRoot)
+    chartsRoots = []
     if (testServer) {
       testServer.close(() => done())
     } else {
@@ -39,14 +53,7 @@ describe('Charts API & Tile Provider', () => {
 
   describe('GET /signalk/v1/api/resources/charts', () => {
     it('returns all charts for default path', () => {
-      return pluginInstance
-        .start({
-          chartPaths: [
-            path.resolve(fixturesRoot, 'mbtiles'),
-            path.resolve(fixturesRoot, 'directory'),
-            path.resolve(fixturesRoot, 'tms')
-          ]
-        })
+      return startWithFixtures(['mbtiles', 'directory', 'tms'])
         .then(() => get(testServer, '/signalk/v1/api/resources/charts'))
         .then((result) => {
           expect(result.status).to.equal(200)
@@ -55,14 +62,7 @@ describe('Charts API & Tile Provider', () => {
     })
 
     it('handle canonical paths', () => {
-      return pluginInstance
-        .start({
-          chartPaths: [
-            path.resolve(fixturesRoot, 'mbtiles'),
-            path.resolve(fixturesRoot, 'directory'),
-            path.resolve(fixturesRoot, 'tms')
-          ]
-        })
+      return startWithFixtures(['mbtiles', 'directory', 'tms'])
         .then(() => get(testServer, '/signalk/v1/api/resources/charts'))
         .then((result) => {
           expect(result.status).to.equal(200)
@@ -71,15 +71,7 @@ describe('Charts API & Tile Provider', () => {
     })
 
     it('returns all charts for multiple paths', () => {
-      return pluginInstance
-        .start({
-          // Fixed: pluginInstance instead of plugin
-          chartPaths: [
-            path.resolve(fixturesRoot, 'mbtiles'),
-            path.resolve(fixturesRoot, 'directory'),
-            path.resolve(fixturesRoot, 'tms')
-          ]
-        })
+      return startWithFixtures(['mbtiles', 'directory', 'tms'])
         .then(() => get(testServer, '/signalk/v1/api/resources/charts'))
         .then((result) => {
           expect(result.status).to.equal(200)
@@ -90,8 +82,7 @@ describe('Charts API & Tile Provider', () => {
 
     it('returns empty charts for custom empty path', () => {
       const emptyPath = path.resolve(__dirname, '..', '..', 'src')
-      return pluginInstance
-        .start({ chartPaths: [emptyPath] })
+      return startWithFixtures([])
         .then(() => get(testServer, '/signalk/v1/api/resources/charts'))
         .then((result) => {
           expect(result.body).to.deep.equal({})
@@ -99,19 +90,17 @@ describe('Charts API & Tile Provider', () => {
     })
 
     it('returns online chart providers', () => {
-      return pluginInstance
-        .start({
-          chartPaths: [path.resolve(fixturesRoot, 'mbtiles')],
-          onlineChartProviders: [
-            {
-              name: 'Test Name',
-              minzoom: 2,
-              maxzoom: 15,
-              format: 'jpg',
-              url: 'https://example.com'
-            }
-          ]
-        })
+      return startWithFixtures(['mbtiles'], {
+        onlineChartProviders: [
+          {
+            name: 'Test Name',
+            minzoom: 2,
+            maxzoom: 15,
+            format: 'jpg',
+            url: 'https://example.com'
+          }
+        ]
+      })
         .then(() => get(testServer, '/signalk/v1/api/resources/charts'))
         .then((result) => {
           const onlineChart = result.body['test-name']
@@ -128,8 +117,7 @@ describe('Charts API & Tile Provider', () => {
 
     it('returns one chart', () => {
       const identifier = 'test'
-      return pluginInstance
-        .start({ chartPaths: [path.resolve(fixturesRoot, 'mbtiles')] })
+      return startWithFixtures(['mbtiles'])
         .then(() =>
           get(testServer, `/signalk/v1/api/resources/charts/${identifier}`)
         )
@@ -139,8 +127,7 @@ describe('Charts API & Tile Provider', () => {
     })
 
     it('returns 404 for unknown chart', () => {
-      return pluginInstance
-        .start({ chartPaths: [path.resolve(fixturesRoot, 'mbtiles')] })
+      return startWithFixtures(['mbtiles'])
         .then(() => get(testServer, `/signalk/v1/api/resources/charts/foo`))
         .catch((e) => e.response)
         .then((result) => {
@@ -151,8 +138,7 @@ describe('Charts API & Tile Provider', () => {
 
   describe('GET /signalk/chart-tiles/:identifier/:z/:x/:y', () => {
     it('returns correct tile from MBTiles file', () => {
-      return pluginInstance
-        .start({ chartPaths: [path.resolve(fixturesRoot, 'mbtiles')] })
+      return startWithFixtures(['mbtiles'])
         .then(() => get(testServer, '/signalk/chart-tiles/test/4/5/6'))
         .then((response) => {
           expectTileResponse(
@@ -164,8 +150,7 @@ describe('Charts API & Tile Provider', () => {
     })
 
     it('returns correct tile from directory', () => {
-      return pluginInstance
-        .start({ chartPaths: [path.resolve(fixturesRoot, 'directory')] })
+      return startWithFixtures(['directory'])
         .then(() =>
           get(testServer, '/signalk/chart-tiles/unpacked-tiles/4/4/6')
         )
@@ -179,8 +164,7 @@ describe('Charts API & Tile Provider', () => {
     })
 
     it('returns correct tile from TMS directory', () => {
-      return pluginInstance
-        .start({ chartPaths: [path.resolve(fixturesRoot, 'tms')] })
+      return startWithFixtures(['tms'])
         .then(() => get(testServer, '/signalk/chart-tiles/tms-tiles/5/17/10'))
         .then((response) => {
           // In TMS, Y is often inverted; this test expects 21
@@ -189,8 +173,7 @@ describe('Charts API & Tile Provider', () => {
     })
 
     it('returns 404 for missing tile', () => {
-      return pluginInstance
-        .start({ chartPaths: [path.resolve(fixturesRoot, 'tms')] })
+      return startWithFixtures(['tms'])
         .then(() => get(testServer, '/signalk/chart-tiles/tms-tiles/5/55/10'))
         .catch((e) => e.response)
         .then((response) => {

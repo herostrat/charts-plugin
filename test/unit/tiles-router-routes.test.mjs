@@ -1,8 +1,6 @@
 import { expect } from 'chai'
 import { request as chaiRequest } from 'chai-http'
 import { registerTileRoutes } from '../../src/tiles/routes.ts'
-import { ChartSeedingManager } from '../../src/cache/chart-downloader.ts'
-import { ChartDownloader } from '../../src/cache/chart-downloader.ts'
 import { createTestServer } from '../helpers/test-server.mjs'
 
 const makeProvider = (overrides = {}) => ({
@@ -32,7 +30,6 @@ describe('registerTileRoutes handlers', () => {
 
   afterEach(() => {
     server.close()
-    ChartSeedingManager.ActiveJobs = {}
   })
 
   it('returns 404 for invalid tile params', async () => {
@@ -81,13 +78,19 @@ describe('registerTileRoutes handlers', () => {
   })
 
   it('uses proxy tile fetch for proxy providers', async () => {
-    const original = ChartDownloader.getTileFromCacheOrRemote
-    ChartDownloader.getTileFromCacheOrRemote = async () => Buffer.from('proxy')
+    const originalFetch = global.fetch
+    global.fetch = async () => ({
+      ok: true,
+      arrayBuffer: async () => Uint8Array.from([1, 2, 3]).buffer
+    })
 
     registerTileRoutes({
       app,
       getProviders: () => ({
-        test: makeProvider({ proxy: true, _fileFormat: 'directory' })
+        test: makeProvider({
+          proxy: true,
+          remoteUrl: 'https://example.com/{z}/{x}/{y}'
+        })
       }),
       getCachePath: () => '/tmp'
     })
@@ -98,94 +101,6 @@ describe('registerTileRoutes handlers', () => {
 
     expect(response.status).to.equal(200)
 
-    ChartDownloader.getTileFromCacheOrRemote = original
-  })
-
-  it('handles cache job creation validation', async () => {
-    registerTileRoutes({
-      app,
-      getProviders: () => ({
-        test: makeProvider({ _fileFormat: 'directory' })
-      }),
-      getCachePath: () => '/tmp'
-    })
-
-    const missingMaxZoom = await chaiRequest
-      .execute(baseUrl)
-      .post('/signalk/chart-tiles/cache/test')
-      .send({})
-      .catch((e) => e.response)
-    expect(missingMaxZoom.status).to.equal(400)
-
-    const originalCreateJob = ChartSeedingManager.createJob
-    let called = false
-    ChartSeedingManager.createJob = async () => {
-      called = true
-    }
-
-    const okResponse = await chaiRequest
-      .execute(baseUrl)
-      .post('/signalk/chart-tiles/cache/test')
-      .send({ maxZoom: '5' })
-    expect(okResponse.status).to.equal(200)
-    expect(called).to.equal(true)
-
-    ChartSeedingManager.createJob = originalCreateJob
-  })
-
-  it('handles cache job actions', async () => {
-    registerTileRoutes({
-      app,
-      getProviders: () => ({
-        test: makeProvider({ _fileFormat: 'directory' })
-      }),
-      getCachePath: () => '/tmp'
-    })
-
-    ChartSeedingManager.ActiveJobs = {
-      1: {
-        info: () => ({ id: 1 }),
-        seedCache: () => undefined,
-        cancelJob: () => undefined,
-        deleteCache: () => undefined
-      }
-    }
-
-    const listResponse = await chaiRequest
-      .execute(baseUrl)
-      .get('/signalk/chart-tiles/cache/jobs')
-    expect(listResponse.status).to.equal(200)
-    expect(listResponse.body).to.be.an('array')
-
-    const startResponse = await chaiRequest
-      .execute(baseUrl)
-      .post('/signalk/chart-tiles/cache/jobs/1')
-      .send({ action: 'start' })
-    expect(startResponse.status).to.equal(200)
-
-    const stopResponse = await chaiRequest
-      .execute(baseUrl)
-      .post('/signalk/chart-tiles/cache/jobs/1')
-      .send({ action: 'stop' })
-    expect(stopResponse.status).to.equal(200)
-
-    const deleteResponse = await chaiRequest
-      .execute(baseUrl)
-      .post('/signalk/chart-tiles/cache/jobs/1')
-      .send({ action: 'delete' })
-    expect(deleteResponse.status).to.equal(200)
-
-    const removeResponse = await chaiRequest
-      .execute(baseUrl)
-      .post('/signalk/chart-tiles/cache/jobs/1')
-      .send({ action: 'remove' })
-    expect(removeResponse.status).to.equal(200)
-
-    const invalidResponse = await chaiRequest
-      .execute(baseUrl)
-      .post('/signalk/chart-tiles/cache/jobs/1')
-      .send({ action: 'invalid' })
-      .catch((e) => e.response)
-    expect(invalidResponse.status).to.equal(404)
+    global.fetch = originalFetch
   })
 })

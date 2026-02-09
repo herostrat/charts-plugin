@@ -571,7 +571,7 @@ const buildVectorCatalogMap = (
 
 const ensureDirectoryExists = (path: string) => {
   if (!fs.existsSync(path)) {
-    fs.mkdirSync(path)
+    fs.mkdirSync(path, { recursive: true })
   }
 }
 

@@ -30,6 +30,7 @@ describe('registerStyleRoutes', () => {
       app,
       getProviders: () => providers,
       getCatalogChoice: () => 'nautical',
+      getThemeKey: () => 'signalk_day',
       defaultCatalogId: 'nautical'
     })
 
@@ -60,6 +61,7 @@ describe('registerStyleRoutes', () => {
       app,
       getProviders: () => providers,
       getCatalogChoice: () => 'none',
+      getThemeKey: () => 'signalk_day',
       defaultCatalogId: 'nautical'
     })
 

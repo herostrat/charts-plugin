@@ -13,6 +13,10 @@ import {
   updateImportJobState
 } from '../../src/imports/store.ts'
 import { createTestServer } from '../helpers/test-server.mjs'
+import {
+  createChartsRoot,
+  removeChartsRoot
+} from '../helpers/charts-root.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -124,19 +128,22 @@ const openSse = (server, location) => {
 describe('Imports Web API', () => {
   let pluginInstance
   let testServer
+  let chartsRoots = []
 
   beforeEach(async () => {
     resetImportStore()
     const { app, server } = await createApp()
     pluginInstance = plugin(app)
     testServer = server
-    await pluginInstance.start({
-      chartPaths: [path.resolve(fixturesRoot, 'mbtiles')]
-    })
+    const chartsRoot = createChartsRoot({ fixturesRoot })
+    chartsRoots.push(chartsRoot)
+    await pluginInstance.start({ chartsRoot })
   })
 
   afterEach((done) => {
     resetImportStore()
+    chartsRoots.forEach(removeChartsRoot)
+    chartsRoots = []
     if (testServer) {
       testServer.close(() => done())
     } else {
@@ -403,21 +410,21 @@ describe('Imports Web API', () => {
         expect(res.status).to.equal(200)
         expect(res.body).to.be.an('array')
         const keys = res.body.map((entry) => entry.key)
-        expect(keys).to.include('chartPaths')
-        expect(keys).to.include('cachePath')
+        expect(keys).to.include('chartsRoot')
+        expect(keys).to.include('vectorTheme')
       })
     })
 
     it('applies config changes', () => {
       return putRequest(testServer, '/@signalk/charts-plugin/imports/config', {
         changes: [
-          { key: 'chartPaths', value: '/charts/one, /charts/two' },
-          { key: 'cachePath', value: '/tmp/cache' }
+          { key: 'chartsRoot', value: '/tmp/charts-root' },
+          { key: 'vectorTheme', value: 's52_day' }
         ]
       }).then((res) => {
         expect(res.status).to.equal(200)
-        const entry = res.body.find((item) => item.key === 'cachePath')
-        expect(entry.value).to.equal('/tmp/cache')
+        const entry = res.body.find((item) => item.key === 'vectorTheme')
+        expect(entry.value).to.equal('s52_day')
       })
     })
   })

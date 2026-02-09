@@ -7,7 +7,7 @@ import { serveTileFromDirectory } from '../../src/tiles/sources/directory.ts'
 import { serveTileFromMbtiles } from '../../src/tiles/sources/mbtiles.ts'
 import { serveTileFromPmtiles } from '../../src/tiles/sources/pmtiles.ts'
 import { serveTileFromGeotiff } from '../../src/tiles/sources/geotiff.ts'
-import { ChartDownloader } from '../../src/cache/chart-downloader.ts'
+import { MbtilesTileCache } from '../../src/cache/tile-cache-mbtiles.ts'
 
 class MockResponse {
   constructor() {
@@ -74,10 +74,13 @@ const makeProvider = (overrides = {}) => ({
 describe('tile source handlers', () => {
   it('serves tiles from cache or remote (cache hit)', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
-    const provider = makeProvider({ name: 'cache-provider' })
-    const tilePath = path.join(tmpDir, provider.name, '1', '2', '3.png')
-    fs.mkdirSync(path.dirname(tilePath), { recursive: true })
-    fs.writeFileSync(tilePath, Buffer.from('tile-data'))
+    const provider = makeProvider({ identifier: 'cache-provider' })
+    const cache = new MbtilesTileCache(tmpDir, provider.identifier)
+    await cache.set(
+      { sourceId: provider.identifier, z: 1, x: 2, y: 3, format: 'png' },
+      { data: Buffer.from('tile-data') }
+    )
+    await cache.close()
 
     const res = new MockResponse()
     await serveTileFromCacheOrRemote(res, tmpDir, provider, 1, 2, 3)
@@ -89,15 +92,20 @@ describe('tile source handlers', () => {
   })
 
   it('returns 502 when proxy tile fetch fails', async () => {
-    const original = ChartDownloader.getTileFromCacheOrRemote
-    ChartDownloader.getTileFromCacheOrRemote = async () => null
+    const originalFetch = global.fetch
+    global.fetch = async () => ({ ok: false })
 
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'charts-cache-'))
     const res = new MockResponse()
-    await serveTileFromCacheOrRemote(res, '/tmp', makeProvider(), 1, 1, 1)
+    const provider = makeProvider({
+      remoteUrl: 'https://example.com/{z}/{x}/{y}'
+    })
+    await serveTileFromCacheOrRemote(res, tmpDir, provider, 1, 1, 1)
 
     expect(res.statusCode).to.equal(502)
 
-    ChartDownloader.getTileFromCacheOrRemote = original
+    global.fetch = originalFetch
+    fs.rmSync(tmpDir, { recursive: true, force: true })
   })
 
   it('serves tiles from directory with flipY', () => {

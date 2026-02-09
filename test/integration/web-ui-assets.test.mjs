@@ -4,6 +4,10 @@ import { request as chaiRequest } from 'chai-http'
 import { fileURLToPath } from 'url'
 import plugin from '../../src/index.ts'
 import { createTestServer } from '../helpers/test-server.mjs'
+import {
+  createChartsRoot,
+  removeChartsRoot
+} from '../helpers/charts-root.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -19,17 +23,20 @@ const getRequest = (server, location) => {
 describe('Web UI assets', () => {
   let pluginInstance
   let testServer
+  let chartsRoots = []
 
   beforeEach(async () => {
     const { app, server } = await createApp()
     pluginInstance = plugin(app)
     testServer = server
-    await pluginInstance.start({
-      chartPaths: [path.resolve(fixturesRoot, 'mbtiles')]
-    })
+    const chartsRoot = createChartsRoot({ fixturesRoot })
+    chartsRoots.push(chartsRoot)
+    await pluginInstance.start({ chartsRoot })
   })
 
   afterEach((done) => {
+    chartsRoots.forEach(removeChartsRoot)
+    chartsRoots = []
     if (testServer) {
       testServer.close(() => done())
     } else {
@@ -42,7 +49,7 @@ describe('Web UI assets', () => {
       (res) => {
         expect(res.status).to.equal(200)
         expect(res.headers['content-type']).to.match(/text\/html/)
-        expect(res.text).to.include('<title>Chart Imports</title>')
+        expect(res.text).to.include('<title>Chart Database</title>')
       }
     )
   })
