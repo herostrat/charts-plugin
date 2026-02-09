@@ -78,29 +78,8 @@ const installGlobals = (dom: JSDOM, fetchCalls: FetchCall[]) => {
 
   globalDom.EventSource = FakeEventSource as unknown as typeof EventSource
 
-  const now = new Date().toISOString()
-  const fsEntries = [
-    {
-      name: 'sample.tif',
-      path: '/charts/sample.tif',
-      size: 1024,
-      mtime: now,
-      type: 'file'
-    }
-  ]
-
   globalDom.fetch = (async (url: string, init?: RequestInit) => {
     fetchCalls.push({ url: String(url), method: String(init?.method || 'GET') })
-
-    if (String(url).includes('/@signalk/charts-plugin/imports/fs')) {
-      return {
-        ok: true,
-        status: 200,
-        statusText: 'OK',
-        headers: new window.Headers({ 'content-type': 'application/json' }),
-        json: async () => ({ path: '/', parent: null, entries: fsEntries })
-      } as Response
-    }
 
     if (String(url).endsWith('/@signalk/charts-plugin/imports')) {
       return {
@@ -149,37 +128,6 @@ describe('Web UI bootstrap', () => {
     const mapEl = dom.window.document.querySelector('#leafletMap')
     assert.ok(mapEl)
     assert.ok(mapEl?.textContent?.includes('Leaflet not found'))
-    assertCalls(calls)
-  })
-
-  it('enables register after selecting a file', async () => {
-    const dom = createDom()
-    const calls: FetchCall[] = []
-    installGlobals(dom, calls)
-
-    const moduleUrl = `${pathToFileURL(uiScriptPath).href}?t=${Date.now()}`
-    await import(moduleUrl)
-    await flushPromises()
-
-    const selectButton = dom.window.document.querySelector(
-      'button[data-select]'
-    ) as HTMLButtonElement
-    assert.ok(selectButton)
-    selectButton.click()
-
-    const selected = dom.window.document.querySelector(
-      '#selectedFile'
-    ) as HTMLInputElement
-    const registerBtn = dom.window.document.querySelector(
-      '#registerBtn'
-    ) as HTMLButtonElement
-    const status = dom.window.document.querySelector(
-      '#registerStatus'
-    ) as HTMLElement
-
-    assert.equal(selected.value, 'sample.tif')
-    assert.equal(registerBtn.disabled, false)
-    assert.ok(status.textContent?.includes('Ready to register'))
     assertCalls(calls)
   })
 

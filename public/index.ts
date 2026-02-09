@@ -10,14 +10,8 @@ import { state } from './core/state.js'
 import {
   detectTypeFromName,
   boundsToText,
-  isSupportedType,
-  requiresMeta
+  isSupportedType
 } from './core/utils.js'
-import {
-  initLocal,
-  loadDir,
-  updateLocalRegisterState
-} from './features/local.js'
 import { initDownload, updateDownloadState } from './features/download.js'
 import { initUpload, updateUploadState } from './features/upload.js'
 import { initStream, updateStreamState } from './features/stream.js'
@@ -48,7 +42,7 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
   }
   sourceTabBtns.forEach((b) =>
     b.addEventListener('click', () =>
-      setActiveSourceTab(b.dataset.tab || 'register')
+      setActiveSourceTab(b.dataset.tab || 'download')
     )
   )
 
@@ -60,7 +54,6 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
   initImports({ renderMap, focusBounds, openDetails, isSseConnected })
   initSse({ renderImports })
 
-  initLocal({ refreshJobs, isSseConnected })
   initDownload({ refreshJobs, isSseConnected })
   initUpload({ refreshJobs, isSseConnected })
   initStream({ refreshJobs, isSseConnected })
@@ -100,7 +93,6 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
       'detectTypeFromName mbtiles'
     )
     assert(isSupportedType('pmtiles') === true, 'isSupportedType pmtiles')
-    assert(requiresMeta('folder') === true, 'requiresMeta folder')
     assert(boundsToText([0, 0, 1, 1]).includes('0.0000'), 'boundsToText format')
   }
 
@@ -109,10 +101,7 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
   setMapHidden(false)
   resetView()
 
-  setActiveSourceTab('register')
-
-  loadDir('/')
-  updateLocalRegisterState()
+  setActiveSourceTab('download')
   updateDownloadState()
   updateUploadState()
   updateStreamState()

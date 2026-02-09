@@ -43,13 +43,6 @@ export type ImportJob = {
   errors?: unknown
 }
 
-export type LocalSelection = {
-  name: string
-  path: string
-  size?: number
-  isDir: boolean
-}
-
 export const cfg = {
   loaded: false,
   entries: [] as ConfigEntry[],
@@ -58,8 +51,6 @@ export const cfg = {
 }
 
 export const state = {
-  fsPath: '/',
-  fsParent: null as string | null,
   jobs: [] as ImportJob[],
   focusedKey: null as string | null,
   mapHidden: false,
@@ -70,7 +61,6 @@ export const state = {
     lastEventAt: 0,
     watchdog: null as number | null
   },
-  local: { selected: null as LocalSelection | null, type: 'unknown' },
   download: { typeOverridden: false },
   upload: { typeOverridden: false }
 }

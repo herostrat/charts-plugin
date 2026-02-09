@@ -81,7 +81,7 @@ A proxy for online charts can be created using the "Proxy through SignalK server
 
 ### Vector sprites demo
 
-This repo includes placeholder SVG icons under `scripts/assets/charts/icons` and a sprite build script.
+This repo includes placeholder SVG icons under `assets/sprites/icons` and a sprite build script.
 To generate the sprite sheets used by the vector Mapbox style:
 
 ```bash
@@ -89,15 +89,15 @@ npm run build:sprites
 ```
 
 Generated files:
-- `plugin/public/styles/sprites/s52.png`
-- `plugin/public/styles/sprites/s52@2x.png`
-- `plugin/public/styles/sprites/s52.json`
-- `plugin/public/styles/sprites/s52@2x.json`
+- `plugin/public/styles/sprites/nautical.png`
+- `plugin/public/styles/sprites/nautical@2x.png`
+- `plugin/public/styles/sprites/nautical.json`
+- `plugin/public/styles/sprites/nautical@2x.json`
 
 The vector style endpoint uses this sprite base URL:
 
 ```
-/@signalk/charts-plugin/styles/sprites/s52
+/@signalk/charts-plugin/styles/sprites/nautical
 ```
 
 ### Vector data + sprite distribution
@@ -106,10 +106,10 @@ For vector charts (PMTiles or MBTiles with `format: "pbf"`), the plugin serves:
 
 - Tile data: `/signalk/chart-tiles/${identifier}/{z}/{x}/{y}`
 - Style JSON: `/signalk/chart-style/${identifier}`
-- Sprite sheets: `/@signalk/charts-plugin/styles/sprites/s52` (+ `@2x`)
+- Sprite sheets: `/@signalk/charts-plugin/styles/sprites/nautical` (+ `@2x`)
 
 This means a client like Freeboard can render vector tiles with the bundled
-S-52-oriented style and the sprite atlas without extra hosting.
+nautical style and the sprite atlas without extra hosting.
 
 Publicly available MBTiles charts can be found from:
 - [NOAA Nautical charts](https://distribution.charts.noaa.gov/ncds/index.html)

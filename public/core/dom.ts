@@ -13,22 +13,6 @@ export let sourcePanels = getNodeList<HTMLElement>('[data-panel]')
 // Filters (left)
 export let filterBtns = getNodeList<HTMLElement>('[data-filter]')
 
-// Local FS
-export let fsListEl = $('#fsList') as HTMLUListElement | null
-export let currentPathEl = $('#currentPath') as HTMLElement | null
-export let upBtn = $('#upBtn') as HTMLButtonElement | null
-export let pathInput = $('#pathInput') as HTMLInputElement | null
-export let goBtn = $('#goBtn') as HTMLButtonElement | null
-
-// Local form
-export let selectedFileEl = $('#selectedFile') as HTMLInputElement | null
-export let localTypeEl = $('#localType') as HTMLSelectElement | null
-export let localMetaBox = $('#localMetaBox') as HTMLElement | null
-export let localMetaStatus = $('#localMetaStatus') as HTMLElement | null
-export let localHeavyWarn = $('#localHeavyWarn') as HTMLElement | null
-export let registerBtn = $('#registerBtn') as HTMLButtonElement | null
-export let registerStatus = $('#registerStatus') as HTMLElement | null
-
 // Download form
 export let downloadUrlEl = $('#downloadUrl') as HTMLInputElement | null
 export let downloadTypeEl = $('#downloadType') as HTMLSelectElement | null
@@ -53,8 +37,6 @@ export let downloadUrlHome = $('#downloadUrlHome') as HTMLElement | null
 export let downloadUrlRow = $('#downloadUrlRow') as HTMLElement | null
 export let downloadBboxEl = $('#downloadBbox') as HTMLInputElement | null
 export let downloadBboxPick = $('#downloadBboxPick') as HTMLButtonElement | null
-export let downloadMetaBox = $('#downloadMetaBox') as HTMLElement | null
-export let dlMetaStatus = $('#dlMetaStatus') as HTMLElement | null
 export let downloadHeavyWarn = $('#downloadHeavyWarn') as HTMLElement | null
 export let downloadBtn = $('#downloadBtn') as HTMLButtonElement | null
 export let downloadStatus = $('#downloadStatus') as HTMLElement | null
@@ -62,8 +44,6 @@ export let downloadStatus = $('#downloadStatus') as HTMLElement | null
 // Upload form
 export let uploadFileEl = $('#uploadFile') as HTMLInputElement | null
 export let uploadTypeEl = $('#uploadType') as HTMLSelectElement | null
-export let uploadMetaBox = $('#uploadMetaBox') as HTMLElement | null
-export let uploadMetaStatus = $('#upMetaStatus') as HTMLElement | null
 export let uploadHeavyWarn = $('#uploadHeavyWarn') as HTMLElement | null
 export let uploadBtn = $('#uploadBtn') as HTMLButtonElement | null
 export let uploadStatus = $('#uploadStatus') as HTMLElement | null
@@ -74,8 +54,6 @@ export let streamTypeEl = $('#streamType') as HTMLSelectElement | null
 export let streamDetectedTypeEl = $(
   '#streamDetectedType'
 ) as HTMLSelectElement | null
-export let streamMetaBox = $('#streamMetaBox') as HTMLElement | null
-export let stMetaStatus = $('#stMetaStatus') as HTMLElement | null
 export let streamHeavyWarn = $('#streamHeavyWarn') as HTMLElement | null
 export let streamBtn = $('#streamBtn') as HTMLButtonElement | null
 export let streamStatus = $('#streamStatus') as HTMLElement | null
@@ -131,20 +109,6 @@ export const refreshDom = () => {
   sourcePanels = getNodeList<HTMLElement>('[data-panel]')
   filterBtns = getNodeList<HTMLElement>('[data-filter]')
 
-  fsListEl = $('#fsList') as HTMLUListElement | null
-  currentPathEl = $('#currentPath') as HTMLElement | null
-  upBtn = $('#upBtn') as HTMLButtonElement | null
-  pathInput = $('#pathInput') as HTMLInputElement | null
-  goBtn = $('#goBtn') as HTMLButtonElement | null
-
-  selectedFileEl = $('#selectedFile') as HTMLInputElement | null
-  localTypeEl = $('#localType') as HTMLSelectElement | null
-  localMetaBox = $('#localMetaBox') as HTMLElement | null
-  localMetaStatus = $('#localMetaStatus') as HTMLElement | null
-  localHeavyWarn = $('#localHeavyWarn') as HTMLElement | null
-  registerBtn = $('#registerBtn') as HTMLButtonElement | null
-  registerStatus = $('#registerStatus') as HTMLElement | null
-
   downloadUrlEl = $('#downloadUrl') as HTMLInputElement | null
   downloadTypeEl = $('#downloadType') as HTMLSelectElement | null
   downloadDeliveryEl = $('#downloadDelivery') as HTMLSelectElement | null
@@ -164,16 +128,12 @@ export const refreshDom = () => {
   downloadUrlRow = $('#downloadUrlRow') as HTMLElement | null
   downloadBboxEl = $('#downloadBbox') as HTMLInputElement | null
   downloadBboxPick = $('#downloadBboxPick') as HTMLButtonElement | null
-  downloadMetaBox = $('#downloadMetaBox') as HTMLElement | null
-  dlMetaStatus = $('#dlMetaStatus') as HTMLElement | null
   downloadHeavyWarn = $('#downloadHeavyWarn') as HTMLElement | null
   downloadBtn = $('#downloadBtn') as HTMLButtonElement | null
   downloadStatus = $('#downloadStatus') as HTMLElement | null
 
   uploadFileEl = $('#uploadFile') as HTMLInputElement | null
   uploadTypeEl = $('#uploadType') as HTMLSelectElement | null
-  uploadMetaBox = $('#uploadMetaBox') as HTMLElement | null
-  uploadMetaStatus = $('#upMetaStatus') as HTMLElement | null
   uploadHeavyWarn = $('#uploadHeavyWarn') as HTMLElement | null
   uploadBtn = $('#uploadBtn') as HTMLButtonElement | null
   uploadStatus = $('#uploadStatus') as HTMLElement | null
@@ -181,8 +141,6 @@ export const refreshDom = () => {
   streamUrlEl = $('#streamUrl') as HTMLInputElement | null
   streamTypeEl = $('#streamType') as HTMLSelectElement | null
   streamDetectedTypeEl = $('#streamDetectedType') as HTMLSelectElement | null
-  streamMetaBox = $('#streamMetaBox') as HTMLElement | null
-  stMetaStatus = $('#stMetaStatus') as HTMLElement | null
   streamHeavyWarn = $('#streamHeavyWarn') as HTMLElement | null
   streamBtn = $('#streamBtn') as HTMLButtonElement | null
   streamStatus = $('#streamStatus') as HTMLElement | null

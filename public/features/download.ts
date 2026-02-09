@@ -16,9 +16,7 @@ import {
   downloadBboxEl,
   downloadBboxPick,
   downloadUrlHome,
-  downloadUrlRow,
-  downloadMetaBox,
-  dlMetaStatus
+  downloadUrlRow
 } from '../core/dom.js'
 import { api } from '../core/api.js'
 import { setHeavyWarn, setStatus } from '../core/ui.js'
@@ -26,15 +24,8 @@ import {
   detectTypeFromName,
   fmtBytes,
   getErrorMessage,
-  isSupportedType,
-  requiresMeta
+  isSupportedType
 } from '../core/utils.js'
-import {
-  getRequiredMeta,
-  toggleMetaBox,
-  validateFolderMeta,
-  wireMetaInputs
-} from '../core/meta.js'
 import { state } from '../core/state.js'
 import { openBboxPicker } from './bbox.js'
 
@@ -443,7 +434,6 @@ export const updateDownloadState = () => {
     if (downloadBtn) downloadBtn.disabled = true
     setStatus(downloadStatus, 'status', 'Enter a URL.')
     setHeavyWarn(downloadHeavyWarn, 'unknown')
-    toggleMetaBox(downloadMetaBox, dlMetaStatus, false)
     return
   }
 
@@ -458,7 +448,6 @@ export const updateDownloadState = () => {
         'Enter a valid bounding box: minLon,minLat,maxLon,maxLat.'
       )
       setHeavyWarn(downloadHeavyWarn, 'unknown')
-      toggleMetaBox(downloadMetaBox, dlMetaStatus, false)
       return
     }
   }
@@ -478,24 +467,6 @@ export const updateDownloadState = () => {
       downloadStatus,
       'status is-warn',
       'Unsupported type. Choose a supported detected type.'
-    )
-    toggleMetaBox(downloadMetaBox, dlMetaStatus, false)
-    return
-  }
-
-  const needMeta = requiresMeta(t)
-  toggleMetaBox(downloadMetaBox, dlMetaStatus, needMeta)
-
-  if (needMeta) {
-    const v = validateFolderMeta('dl')
-    dlMetaStatus?.classList.toggle('is-hidden', v.ok)
-    if (downloadBtn) downloadBtn.disabled = !v.ok
-    setStatus(
-      downloadStatus,
-      v.ok ? 'status' : 'status is-warn',
-      v.ok
-        ? 'Ready to create download job.'
-        : 'Fill required metadata for folder import.'
     )
     return
   }
@@ -601,8 +572,6 @@ export const initDownload = (opts: {
         if (btn) btn.disabled = false
       })
   })
-  wireMetaInputs('dl', updateDownloadState)
-
   loadCatalog()
 
   setDetailsOpen(false)
@@ -671,17 +640,7 @@ export const initDownload = (opts: {
           bbox: [number, number, number, number]
           maxZoom?: number
         }
-        metadata?: unknown
       } = { filename, sourceUrl, detectedType, extract }
-
-      const meta = getRequiredMeta(
-        detectedType,
-        'dl',
-        downloadStatus,
-        'Missing required folder metadata.'
-      )
-      if (meta === null) return
-      if (meta) item.metadata = meta
 
       await api.createJob({ items: [item] })
       setStatus(downloadStatus, 'status', 'Download job created.')

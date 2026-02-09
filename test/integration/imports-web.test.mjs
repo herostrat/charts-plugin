@@ -181,23 +181,6 @@ describe('Imports Web API', () => {
         })
     })
 
-    it('rejects folder without metadata', () => {
-      return postRequest(testServer, '/@signalk/charts-plugin/imports', {
-        items: [
-          {
-            filename: 'folder',
-            sourcePath: '/charts/folder',
-            detectedType: 'folder'
-          }
-        ]
-      })
-        .catch((err) => err.response)
-        .then((res) => {
-          expect(res.status).to.equal(400)
-          expect(res.body.message).to.match(/metadata/)
-        })
-    })
-
     it('rejects unsupported detectedType', () => {
       return postRequest(testServer, '/@signalk/charts-plugin/imports', {
         items: [
@@ -266,24 +249,6 @@ describe('Imports Web API', () => {
         .then((res) => {
           expect(res.status).to.equal(400)
           expect(res.body.message).to.match(/detectedType/)
-        })
-    })
-
-    it('rejects folder uploads', () => {
-      const filePath = createTempFile('upload.tif')
-      return uploadRequest(
-        testServer,
-        '/@signalk/charts-plugin/imports/upload',
-        {
-          filePath,
-          filename: 'upload.tif',
-          detectedType: 'folder'
-        }
-      )
-        .catch((err) => err.response)
-        .then((res) => {
-          expect(res.status).to.equal(400)
-          expect(res.body.message).to.match(/Folder uploads/)
         })
     })
 
@@ -391,53 +356,6 @@ describe('Imports Web API', () => {
         expect(res.body.id).to.equal(job.id)
         expect(res.body.state).to.equal('CANCELED')
       })
-    })
-  })
-
-  describe('GET /@signalk/charts-plugin/imports/fs', () => {
-    it('lists directories', async () => {
-      const tempDir = createTempDir()
-      const filePath = path.join(tempDir, 'sample.txt')
-      const subDir = path.join(tempDir, 'nested')
-      fs.writeFileSync(filePath, 'hello')
-      fs.mkdirSync(subDir)
-
-      const res = await getRequest(
-        testServer,
-        `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(tempDir)}`
-      )
-      expect(res.status).to.equal(200)
-      expect(res.body.path).to.equal(tempDir)
-      expect(
-        res.body.entries.some((entry) => entry.name === 'sample.txt')
-      ).to.equal(true)
-    })
-
-    it('returns 400 when path is not a directory', () => {
-      const tempDir = createTempDir()
-      const filePath = path.join(tempDir, 'sample.txt')
-      fs.writeFileSync(filePath, 'hello')
-
-      return getRequest(
-        testServer,
-        `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(filePath)}`
-      )
-        .catch((err) => err.response)
-        .then((res) => {
-          expect(res.status).to.equal(400)
-        })
-    })
-
-    it('returns 404 for missing directory', () => {
-      const missingPath = path.join(createTempDir(), 'missing')
-      return getRequest(
-        testServer,
-        `/@signalk/charts-plugin/imports/fs?path=${encodeURIComponent(missingPath)}`
-      )
-        .catch((err) => err.response)
-        .then((res) => {
-          expect(res.status).to.equal(404)
-        })
     })
   })
 

@@ -46,8 +46,6 @@ const apiUpload = async (
 }
 
 export const api = {
-  fs: (path: string) =>
-    apiGet(`${API_BASE}/fs?path=${encodeURIComponent(path)}`),
   listJobs: () => apiGet(`${API_BASE}`),
   createJob: (payload: unknown) => apiSend(`${API_BASE}`, 'POST', payload),
   listSources: (opts?: { refresh?: boolean }) =>

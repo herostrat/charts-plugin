@@ -6,7 +6,7 @@ export type CuratedChart = {
   id: string
   name: string
   url: string
-  type?: 'geotiff' | 's57' | 'mbtiles' | 'pmtiles' | 'folder' | 'unknown'
+  type?: 'geotiff' | 's57' | 'mbtiles' | 'pmtiles' | 'unknown'
   note?: string
   sizeBytes?: number
   details?: string

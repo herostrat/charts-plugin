@@ -98,20 +98,8 @@ const detectTypeFromFilename = (filename: string): ImportFileType => {
   return 'unknown'
 }
 
-const normalizeDetectedType = (value?: ImportFileType) => {
-  if (!value) {
-    return undefined
-  }
-  if (value === 'directory') {
-    return 'folder'
-  }
-  return value
-}
-
 const isValidDetectedType = (value: string) => {
-  return ['geotiff', 's57', 'mbtiles', 'pmtiles', 'folder', 'unknown'].includes(
-    value
-  )
+  return ['geotiff', 's57', 'mbtiles', 'pmtiles', 'unknown'].includes(value)
 }
 
 const sanitizeFilename = (name: string) => {
@@ -137,29 +125,6 @@ const resolveFilename = (entry: ImportRequestItem) => {
     return 'stream'
   }
   return ''
-}
-
-const validateMetadata = (metadata?: ImportItemMetadata) => {
-  if (!metadata) {
-    return false
-  }
-  const bounds = metadata.bounds
-  if (!Array.isArray(bounds) || bounds.length !== 4) {
-    return false
-  }
-  if (bounds.some((value) => !Number.isFinite(value))) {
-    return false
-  }
-  if (
-    metadata.minZoom == null ||
-    metadata.maxZoom == null ||
-    !metadata.updatedAt ||
-    !metadata.format ||
-    !metadata.description
-  ) {
-    return false
-  }
-  return true
 }
 
 const isValidBounds = (
@@ -208,8 +173,7 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
       return { items: [], error: 'Filename could not be determined' }
     }
 
-    const detectedTypeRaw = normalizeDetectedType(entry.detectedType)
-    const detectedType = detectedTypeRaw ?? detectTypeFromFilename(filename)
+    const detectedType = entry.detectedType ?? detectTypeFromFilename(filename)
     if (!isValidDetectedType(detectedType)) {
       return { items: [], error: 'Unsupported detectedType' }
     }
@@ -229,12 +193,6 @@ const parseItems = (items: ImportRequestItem[] | undefined) => {
         !Number.isFinite(entry.extract.maxZoom)
       ) {
         return { items: [], error: 'extract maxZoom must be a number' }
-      }
-    }
-
-    if (detectedType === 'folder') {
-      if (!validateMetadata(entry.metadata)) {
-        return { items: [], error: 'metadata is required for folder' }
       }
     }
 
@@ -271,41 +229,6 @@ const sendError = (
     message,
     details
   })
-}
-
-const normalizeFsPath = (input: string | undefined) => {
-  const safeInput = input && input.trim().length > 0 ? input.trim() : '/'
-  if (path.isAbsolute(safeInput)) {
-    return path.normalize(safeInput)
-  }
-  return path.resolve('/', safeInput)
-}
-
-const listDirectory = async (dirPath: string) => {
-  const entries = await fsp.readdir(dirPath, { withFileTypes: true })
-  const results = await Promise.all(
-    entries.map(async (entry) => {
-      const fullPath = path.join(dirPath, entry.name)
-      let size: number | undefined
-      let mtime: string | undefined
-      try {
-        const stats = await fsp.stat(fullPath)
-        size = stats.isFile() ? stats.size : undefined
-        mtime = stats.mtime.toISOString()
-      } catch {
-        size = undefined
-        mtime = undefined
-      }
-      return {
-        name: entry.name,
-        path: fullPath,
-        type: entry.isDirectory() ? 'directory' : 'file',
-        size,
-        mtime
-      }
-    })
-  )
-  return results
 }
 
 export const registerImportRoutes = ({
@@ -351,23 +274,6 @@ export const registerImportRoutes = ({
     })
   })
 
-  app.get(`${CHART_IMPORTS_PATH}/fs`, async (req: Request, res: Response) => {
-    const requested = normalizeParam(req.query.path as string | undefined)
-    const dirPath = normalizeFsPath(requested)
-    try {
-      const stats = await fsp.stat(dirPath)
-      if (!stats.isDirectory()) {
-        return sendError(res, 400, 'Path is not a directory')
-      }
-      const entries = await listDirectory(dirPath)
-      const parent = dirPath === '/' ? null : path.dirname(dirPath)
-      return res.status(200).json({ path: dirPath, parent, entries })
-    } catch (err) {
-      console.error(`Failed to list directory ${dirPath}:`, err)
-      return sendError(res, 404, 'Directory not found')
-    }
-  })
-
   app.get(
     `${CHART_IMPORTS_PATH}/converters/:type`,
     (req: Request, res: Response) => {
@@ -400,21 +306,16 @@ export const registerImportRoutes = ({
         return sendError(res, 400, 'File is required')
       }
 
-      const rawType = normalizeDetectedType(
+      const rawType =
         typeof req.body?.detectedType === 'string'
           ? (req.body.detectedType as ImportFileType)
           : undefined
-      )
       const detectedType =
         rawType ?? detectTypeFromFilename(file.originalname || file.filename)
 
       if (!isValidDetectedType(detectedType)) {
         return sendError(res, 400, 'Unsupported detectedType')
       }
-      if (detectedType === 'folder') {
-        return sendError(res, 400, 'Folder uploads are not supported')
-      }
-
       let metadata: ImportItemMetadata | undefined
       if (typeof req.body?.metadata === 'string' && req.body.metadata.trim()) {
         try {
@@ -442,7 +343,7 @@ export const registerImportRoutes = ({
     `${CHART_IMPORTS_PATH}/:id`,
     async (req: Request, res: Response, next) => {
       const idRaw = normalizeParam(req.params.id)
-      if (['config', 'events', 'fs', 'converters'].includes(idRaw)) {
+      if (['config', 'events', 'converters'].includes(idRaw)) {
         return next()
       }
       const id = parseInt(idRaw, 10)
@@ -484,7 +385,7 @@ export const registerImportRoutes = ({
 
   app.get(`${CHART_IMPORTS_PATH}/:id`, (req: Request, res: Response, next) => {
     const idRaw = normalizeParam(req.params.id)
-    if (['config', 'events', 'fs', 'converters'].includes(idRaw)) {
+    if (['config', 'events', 'converters'].includes(idRaw)) {
       return next()
     }
     const id = parseInt(idRaw, 10)

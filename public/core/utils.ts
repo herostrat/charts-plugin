@@ -43,7 +43,6 @@ export const detectTypeFromName = (name?: string) => {
 
 export const isSupportedType = (t?: string) =>
   SUPPORTED_TYPES.includes(String(t || 'unknown'))
-export const requiresMeta = (t?: string) => String(t) === 'folder'
 
 export const escapeHtml = (s: unknown) =>
   String(s ?? '').replace(

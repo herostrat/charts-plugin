@@ -3,8 +3,6 @@ export type ImportFileType =
   | 's57'
   | 'mbtiles'
   | 'pmtiles'
-  | 'folder'
-  | 'directory'
   | 'unknown'
 
 export type ImportStreamType = 'wms' | 'wmts' | 'cog'
