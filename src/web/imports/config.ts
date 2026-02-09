@@ -1,3 +1,8 @@
+import {
+  getDefaultThemeKey,
+  getThemeOptions
+} from '../../style/nautical-style-generator'
+
 export type ConfigEntry = {
   key: string
   name: string
@@ -14,26 +19,12 @@ export type ConfigChange = {
 
 export type ImportsWebConfig = {
   chartsRoot?: string
-  chartPaths?: string[]
-  cachePath?: string
+  vectorTheme?: string
 }
 
 export type ConfigService = {
   getEntries: () => ConfigEntry[]
   applyChanges: (changes: ConfigChange[]) => ConfigEntry[]
-}
-
-const normalizeChartPaths = (value: unknown) => {
-  if (Array.isArray(value)) {
-    return value.map((v) => String(v).trim()).filter((v) => v.length > 0)
-  }
-  if (typeof value === 'string') {
-    return value
-      .split(',')
-      .map((v) => v.trim())
-      .filter((v) => v.length > 0)
-  }
-  return []
 }
 
 export const createImportsConfigService = (deps: {
@@ -51,19 +42,12 @@ export const createImportsConfigService = (deps: {
         value: config.chartsRoot ?? ''
       },
       {
-        key: 'chartPaths',
-        name: 'Chart paths',
-        description: 'Comma-separated chart paths for local discovery.',
-        type: 'string',
-        value: (config.chartPaths ?? []).join(', ')
-      },
-      {
-        key: 'cachePath',
-        name: 'Cache path',
-        description:
-          'Directory used for cached tiles. Defaults to "<chartsRoot>/cache".',
-        type: 'string',
-        value: config.cachePath ?? ''
+        key: 'vectorTheme',
+        name: 'Vector theme',
+        description: 'Theme pack and variant used for vector tiles.',
+        type: 'enum',
+        options: getThemeOptions(),
+        value: config.vectorTheme ?? getDefaultThemeKey()
       }
     ]
   }
@@ -75,10 +59,8 @@ export const createImportsConfigService = (deps: {
     for (const change of changes) {
       if (change.key === 'chartsRoot') {
         next.chartsRoot = String(change.value ?? '')
-      } else if (change.key === 'chartPaths') {
-        next.chartPaths = normalizeChartPaths(change.value)
-      } else if (change.key === 'cachePath') {
-        next.cachePath = String(change.value ?? '')
+      } else if (change.key === 'vectorTheme') {
+        next.vectorTheme = String(change.value ?? '')
       }
     }
 

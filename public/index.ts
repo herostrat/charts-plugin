@@ -75,8 +75,7 @@ import { initSse, connectSse, isSseConnected } from './features/sse.js'
   initStream({ refreshProviders })
   initProviders()
 
-  const isSourcesOpen = () =>
-    !sourcesPopup?.classList.contains('is-hidden')
+  const isSourcesOpen = () => !sourcesPopup?.classList.contains('is-hidden')
 
   const setSourcesOpen = (open: boolean) => {
     sourcesPopup?.classList.toggle('is-hidden', !open)

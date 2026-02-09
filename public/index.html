@@ -72,8 +72,8 @@
           <div>
             <h2>Database</h2>
             <p>
-              Shows importing/converting items and completed ones. Click item
-              → highlight & zoom.
+              Shows importing/converting items and completed ones. Click item →
+              highlight & zoom.
             </p>
           </div>
           <div class="head-actions">
@@ -172,283 +172,285 @@
           </div>
 
           <div class="section">
-          <!-- Upload -->
-          <section class="panel" data-panel="upload">
-            <div class="form">
-              <label class="field">
-                <span>Upload file</span>
-                <input
-                  id="uploadFile"
-                  class="input"
-                  type="file"
-                  accept=".tif,.tiff,.mbtiles,.pmtiles,.s57,.000,.001"
-                />
-              </label>
+            <!-- Upload -->
+            <section class="panel" data-panel="upload">
+              <div class="form">
+                <label class="field">
+                  <span>Upload file</span>
+                  <input
+                    id="uploadFile"
+                    class="input"
+                    type="file"
+                    accept=".tif,.tiff,.mbtiles,.pmtiles,.s57,.000,.001"
+                  />
+                </label>
 
-              <label class="field">
-                <span>Detected type (override)</span>
-                <select id="uploadType" class="select">
-                  <option value="unknown">unknown</option>
-                  <option value="geotiff">geotiff</option>
-                  <option value="s57">s57</option>
-                  <option value="mbtiles">mbtiles</option>
-                  <option value="pmtiles">pmtiles</option>
-                </select>
-              </label>
+                <label class="field">
+                  <span>Detected type (override)</span>
+                  <select id="uploadType" class="select">
+                    <option value="unknown">unknown</option>
+                    <option value="geotiff">geotiff</option>
+                    <option value="s57">s57</option>
+                    <option value="mbtiles">mbtiles</option>
+                    <option value="pmtiles">pmtiles</option>
+                  </select>
+                </label>
 
-              <div id="uploadHeavyWarn" class="status is-warn is-hidden">
-                This conversion/import can be compute-intensive on an SBC.
-                Consider converting on a dedicated PC and importing the result
-                here.
-              </div>
-
-              <button id="uploadBtn" class="btn btn--primary" disabled>
-                Upload
-              </button>
-              <div id="uploadStatus" class="status" role="status">
-                Select a file to upload. Type is guessed from the filename but
-                can be overridden.
-              </div>
-            </div>
-          </section>
-
-          <!-- Download -->
-          <section class="panel is-active" data-panel="download">
-            <div class="form">
-              <div class="catalog">
-                <div class="catalog__head">
-                  <span>Curated sources</span>
-                  <button
-                    id="downloadCatalogRefresh"
-                    class="btn btn--ghost btn--sm"
-                  >
-                    Refresh
-                  </button>
+                <div id="uploadHeavyWarn" class="status is-warn is-hidden">
+                  This conversion/import can be compute-intensive on an SBC.
+                  Consider converting on a dedicated PC and importing the result
+                  here.
                 </div>
-                <select id="downloadCatalog" class="select"></select>
-                <div id="downloadCatalogBody" class="catalog__body">
-                  <label id="downloadChartRow" class="field is-hidden">
-                    <span>Chart</span>
-                    <select id="downloadChart" class="select"></select>
-                  </label>
-                  <label id="downloadDeliveryRow" class="field is-hidden">
-                    <span>Delivery</span>
-                    <select id="downloadDelivery" class="select"></select>
-                  </label>
 
-                  <div id="downloadBboxRow" class="field is-hidden">
-                    <span>Bounding box (minLon, minLat, maxLon, maxLat)</span>
-                    <div class="field__row">
-                      <input
-                        id="downloadBbox"
-                        class="input"
-                        type="text"
-                        placeholder="minLon,minLat,maxLon,maxLat"
-                      />
-                      <button
-                        id="downloadBboxPick"
-                        class="btn btn--ghost btn--sm"
-                        type="button"
-                      >
-                        Choose
-                      </button>
-                    </div>
-                  </div>
+                <button id="uploadBtn" class="btn btn--primary" disabled>
+                  Upload
+                </button>
+                <div id="uploadStatus" class="status" role="status">
+                  Select a file to upload. Type is guessed from the filename but
+                  can be overridden.
                 </div>
-                <div
-                  id="downloadCatalogStatus"
-                  class="status is-warn is-hidden"
-                  role="status"
-                ></div>
               </div>
+            </section>
 
-              <div id="downloadUrlHome">
-                <label id="downloadUrlRow" class="field">
-                  <div class="field__head">
-                    <span>Source URL</span>
+            <!-- Download -->
+            <section class="panel is-active" data-panel="download">
+              <div class="form">
+                <div class="catalog">
+                  <div class="catalog__head">
+                    <span>Curated sources</span>
                     <button
-                      id="downloadCatalogDetails"
-                      class="iconBtn"
-                      type="button"
-                      aria-label="Show source details"
-                      title="Show source details"
+                      id="downloadCatalogRefresh"
+                      class="btn btn--ghost btn--sm"
                     >
-                      i
+                      Refresh
                     </button>
                   </div>
+                  <select id="downloadCatalog" class="select"></select>
+                  <div id="downloadCatalogBody" class="catalog__body">
+                    <label id="downloadChartRow" class="field is-hidden">
+                      <span>Chart</span>
+                      <select id="downloadChart" class="select"></select>
+                    </label>
+                    <label id="downloadDeliveryRow" class="field is-hidden">
+                      <span>Delivery</span>
+                      <select id="downloadDelivery" class="select"></select>
+                    </label>
+
+                    <div id="downloadBboxRow" class="field is-hidden">
+                      <span>Bounding box (minLon, minLat, maxLon, maxLat)</span>
+                      <div class="field__row">
+                        <input
+                          id="downloadBbox"
+                          class="input"
+                          type="text"
+                          placeholder="minLon,minLat,maxLon,maxLat"
+                        />
+                        <button
+                          id="downloadBboxPick"
+                          class="btn btn--ghost btn--sm"
+                          type="button"
+                        >
+                          Choose
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    id="downloadCatalogStatus"
+                    class="status is-warn is-hidden"
+                    role="status"
+                  ></div>
+                </div>
+
+                <div id="downloadUrlHome">
+                  <label id="downloadUrlRow" class="field">
+                    <div class="field__head">
+                      <span>Source URL</span>
+                      <button
+                        id="downloadCatalogDetails"
+                        class="iconBtn"
+                        type="button"
+                        aria-label="Show source details"
+                        title="Show source details"
+                      >
+                        i
+                      </button>
+                    </div>
+                    <input
+                      id="downloadUrl"
+                      class="input"
+                      type="url"
+                      placeholder="https://example.com/chart.tif"
+                    />
+                  </label>
+                  <div
+                    id="downloadCatalogInfo"
+                    class="catalog__info is-hidden"
+                  ></div>
+                </div>
+
+                <label class="field">
+                  <span>Detected type (override)</span>
+                  <select id="downloadType" class="select">
+                    <option value="unknown">unknown</option>
+                    <option value="geotiff">geotiff</option>
+                    <option value="s57">s57</option>
+                    <option value="mbtiles">mbtiles</option>
+                    <option value="pmtiles">pmtiles</option>
+                  </select>
+                </label>
+
+                <div id="downloadHeavyWarn" class="status is-warn is-hidden">
+                  This conversion/import can be compute-intensive on an SBC.
+                  Consider converting on a dedicated PC and importing the result
+                  here.
+                </div>
+
+                <button id="downloadBtn" class="btn btn--primary" disabled>
+                  Download
+                </button>
+                <div id="downloadStatus" class="status" role="status">
+                  Enter a URL. Type is guessed from the URL but can be
+                  overridden.
+                </div>
+              </div>
+            </section>
+
+            <!-- Streaming -->
+            <section class="panel" data-panel="stream">
+              <div class="form">
+                <label class="field">
+                  <span>Name</span>
                   <input
-                    id="downloadUrl"
+                    id="streamName"
+                    class="input"
+                    type="text"
+                    placeholder="WMS: My Harbor Charts"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Description (optional)</span>
+                  <input
+                    id="streamDescription"
+                    class="input"
+                    type="text"
+                    placeholder="Short description shown in the catalog"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Stream URL</span>
+                  <input
+                    id="streamUrl"
                     class="input"
                     type="url"
-                    placeholder="https://example.com/chart.tif"
+                    placeholder="https://example.com/wms?…"
                   />
                 </label>
-                <div
-                  id="downloadCatalogInfo"
-                  class="catalog__info is-hidden"
-                ></div>
-              </div>
 
-              <label class="field">
-                <span>Detected type (override)</span>
-                <select id="downloadType" class="select">
-                  <option value="unknown">unknown</option>
-                  <option value="geotiff">geotiff</option>
-                  <option value="s57">s57</option>
-                  <option value="mbtiles">mbtiles</option>
-                  <option value="pmtiles">pmtiles</option>
-                </select>
-              </label>
-
-              <div id="downloadHeavyWarn" class="status is-warn is-hidden">
-                This conversion/import can be compute-intensive on an SBC.
-                Consider converting on a dedicated PC and importing the result
-                here.
-              </div>
-
-              <button id="downloadBtn" class="btn btn--primary" disabled>
-                Download
-              </button>
-              <div id="downloadStatus" class="status" role="status">
-                Enter a URL. Type is guessed from the URL but can be overridden.
-              </div>
-            </div>
-          </section>
-
-          <!-- Streaming -->
-          <section class="panel" data-panel="stream">
-            <div class="form">
-              <label class="field">
-                <span>Name</span>
-                <input
-                  id="streamName"
-                  class="input"
-                  type="text"
-                  placeholder="WMS: My Harbor Charts"
-                />
-              </label>
-
-              <label class="field">
-                <span>Description (optional)</span>
-                <input
-                  id="streamDescription"
-                  class="input"
-                  type="text"
-                  placeholder="Short description shown in the catalog"
-                />
-              </label>
-
-              <label class="field">
-                <span>Stream URL</span>
-                <input
-                  id="streamUrl"
-                  class="input"
-                  type="url"
-                  placeholder="https://example.com/wms?…"
-                />
-              </label>
-
-              <label class="field">
-                <span>Stream type</span>
-                <select id="streamType" class="select">
-                  <option value="wms">WMS</option>
-                  <option value="wmts">WMTS</option>
-                  <option value="cog">COG</option>
-                </select>
-              </label>
-
-              <label class="field">
-                <span>Format</span>
-                <select id="streamFormat" class="select">
-                  <option value="png">png</option>
-                  <option value="jpg">jpg</option>
-                </select>
-              </label>
-
-              <div class="field__row">
                 <label class="field">
-                  <span>Min zoom</span>
-                  <input
-                    id="streamMinZoom"
-                    class="input"
-                    type="number"
-                    min="1"
-                    max="24"
-                    value="1"
-                  />
+                  <span>Stream type</span>
+                  <select id="streamType" class="select">
+                    <option value="wms">WMS</option>
+                    <option value="wmts">WMTS</option>
+                    <option value="cog">COG</option>
+                  </select>
                 </label>
+
                 <label class="field">
-                  <span>Max zoom</span>
+                  <span>Format</span>
+                  <select id="streamFormat" class="select">
+                    <option value="png">png</option>
+                    <option value="jpg">jpg</option>
+                  </select>
+                </label>
+
+                <div class="field__row">
+                  <label class="field">
+                    <span>Min zoom</span>
+                    <input
+                      id="streamMinZoom"
+                      class="input"
+                      type="number"
+                      min="1"
+                      max="24"
+                      value="1"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>Max zoom</span>
+                    <input
+                      id="streamMaxZoom"
+                      class="input"
+                      type="number"
+                      min="1"
+                      max="24"
+                      value="15"
+                    />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Bounds (optional)</span>
                   <input
-                    id="streamMaxZoom"
+                    id="streamBounds"
                     class="input"
-                    type="number"
-                    min="1"
-                    max="24"
-                    value="15"
+                    type="text"
+                    placeholder="minLon,minLat,maxLon,maxLat"
                   />
                 </label>
+
+                <label class="field">
+                  <span>Layers (comma-separated)</span>
+                  <input
+                    id="streamLayers"
+                    class="input"
+                    type="text"
+                    placeholder="layer1,layer2"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>WMTS TileMatrixSet (optional)</span>
+                  <input
+                    id="streamTileMatrixSet"
+                    class="input"
+                    type="text"
+                    placeholder="GoogleMapsCompatible"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Headers (optional, one per line)</span>
+                  <textarea
+                    id="streamHeaders"
+                    class="input"
+                    rows="3"
+                    placeholder="Authorization: Bearer …"
+                  ></textarea>
+                </label>
+
+                <label class="field">
+                  <span>Use proxy + cache</span>
+                  <input id="streamProxy" type="checkbox" checked />
+                </label>
+
+                <div id="streamHeavyWarn" class="status is-warn is-hidden">
+                  This conversion/import can be compute-intensive on an SBC.
+                  Consider converting on a dedicated PC and importing the result
+                  here.
+                </div>
+
+                <button id="streamBtn" class="btn btn--primary" disabled>
+                  Register Stream
+                </button>
+                <div id="streamStatus" class="status" role="status">
+                  Provide a stream URL and type hint.
+                </div>
               </div>
-
-              <label class="field">
-                <span>Bounds (optional)</span>
-                <input
-                  id="streamBounds"
-                  class="input"
-                  type="text"
-                  placeholder="minLon,minLat,maxLon,maxLat"
-                />
-              </label>
-
-              <label class="field">
-                <span>Layers (comma-separated)</span>
-                <input
-                  id="streamLayers"
-                  class="input"
-                  type="text"
-                  placeholder="layer1,layer2"
-                />
-              </label>
-
-              <label class="field">
-                <span>WMTS TileMatrixSet (optional)</span>
-                <input
-                  id="streamTileMatrixSet"
-                  class="input"
-                  type="text"
-                  placeholder="GoogleMapsCompatible"
-                />
-              </label>
-
-              <label class="field">
-                <span>Headers (optional, one per line)</span>
-                <textarea
-                  id="streamHeaders"
-                  class="input"
-                  rows="3"
-                  placeholder="Authorization: Bearer …"
-                ></textarea>
-              </label>
-
-              <label class="field">
-                <span>Use proxy + cache</span>
-                <input id="streamProxy" type="checkbox" checked />
-              </label>
-
-              <div id="streamHeavyWarn" class="status is-warn is-hidden">
-                This conversion/import can be compute-intensive on an SBC.
-                Consider converting on a dedicated PC and importing the result
-                here.
-              </div>
-
-              <button id="streamBtn" class="btn btn--primary" disabled>
-                Register Stream
-              </button>
-              <div id="streamStatus" class="status" role="status">
-                Provide a stream URL and type hint.
-              </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       </section>
 
@@ -460,7 +462,9 @@
             <p></p>
           </div>
           <div class="head-actions">
-            <button id="mapReset" class="btn btn--ghost btn--sm">Zoom out</button>
+            <button id="mapReset" class="btn btn--ghost btn--sm">
+              Zoom out
+            </button>
             <button id="mapToggle" class="btn btn--ghost btn--sm">Hide</button>
           </div>
         </div>
@@ -512,6 +516,14 @@
           <div>
             <div class="sectionTitle">Metadata</div>
             <div id="detailsMeta" class="kvgrid" style="margin-top: 10px"></div>
+          </div>
+          <div id="detailsWarningsSection" class="is-hidden">
+            <div class="sectionTitle">Warnings</div>
+            <div
+              id="detailsWarnings"
+              class="status is-warn"
+              style="margin-top: 10px"
+            ></div>
           </div>
           <div>
             <div class="sectionTitle">Import Item (raw)</div>

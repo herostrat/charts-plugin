@@ -3,7 +3,8 @@ import type { ChartProvider } from '../types'
 import { CHART_STYLE_PATH } from '../routes/paths'
 import {
   buildNauticalVectorStyle,
-  type ThemeId
+  getDefaultThemeKey,
+  type ThemeKey
 } from '../style/nautical-style-generator'
 import { isVectorFormat } from '../tiles/format'
 import { loadObjectCatalog } from '../catalog/loader'
@@ -14,6 +15,7 @@ type StyleRouteDeps = {
   app: Application
   getProviders: () => ProvidersById
   getCatalogChoice: (identifier: string) => string | 'none'
+  getThemeKey: () => ThemeKey | undefined
   defaultCatalogId: string
 }
 
@@ -21,13 +23,14 @@ export const registerStyleRoutes = ({
   app,
   getProviders,
   getCatalogChoice,
+  getThemeKey,
   defaultCatalogId
 }: StyleRouteDeps) => {
   app.get(`${CHART_STYLE_PATH}/:identifier`, (req: Request, res: Response) => {
     const identifier = Array.isArray(req.params.identifier)
       ? req.params.identifier[0]
       : req.params.identifier
-    const theme: ThemeId = 'signalk_day'
+    const theme = getThemeKey() || getDefaultThemeKey()
     const provider = getProviders()[identifier]
     if (!provider || !isVectorFormat(provider.format)) {
       return res.sendStatus(404)

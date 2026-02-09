@@ -6,7 +6,9 @@ import {
   detailsMeta,
   detailsOverlay,
   detailsSub,
-  detailsTitle
+  detailsTitle,
+  detailsWarnings,
+  detailsWarningsSection
 } from '../core/dom.js'
 import type { ImportItem, ImportJob } from '../core/state.js'
 import {
@@ -113,6 +115,18 @@ export const openDetails = (
     { k: 'Output', v: item?.output ?? '-', mono: true },
     { k: 'Staging dir', v: item?.stagingDir ?? '-', mono: true }
   ])
+
+  const warnings = Array.isArray(item?.warnings) ? item.warnings : []
+  if (detailsWarningsSection) {
+    detailsWarningsSection.classList.toggle('is-hidden', warnings.length === 0)
+  }
+  if (detailsWarnings) {
+    detailsWarnings.innerHTML = warnings.length
+      ? warnings
+          .map((warning) => `<div>• ${escapeHtml(String(warning))}</div>`)
+          .join('')
+      : ''
+  }
 
   const jobSummary = {
     id: job?.id ?? null,

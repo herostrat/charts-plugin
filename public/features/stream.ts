@@ -123,9 +123,7 @@ export const updateStreamState = () => {
   setStatus(streamStatus, 'status', 'Ready to register streaming source.')
 }
 
-export const initStream = (opts: {
-  refreshProviders: () => Promise<void>
-}) => {
+export const initStream = (opts: { refreshProviders: () => Promise<void> }) => {
   streamNameEl?.addEventListener('input', updateStreamState)
   streamDescriptionEl?.addEventListener('input', updateStreamState)
   streamUrlEl?.addEventListener('input', updateStreamState)
@@ -161,7 +159,8 @@ export const initStream = (opts: {
     setStatus(streamStatus, 'status', 'Registering streaming source...')
 
     try {
-      const serverType = streamType === 'cog' ? 'tilelayer' : streamType.toUpperCase()
+      const serverType =
+        streamType === 'cog' ? 'tilelayer' : streamType.toUpperCase()
       let layersWithMatrix = [...layers]
       if (serverType === 'WMTS') {
         const layer = layersWithMatrix[0] || ''

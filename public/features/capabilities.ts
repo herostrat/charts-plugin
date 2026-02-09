@@ -11,9 +11,7 @@ const applyTypeAvailability = (select: HTMLSelectElement | null) => {
     const allowed = isTypeAvailable(value, state.capabilities)
     const message = blockedTypeMessage(value, state.capabilities)
     option.disabled = !allowed
-    option.textContent = !allowed && message
-      ? `${value} (unavailable)`
-      : value
+    option.textContent = !allowed && message ? `${value} (unavailable)` : value
   }
 }
 

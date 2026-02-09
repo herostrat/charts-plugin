@@ -396,18 +396,15 @@ export const registerImportRoutes = ({
     }
   )
 
-  app.post(
-    `${CHART_IMPORTS_PATH}/providers`,
-    (req: Request, res: Response) => {
-      const parsed = parseOnlineProvider(req.body)
-      if (!parsed.provider) {
-        return sendError(res, 400, parsed.error || 'Invalid provider payload')
-      }
-      const record = addOnlineProvider(parsed.provider)
-      onOnlineProvidersChanged?.()
-      return res.status(201).json(record)
+  app.post(`${CHART_IMPORTS_PATH}/providers`, (req: Request, res: Response) => {
+    const parsed = parseOnlineProvider(req.body)
+    if (!parsed.provider) {
+      return sendError(res, 400, parsed.error || 'Invalid provider payload')
     }
-  )
+    const record = addOnlineProvider(parsed.provider)
+    onOnlineProvidersChanged?.()
+    return res.status(201).json(record)
+  })
 
   app.delete(
     `${CHART_IMPORTS_PATH}/providers/:id`,

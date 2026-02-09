@@ -10,7 +10,8 @@ import {
 import { openDirectoryChart } from './directory'
 import {
   applyMetadataOverrides,
-  readChartsMetadata
+  readChartsMetadata,
+  validateChartProvider
 } from '../../metadata/charts-metadata'
 
 export const findCharts = (chartBaseDir: string) => {
@@ -26,6 +27,20 @@ export const findCharts = (chartBaseDir: string) => {
         'files:',
         files.map((f) => f.name)
       )
+      const logValidation = (provider: ChartProvider) => {
+        const validation = validateChartProvider(provider)
+        if (validation.errors.length > 0) {
+          console.warn(
+            `Chart metadata errors for ${provider.identifier}: ${validation.errors.join(' ')}`
+          )
+        }
+        if (validation.warnings.length > 0) {
+          console.warn(
+            `Chart metadata warnings for ${provider.identifier}: ${validation.warnings.join(' ')}`
+          )
+        }
+      }
+
       for (const file of files) {
         const isMbtilesFile = file.name.match(/\.mbtiles$/i)
         const isPmtilesFile = file.name.match(/\.pmtiles$/i)
@@ -39,10 +54,18 @@ export const findCharts = (chartBaseDir: string) => {
             )
             results.push(null)
           } else {
-            results.push(await openMbtilesFile(filePath, file.name))
+            const provider = await openMbtilesFile(filePath, file.name)
+            if (provider) {
+              logValidation(provider)
+            }
+            results.push(provider)
           }
         } else if (isPmtilesFile) {
-          results.push(await openPmtilesFile(filePath, file.name))
+          const provider = await openPmtilesFile(filePath, file.name)
+          if (provider) {
+            logValidation(provider)
+          }
+          results.push(provider)
         } else if (isGeotiffFile) {
           const pmtilesName = file.name.replace(/\.(tif|tiff)$/i, '.pmtiles')
           if (fileNames.has(pmtilesName)) {
@@ -77,8 +100,12 @@ export const findCharts = (chartBaseDir: string) => {
               if (overridden.v2) {
                 overridden.v2.url = `~tilePath~/${file.name}/{z}/{x}/{y}`
               }
+              logValidation(overridden)
               results.push(overridden)
             } else {
+              if (provider) {
+                logValidation(provider)
+              }
               results.push(provider)
             }
             continue
@@ -105,15 +132,23 @@ export const findCharts = (chartBaseDir: string) => {
                 if (overridden.v2) {
                   overridden.v2.url = `~tilePath~/${file.name}/{z}/{x}/{y}`
                 }
+                logValidation(overridden)
                 results.push(overridden)
               } else {
+                if (provider) {
+                  logValidation(provider)
+                }
                 results.push(provider)
               }
             }
             continue
           }
 
-          results.push(await openDirectoryChart(filePath, file.name))
+          const provider = await openDirectoryChart(filePath, file.name)
+          if (provider) {
+            logValidation(provider)
+          }
+          results.push(provider)
         } else {
           results.push(null)
         }

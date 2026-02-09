@@ -52,14 +52,17 @@ export let uploadStatus = $('#uploadStatus') as HTMLElement | null
 export let streamUrlEl = $('#streamUrl') as HTMLInputElement | null
 export let streamTypeEl = $('#streamType') as HTMLSelectElement | null
 export let streamNameEl = $('#streamName') as HTMLInputElement | null
-export let streamDescriptionEl = $('#streamDescription') as HTMLInputElement | null
+export let streamDescriptionEl = $(
+  '#streamDescription'
+) as HTMLInputElement | null
 export let streamFormatEl = $('#streamFormat') as HTMLSelectElement | null
 export let streamMinZoomEl = $('#streamMinZoom') as HTMLInputElement | null
 export let streamMaxZoomEl = $('#streamMaxZoom') as HTMLInputElement | null
 export let streamBoundsEl = $('#streamBounds') as HTMLInputElement | null
 export let streamLayersEl = $('#streamLayers') as HTMLInputElement | null
-export let streamTileMatrixSetEl =
-  $('#streamTileMatrixSet') as HTMLInputElement | null
+export let streamTileMatrixSetEl = $(
+  '#streamTileMatrixSet'
+) as HTMLInputElement | null
 export let streamHeadersEl = $('#streamHeaders') as HTMLTextAreaElement | null
 export let streamProxyEl = $('#streamProxy') as HTMLInputElement | null
 export let streamHeavyWarn = $('#streamHeavyWarn') as HTMLElement | null
@@ -99,6 +102,10 @@ export let detailsTitle = $('#detailsTitle') as HTMLElement | null
 export let detailsSub = $('#detailsSub') as HTMLElement | null
 export let detailsChip = $('#detailsChip') as HTMLElement | null
 export let detailsMeta = $('#detailsMeta') as HTMLElement | null
+export let detailsWarningsSection = $(
+  '#detailsWarningsSection'
+) as HTMLElement | null
+export let detailsWarnings = $('#detailsWarnings') as HTMLElement | null
 export let detailsItemJson = $('#detailsItemJson') as HTMLElement | null
 export let detailsJobJson = $('#detailsJobJson') as HTMLElement | null
 
@@ -160,8 +167,7 @@ export const refreshDom = () => {
   streamMaxZoomEl = $('#streamMaxZoom') as HTMLInputElement | null
   streamBoundsEl = $('#streamBounds') as HTMLInputElement | null
   streamLayersEl = $('#streamLayers') as HTMLInputElement | null
-  streamTileMatrixSetEl =
-    $('#streamTileMatrixSet') as HTMLInputElement | null
+  streamTileMatrixSetEl = $('#streamTileMatrixSet') as HTMLInputElement | null
   streamHeadersEl = $('#streamHeaders') as HTMLTextAreaElement | null
   streamProxyEl = $('#streamProxy') as HTMLInputElement | null
   streamHeavyWarn = $('#streamHeavyWarn') as HTMLElement | null
@@ -197,6 +203,8 @@ export const refreshDom = () => {
   detailsSub = $('#detailsSub') as HTMLElement | null
   detailsChip = $('#detailsChip') as HTMLElement | null
   detailsMeta = $('#detailsMeta') as HTMLElement | null
+  detailsWarningsSection = $('#detailsWarningsSection') as HTMLElement | null
+  detailsWarnings = $('#detailsWarnings') as HTMLElement | null
   detailsItemJson = $('#detailsItemJson') as HTMLElement | null
   detailsJobJson = $('#detailsJobJson') as HTMLElement | null
 

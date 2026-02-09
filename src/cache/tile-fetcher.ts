@@ -2,11 +2,7 @@ import fs from 'fs'
 import type { ChartProvider } from '../types'
 import type { Tile } from './tile-types'
 import { fetchTileFromRemote } from './tile-remote-fetcher'
-import {
-  PMTiles,
-  type RangeResponse,
-  type Source
-} from 'pmtiles'
+import { PMTiles, type RangeResponse, type Source } from 'pmtiles'
 
 export type TileFetcher = {
   getTile: (tile: Tile, signal?: AbortSignal) => Promise<Buffer | null>

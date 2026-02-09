@@ -24,6 +24,7 @@ export type ImportItem = {
   stagingDir?: unknown
   state?: unknown
   errors?: unknown
+  warnings?: unknown
   minZoom?: unknown
   minzoom?: unknown
   maxZoom?: unknown

@@ -56,34 +56,16 @@ export const registerTileRoutes = ({
       }
       if (provider.proxy === true) {
         if (provider.type === 'WMS') {
-          return serveTileFromWms(
-            res,
-            getCachePath(),
-            provider,
-            iz,
-            ix,
-            iy
-          )
+          return serveTileFromWms(res, getCachePath(), provider, iz, ix, iy)
         }
         if (provider.type === 'WMTS') {
-          return serveTileFromWmts(
-            res,
-            getCachePath(),
-            provider,
-            iz,
-            ix,
-            iy
-          )
+          return serveTileFromWmts(res, getCachePath(), provider, iz, ix, iy)
         }
-        if (provider.type === 'tilelayer' && provider.remoteUrl?.endsWith('.tif')) {
-          return serveTileFromCog(
-            res,
-            getCachePath(),
-            provider,
-            iz,
-            ix,
-            iy
-          )
+        if (
+          provider.type === 'tilelayer' &&
+          provider.remoteUrl?.endsWith('.tif')
+        ) {
+          return serveTileFromCog(res, getCachePath(), provider, iz, ix, iy)
         }
         return serveTileFromCacheOrRemote(
           res,
@@ -111,5 +93,4 @@ export const registerTileRoutes = ({
       }
     }
   )
-
 }

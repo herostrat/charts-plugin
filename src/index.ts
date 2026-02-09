@@ -4,7 +4,6 @@ import fs from 'fs'
 import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-import isEmpty from 'lodash/isEmpty.js'
 import _ from 'lodash'
 
 import { findCharts } from './tiles/catalog/scanner'
@@ -13,6 +12,7 @@ import type { ChartProvider, OnlineChartProvider } from './types'
 import { convertOnlineProviderConfig } from './tiles/catalog/online'
 import { registerTileRoutes } from './tiles/routes'
 import { registerStyleRoutes } from './resources/style-routes'
+import { getDefaultThemeKey } from './style/nautical-style-generator'
 import { createImportsConfigService } from './web/imports/config'
 import { registerCacheRoutes } from './web/cache/routes'
 import {
@@ -51,8 +51,7 @@ import type {
 
 interface Config {
   chartsRoot?: string
-  chartPaths: string[]
-  cachePath: string
+  vectorTheme?: string
   onlineChartProviders: OnlineChartProvider[]
   sidecarEnabled?: boolean
   sidecarBaseUrl?: string
@@ -85,15 +84,13 @@ const plugin = (app: ChartProviderApp): Plugin => {
   let vectorCatalogById = new Map<string, VectorCatalogChoice>()
   let refreshListenerRegistered = false
   let props: Config = {
-    chartPaths: [],
-    cachePath: '',
+    vectorTheme: getDefaultThemeKey(),
     onlineChartProviders: []
   }
 
   let urlBase = ''
   const configBasePath = app.config.configPath
-  const defaultChartsRoot = path.join(configBasePath, '/charts')
-  const defaultChartsDatabasePath = path.join(defaultChartsRoot, 'database')
+  const defaultChartsRoot = resolveChartsRoot(configBasePath)
   const serverMajorVersion = app.config.version
     ? parseInt(app.config.version.split('.')[0])
     : '1'
@@ -119,25 +116,10 @@ const plugin = (app: ChartProviderApp): Plugin => {
           default: ''
         }
       }),
-      chartPaths: {
-        type: 'array',
-        title: 'Chart paths',
-        description: `Add one or more paths to find charts. Defaults to "${defaultChartsDatabasePath}"`,
-        items: {
-          type: 'string',
-          title: 'Path',
-          description: `Path for chart files, relative to "${configBasePath}"`
-        }
-      },
       chartsRoot: {
         type: 'string',
         title: 'Charts root',
         description: `Root directory for imports storage layout. Defaults to "${defaultChartsRoot}"`
-      },
-      cachePath: {
-        type: 'string',
-        title: 'Cache path',
-        description: `Directory for cached tiles. Defaults to "${path.join(defaultChartsRoot, 'cache')}"`
       },
       sidecarEnabled: {
         type: 'boolean',
@@ -322,11 +304,8 @@ const plugin = (app: ChartProviderApp): Plugin => {
     const layout = buildChartsStorageLayout(chartsRoot)
     ensureChartsStorageLayout(layout)
 
-    const chartPaths = isEmpty(props.chartPaths)
-      ? [layout.databaseDir]
-      : resolveUniqueChartPaths(props.chartPaths, configBasePath)
-    cachePath =
-      props.cachePath || path.join(getChartsStorageLayout()?.root || chartsRoot, 'cache')
+    const chartPaths = [layout.databaseDir]
+    cachePath = path.join(getChartsStorageLayout()?.root || chartsRoot, 'cache')
     ensureDirectoryExists(cachePath)
     setChartsStorageLayout(layout)
 
@@ -512,6 +491,7 @@ const plugin = (app: ChartProviderApp): Plugin => {
       getProviders: () => chartProviders,
       getCatalogChoice: (identifier) =>
         vectorCatalogById.get(identifier) ?? defaultCatalogId,
+      getThemeKey: () => props.vectorTheme,
       defaultCatalogId
     })
 
@@ -571,16 +551,6 @@ const plugin = (app: ChartProviderApp): Plugin => {
 
 export default plugin
 
-const resolveUniqueChartPaths = (
-  chartPaths: string[],
-  configBasePath: string
-) => {
-  const paths = _.map(chartPaths, (chartPath) =>
-    path.resolve(configBasePath, chartPath)
-  )
-  return _.uniq(paths)
-}
-
 const buildVectorCatalogMap = (
   entries?: Array<{ identifier: string; catalog: string }>
 ) => {
@@ -608,8 +578,9 @@ const ensureDirectoryExists = (path: string) => {
 const resolveSidecarConfig = (config: Config) => {
   const enabled = Boolean(config.sidecarEnabled)
   const baseUrl = (config.sidecarBaseUrl || '').trim()
-  const template =
-    (config.sidecarTileTemplate || '/tiles/{id}/{z}/{x}/{y}').trim()
+  const template = (
+    config.sidecarTileTemplate || '/tiles/{id}/{z}/{x}/{y}'
+  ).trim()
   if (!enabled || baseUrl.length === 0) {
     return { enabled: false, baseUrl: '', template }
   }
@@ -625,6 +596,5 @@ const buildSidecarTileUrl = (
   const normalizedTemplate = template.startsWith('/')
     ? template
     : `/${template}`
-  return `${normalizedBase}${normalizedTemplate}`
-    .replace('{id}', identifier)
+  return `${normalizedBase}${normalizedTemplate}`.replace('{id}', identifier)
 }

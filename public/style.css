@@ -168,7 +168,6 @@ body {
   max-height: calc(100vh - var(--topbar-height, 0px) - 32px);
 }
 
-
 .database,
 .mapcard {
   display: flex;
@@ -604,7 +603,6 @@ body {
   color: var(--bad);
   font-weight: 850;
 }
-
 
 .hint {
   margin-top: 10px;

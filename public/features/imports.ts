@@ -125,6 +125,20 @@ const renderErrors = (job: ImportJob, item: ImportItem) => {
   return `<div style="margin-top:6px; color: #b42318;">${lines}${more}</div>`
 }
 
+const renderWarnings = (item: ImportItem) => {
+  const warns: unknown[] = []
+  if (Array.isArray(item?.warnings)) warns.push(...item.warnings)
+
+  if (!warns.length) return ''
+  const lines = warns
+    .slice(0, 3)
+    .map((w) => `<div>• ${escapeHtml(String(w))}</div>`)
+    .join('')
+  const more =
+    warns.length > 3 ? `<div>...and ${warns.length - 3} more</div>` : ''
+  return `<div style="margin-top:6px; color: var(--warn);">${lines}${more}</div>`
+}
+
 export const renderImports = (jobs: ImportJob[]) => {
   if (!importsListEl) refreshDom()
   const items = flattenItems(jobs)
@@ -157,7 +171,9 @@ export const renderImports = (jobs: ImportJob[]) => {
     const maxZ = meta.maxZoom ?? meta.maxzoom ?? item?.maxZoom ?? item?.maxzoom
     const updated =
       meta.updatedAt ?? meta.updated ?? meta.date ?? meta.timestamp
+    const warningsHtml = renderWarnings(item)
     const errorsHtml = renderErrors(job, item)
+    const detailsHtml = [warningsHtml, errorsHtml].filter(Boolean).join('')
     const canCancel = status === 'progress' || status === 'converting'
     const canDelete =
       status === 'available' || status === 'error' || status === 'canceled'
@@ -182,7 +198,7 @@ export const renderImports = (jobs: ImportJob[]) => {
         <div class="pill"><b>bounds</b><span>${escapeHtml(boundsToCompact(b))}</span></div>
         <div class="pill"><b>updated</b><span>${escapeHtml(updated ? fmtIso(String(updated)) : fmtIso(String(job.updatedAt ?? job.createdAt ?? '')))}</span></div>
       </div>
-      ${errorsHtml ? `<div class="details">${errorsHtml}</div>` : ''}
+      ${detailsHtml ? `<div class="details">${detailsHtml}</div>` : ''}
 
       <div class="rowActions">
         <button class="btn btn--ghost btn--sm" data-details="1">Details</button>

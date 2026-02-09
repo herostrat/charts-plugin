@@ -19,10 +19,13 @@ export const resolveChartsRoot = (
   configBasePath: string,
   chartsRoot?: string
 ) => {
-  if (chartsRoot && chartsRoot.trim().length > 0) {
-    return path.resolve(chartsRoot)
+  const raw = String(chartsRoot ?? '').trim()
+  if (raw.length > 0) {
+    return path.isAbsolute(raw)
+      ? path.normalize(raw)
+      : path.resolve(configBasePath, raw)
   }
-  return path.join(configBasePath, '/charts')
+  return path.resolve(configBasePath, 'charts')
 }
 
 export const buildChartsStorageLayout = (root: string): ChartsStorageLayout => {

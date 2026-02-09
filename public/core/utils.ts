@@ -45,7 +45,10 @@ export const detectTypeFromName = (name?: string) => {
 export const isSupportedType = (t?: string) =>
   SUPPORTED_TYPES.includes(String(t || 'unknown'))
 
-export const isTypeAvailable = (t: string, caps?: ImportCapabilities | null) => {
+export const isTypeAvailable = (
+  t: string,
+  caps?: ImportCapabilities | null
+) => {
   if (!caps) return true
   const blocked = caps.blocked || []
   if (blocked.some((entry) => entry.type === t)) {

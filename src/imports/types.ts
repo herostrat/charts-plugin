@@ -62,6 +62,7 @@ export type ImportItem = {
   metadata?: ImportItemMetadata
   output?: string
   errors: string[]
+  warnings: string[]
 }
 
 export type ImportJob = {

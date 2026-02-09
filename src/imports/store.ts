@@ -76,7 +76,8 @@ const buildItem = (input: {
     convert: input.convert,
     extract: input.extract,
     metadata: input.metadata,
-    errors: []
+    errors: [],
+    warnings: []
   }
 }
 

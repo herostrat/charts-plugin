@@ -1,6 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-import type { TileCache, TileCacheGetResult, TileData, TileKey } from './tile-cache'
+import type {
+  TileCache,
+  TileCacheGetResult,
+  TileData,
+  TileKey
+} from './tile-cache'
 
 export class TileCacheStorageAdapter implements TileCache {
   private cachePath: string

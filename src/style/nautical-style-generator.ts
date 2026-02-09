@@ -17,8 +17,6 @@ import type { ChartObjectDefinition } from '../catalog/schema'
 // BASE STYLES (CHART COLOR PALETTES)
 // ============================================================================
 
-type ThemeId = 's52_day' | 's52_night' | 'signalk_day' | 'signalk_night'
-
 type ThemeColors = {
   water: string
   land: string
@@ -34,75 +32,205 @@ type ThemeColors = {
 }
 
 type StyleLayer = Record<string, unknown>
+type ThemeVariant = {
+  id: string
+  name: string
+  colors: ThemeColors
+}
 
-const CHART_THEMES: Record<ThemeId, ThemeColors> = {
-  s52_day: {
-    water: '#8db3e0',
-    land: '#e8d8c8',
-    urban: '#d4c4b0',
-    lateralRed: '#e60000',
-    lateralGreen: '#00b050',
-    light: '#ffff00',
-    hazard: '#ff00ff',
-    navLine: '#cc00ff',
-    depthLine: '#1a4d7a',
-    symbolBlack: '#000000',
-    symbolWhite: '#ffffff'
+type ThemePack = {
+  id: string
+  name: string
+  variants: ThemeVariant[]
+}
+
+type ThemeSelection = {
+  pack: ThemePack
+  variant: ThemeVariant
+}
+
+type ThemeKey = string
+
+const DEFAULT_THEME_PACK_ID = 'signalk'
+const DEFAULT_THEME_VARIANT_ID = 'day'
+const DEFAULT_THEME_KEY = `${DEFAULT_THEME_PACK_ID}_${DEFAULT_THEME_VARIANT_ID}`
+
+const CHART_THEME_PACKS: ThemePack[] = [
+  {
+    id: 's52',
+    name: 'S-52',
+    variants: [
+      {
+        id: 'day',
+        name: 'Day',
+        colors: {
+          water: '#8db3e0',
+          land: '#e8d8c8',
+          urban: '#d4c4b0',
+          lateralRed: '#e60000',
+          lateralGreen: '#00b050',
+          light: '#ffff00',
+          hazard: '#ff00ff',
+          navLine: '#cc00ff',
+          depthLine: '#1a4d7a',
+          symbolBlack: '#000000',
+          symbolWhite: '#ffffff'
+        }
+      },
+      {
+        id: 'night',
+        name: 'Night',
+        colors: {
+          water: '#0b1b2b',
+          land: '#2a211a',
+          urban: '#3a2f24',
+          lateralRed: '#ff4d4d',
+          lateralGreen: '#3ddc84',
+          light: '#ffd75e',
+          hazard: '#ff66ff',
+          navLine: '#b366ff',
+          depthLine: '#3b6b9a',
+          symbolBlack: '#f0f0f0',
+          symbolWhite: '#0a0a0a'
+        }
+      }
+    ]
   },
-  s52_night: {
-    water: '#0b1b2b',
-    land: '#2a211a',
-    urban: '#3a2f24',
-    lateralRed: '#ff4d4d',
-    lateralGreen: '#3ddc84',
-    light: '#ffd75e',
-    hazard: '#ff66ff',
-    navLine: '#b366ff',
-    depthLine: '#3b6b9a',
-    symbolBlack: '#f0f0f0',
-    symbolWhite: '#0a0a0a'
-  },
-  signalk_day: {
-    water: '#79a6d2',
-    land: '#e2d1b8',
-    urban: '#ccb79a',
-    lateralRed: '#cc2b3e',
-    lateralGreen: '#2f9b5f',
-    light: '#f4d35e',
-    hazard: '#c44536',
-    navLine: '#5b6d9a',
-    depthLine: '#2f5e88',
-    symbolBlack: '#1d1d1d',
-    symbolWhite: '#f5f5f5'
-  },
-  signalk_night: {
-    water: '#0a1825',
-    land: '#241a14',
-    urban: '#2f231b',
-    lateralRed: '#d46a6a',
-    lateralGreen: '#5dc18f',
-    light: '#e6c15c',
-    hazard: '#d48b7b',
-    navLine: '#7a8bb3',
-    depthLine: '#3d6f9f',
-    symbolBlack: '#eaeaea',
-    symbolWhite: '#111111'
+  {
+    id: 'signalk',
+    name: 'Signal K',
+    variants: [
+      {
+        id: 'day',
+        name: 'Day',
+        colors: {
+          water: '#79a6d2',
+          land: '#e2d1b8',
+          urban: '#ccb79a',
+          lateralRed: '#cc2b3e',
+          lateralGreen: '#2f9b5f',
+          light: '#f4d35e',
+          hazard: '#c44536',
+          navLine: '#5b6d9a',
+          depthLine: '#2f5e88',
+          symbolBlack: '#1d1d1d',
+          symbolWhite: '#f5f5f5'
+        }
+      },
+      {
+        id: 'night',
+        name: 'Night',
+        colors: {
+          water: '#0a1825',
+          land: '#241a14',
+          urban: '#2f231b',
+          lateralRed: '#d46a6a',
+          lateralGreen: '#5dc18f',
+          light: '#e6c15c',
+          hazard: '#d48b7b',
+          navLine: '#7a8bb3',
+          depthLine: '#3d6f9f',
+          symbolBlack: '#eaeaea',
+          symbolWhite: '#111111'
+        }
+      }
+    ]
+  }
+]
+
+const getDefaultThemePack = (): ThemePack => {
+  return (
+    CHART_THEME_PACKS.find((pack) => pack.id === DEFAULT_THEME_PACK_ID) ||
+    CHART_THEME_PACKS[0]
+  )
+}
+
+const parseThemeKey = (themeKey?: string) => {
+  const raw = String(themeKey ?? '').trim()
+  if (!raw) {
+    return {
+      packId: DEFAULT_THEME_PACK_ID,
+      variantId: DEFAULT_THEME_VARIANT_ID
+    }
+  }
+  if (raw.includes(':')) {
+    const [packId, variantId] = raw.split(':', 2)
+    return {
+      packId,
+      variantId: variantId || DEFAULT_THEME_VARIANT_ID
+    }
+  }
+  if (raw.includes('/')) {
+    const [packId, variantId] = raw.split('/', 2)
+    return {
+      packId,
+      variantId: variantId || DEFAULT_THEME_VARIANT_ID
+    }
+  }
+  const parts = raw.split('_')
+  if (parts.length >= 2) {
+    return {
+      packId: parts[0],
+      variantId: parts.slice(1).join('_') || DEFAULT_THEME_VARIANT_ID
+    }
+  }
+  return {
+    packId: raw,
+    variantId: DEFAULT_THEME_VARIANT_ID
   }
 }
 
-const getThemeColors = (theme: ThemeId): ThemeColors => {
-  return CHART_THEMES[theme] || CHART_THEMES.signalk_day
+const resolveTheme = (themeKey?: string): ThemeSelection => {
+  const { packId, variantId } = parseThemeKey(themeKey)
+  const fallbackPack = getDefaultThemePack()
+  const pack =
+    CHART_THEME_PACKS.find((candidate) => candidate.id === packId) ||
+    fallbackPack
+  let variant = pack.variants.find((candidate) => candidate.id === variantId)
+  if (!variant) {
+    variant = pack.variants[0] || fallbackPack.variants[0]
+  }
+  if (!variant) {
+    throw new Error('No vector chart themes configured')
+  }
+  return { pack, variant }
 }
+
+const getThemeKey = (packId: string, variantId: string) =>
+  `${packId}_${variantId}`
+
+const getThemeLabel = (themeKey?: string) => {
+  const { pack, variant } = resolveTheme(themeKey)
+  if (pack.variants.length <= 1) {
+    return pack.name
+  }
+  return `${pack.name} / ${variant.name}`
+}
+
+const getThemeColors = (themeKey?: string): ThemeColors => {
+  return resolveTheme(themeKey).variant.colors
+}
+
+export const getDefaultThemeKey = () => DEFAULT_THEME_KEY
+
+export const getThemeOptions = () =>
+  CHART_THEME_PACKS.flatMap((pack) =>
+    pack.variants.map((variant) => {
+      const key = getThemeKey(pack.id, variant.id)
+      return { value: key, label: key }
+    })
+  )
 
 // ============================================================================
 // BASE STYLE SKELETON
 // ============================================================================
 
-function getNauticalBaseStyle(theme: ThemeId) {
+function getNauticalBaseStyle(theme: ThemeKey) {
   const colors = getThemeColors(theme)
+  const label = getThemeLabel(theme)
   return {
     version: 8,
-    name: `Chart Style (${theme})`,
+    name: `Chart Style (${label})`,
     metadata: {
       description: 'Vector chart style for maritime navigation'
     },
@@ -612,7 +740,7 @@ function buildHazardLayers(
 export function buildNauticalVectorStyle(
   provider: ChartProvider,
   catalog: ChartObjectDefinition[],
-  theme: ThemeId = 'signalk_day'
+  theme: ThemeKey = getDefaultThemeKey()
 ) {
   const colors = getThemeColors(theme)
   // 1. Hole Layer-IDs aus Provider
@@ -802,4 +930,4 @@ function normalizeIconKey(value: string): string {
 /**
  * Feature flag option: use the new "nautical" or the old "basic" style
  */
-export type { ThemeId }
+export type { ThemeKey }

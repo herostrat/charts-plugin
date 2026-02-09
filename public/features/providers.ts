@@ -1,20 +1,22 @@
-import {
-  providersEmptyEl,
-  providersListEl,
-  refreshDom
-} from '../core/dom.js'
+import { providersEmptyEl, providersListEl, refreshDom } from '../core/dom.js'
 import type { OnlineProviderRecord } from '../core/state.js'
 import { state } from '../core/state.js'
 import { api } from '../core/api.js'
-import { escapeAttr, escapeHtml, fmtIso, getErrorMessage } from '../core/utils.js'
+import {
+  escapeAttr,
+  escapeHtml,
+  fmtIso,
+  getErrorMessage
+} from '../core/utils.js'
 import { showError } from '../core/ui.js'
 
 const describeProvider = (provider: OnlineProviderRecord) => {
   const type = provider.serverType || 'tilelayer'
   const format = provider.format || 'png'
-  const layers = Array.isArray(provider.layers) && provider.layers.length > 0
-    ? provider.layers.join(', ')
-    : null
+  const layers =
+    Array.isArray(provider.layers) && provider.layers.length > 0
+      ? provider.layers.join(', ')
+      : null
   const proxy = provider.proxy ? 'proxy' : 'direct'
   const updated = provider.updatedAt ? fmtIso(String(provider.updatedAt)) : null
   return { type, format, layers, proxy, updated }
@@ -57,9 +59,9 @@ export const renderProviders = (providers: OnlineProviderRecord[]) => {
       </div>
     `
 
-    const deleteBtn = el.querySelector('button[data-delete]') as
-      | HTMLButtonElement
-      | null
+    const deleteBtn = el.querySelector(
+      'button[data-delete]'
+    ) as HTMLButtonElement | null
     deleteBtn?.addEventListener('click', async (ev) => {
       ev.stopPropagation()
       if (!window.confirm('Delete this online provider?')) return
@@ -81,8 +83,11 @@ export const renderProviders = (providers: OnlineProviderRecord[]) => {
 export const refreshProviders = async () => {
   try {
     const payload: unknown = await api.listOnlineProviders()
-    const providers = Array.isArray((payload as { providers?: unknown }).providers)
-      ? ((payload as { providers?: OnlineProviderRecord[] }).providers as OnlineProviderRecord[])
+    const providers = Array.isArray(
+      (payload as { providers?: unknown }).providers
+    )
+      ? ((payload as { providers?: OnlineProviderRecord[] })
+          .providers as OnlineProviderRecord[])
       : []
     state.providers = providers
     renderProviders(providers)

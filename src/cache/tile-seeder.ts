@@ -43,15 +43,22 @@ export class TileSeedingManager {
     tile: Tile | undefined = undefined
   ): Promise<TileSeeder> {
     const cache = new MbtilesTileCache(chartsPath, provider.identifier)
-    const fetcher = provider._fileFormat === 'pmtiles'
-      ? (() => {
-          if (!provider._filePath) {
-            throw new Error('PMTiles file path not available for hotloading')
-          }
-          return createPmtilesTileFetcher(provider._filePath)
-        })()
-      : createRemoteTileFetcher(provider)
-    const seeder = new TileSeeder(resourcesApi, provider, cache, fetcher, chartsPath)
+    const fetcher =
+      provider._fileFormat === 'pmtiles'
+        ? (() => {
+            if (!provider._filePath) {
+              throw new Error('PMTiles file path not available for hotloading')
+            }
+            return createPmtilesTileFetcher(provider._filePath)
+          })()
+        : createRemoteTileFetcher(provider)
+    const seeder = new TileSeeder(
+      resourcesApi,
+      provider,
+      cache,
+      fetcher,
+      chartsPath
+    )
     if (regionGUID) seeder.initializeJobFromRegion(regionGUID, maxZoom)
     else if (bbox) seeder.initializeJobFromBBox(bbox, maxZoom)
     else if (tile) seeder.initializeJobFromTile(tile, maxZoom)

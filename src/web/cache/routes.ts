@@ -27,7 +27,8 @@ const toRadians = (deg: number) => (deg * Math.PI) / 180
 
 const nmToLat = (nm: number) => nm / 60
 
-const nmToLon = (nm: number, lat: number) => nm / (60 * Math.cos(toRadians(lat)))
+const nmToLon = (nm: number, lat: number) =>
+  nm / (60 * Math.cos(toRadians(lat)))
 
 const computeCourseBBox = (opts: {
   lon: number
@@ -79,13 +80,23 @@ const mergeBboxes = (
 
 const normalizePosition = (value: unknown) => {
   if (!value || typeof value !== 'object') return null
-  const candidate = value as { latitude?: number; longitude?: number; value?: unknown }
-  if (typeof candidate.latitude === 'number' && typeof candidate.longitude === 'number') {
+  const candidate = value as {
+    latitude?: number
+    longitude?: number
+    value?: unknown
+  }
+  if (
+    typeof candidate.latitude === 'number' &&
+    typeof candidate.longitude === 'number'
+  ) {
     return { latitude: candidate.latitude, longitude: candidate.longitude }
   }
   if (candidate.value && typeof candidate.value === 'object') {
     const nested = candidate.value as { latitude?: number; longitude?: number }
-    if (typeof nested.latitude === 'number' && typeof nested.longitude === 'number') {
+    if (
+      typeof nested.latitude === 'number' &&
+      typeof nested.longitude === 'number'
+    ) {
       return { latitude: nested.latitude, longitude: nested.longitude }
     }
   }
@@ -153,7 +164,9 @@ export const registerCacheRoutes = ({
           provider,
           maxZoomParsed,
           regionGUID,
-          bbox ? [bbox.minLon, bbox.minLat, bbox.maxLon, bbox.maxLat] : undefined,
+          bbox
+            ? [bbox.minLon, bbox.minLat, bbox.maxLon, bbox.maxLat]
+            : undefined,
           tile
         )
       } catch (err) {
@@ -256,10 +269,8 @@ export const registerCacheRoutes = ({
       const bodyHeading = normalizeNumber(req.body?.heading)
       const distanceNm = normalizeNumber(req.body?.distanceNm) ?? 2
       const corridorNm = normalizeNumber(req.body?.corridorNm) ?? 0.5
-      const neighborRings =
-        normalizeNumber(req.body?.neighborRings) ?? 1
-      const zoomDelta =
-        normalizeNumber(req.body?.zoomDelta) ?? 1
+      const neighborRings = normalizeNumber(req.body?.neighborRings) ?? 1
+      const zoomDelta = normalizeNumber(req.body?.zoomDelta) ?? 1
 
       const posFromSelf = normalizePosition(
         readSelfPath(app, 'navigation.position')
@@ -286,18 +297,19 @@ export const registerCacheRoutes = ({
         radiusNm: corridorNm
       })
 
-      const bbox = heading == null
-        ? positionBox
-        : mergeBboxes(
-            positionBox,
-            computeCourseBBox({
-              lon: position.longitude,
-              lat: position.latitude,
-              heading,
-              distanceNm,
-              corridorNm
-            })
-          )
+      const bbox =
+        heading == null
+          ? positionBox
+          : mergeBboxes(
+              positionBox,
+              computeCourseBBox({
+                lon: position.longitude,
+                lat: position.latitude,
+                heading,
+                distanceNm,
+                corridorNm
+              })
+            )
 
       try {
         const centerTile = {

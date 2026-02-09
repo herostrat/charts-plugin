@@ -39,7 +39,10 @@ type MbtilesInstance = {
     tile: Buffer,
     cb: (err: Error | null) => void
   ) => void
-  putInfo?: (info: Record<string, unknown>, cb: (err: Error | null) => void) => void
+  putInfo?: (
+    info: Record<string, unknown>,
+    cb: (err: Error | null) => void
+  ) => void
   startWriting: (cb: (err: Error | null) => void) => void
   stopWriting: (cb: (err: Error | null) => void) => void
   close?: (cb: (err: Error | null) => void) => void
@@ -67,7 +70,9 @@ const ensureMbtilesLoaded = async () => {
   }
 }
 
-const openMbtilesWriter = async (filePath: string): Promise<MbtilesInstance> => {
+const openMbtilesWriter = async (
+  filePath: string
+): Promise<MbtilesInstance> => {
   await ensureMbtilesLoaded()
   if (!MBTiles) {
     throw mbtilesLoadError || new Error('MBTiles module not loaded')

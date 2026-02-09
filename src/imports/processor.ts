@@ -24,7 +24,10 @@ import {
   getChartsStorageLayout,
   safeMove
 } from './storage'
-import { writeChartsMetadataFile } from '../metadata/charts-metadata'
+import {
+  validateChartMetadata,
+  writeChartsMetadataFile
+} from '../metadata/charts-metadata'
 import {
   ensureMbtilesLoaded,
   getMbtilesLoadError,
@@ -402,6 +405,25 @@ const processItem = async (jobId: number, item: ImportItem) => {
   }
 
   const validMeta = resolvedMeta as ImportItemMetadata
+  const validation = validateChartMetadata({
+    bounds: validMeta.bounds,
+    minzoom: validMeta.minZoom,
+    maxzoom: validMeta.maxZoom,
+    format: validMeta.format,
+    type: validMeta.type
+  })
+  if (validation.errors.length > 0) {
+    updateImportItem(jobId, item.id, {
+      state: 'METADATA_FAILED',
+      errors: validation.errors
+    })
+    return
+  }
+  if (validation.warnings.length > 0) {
+    updateImportItem(jobId, item.id, {
+      warnings: validation.warnings
+    })
+  }
   if (!item.metadata) {
     updateImportItem(jobId, item.id, {
       metadata: validMeta
