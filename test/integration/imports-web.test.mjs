@@ -1,0 +1,462 @@
+import fs from 'fs'
+import path from 'path'
+import http from 'http'
+import os from 'os'
+import { expect } from 'chai'
+import { request as chaiRequest } from 'chai-http'
+import { fileURLToPath } from 'url'
+import plugin from '../../src/index.ts'
+import {
+  createImportJob,
+  resetImportStore,
+  updateImportItem,
+  updateImportJobState
+} from '../../src/imports/store.ts'
+import { createTestServer } from '../helpers/test-server.mjs'
+import {
+  createChartsRoot,
+  removeChartsRoot
+} from '../helpers/charts-root.mjs'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const fixturesRoot = path.resolve(__dirname, '..', 'fixtures')
+
+const createApp = () => createTestServer({ configPath: fixturesRoot })
+
+const getRequest = (server, location) => {
+  const baseUrl = `http://localhost:${server.address().port}`
+  return chaiRequest.execute(baseUrl).get(location)
+}
+
+const postRequest = (server, location, payload) => {
+  const baseUrl = `http://localhost:${server.address().port}`
+  return chaiRequest.execute(baseUrl).post(location).send(payload)
+}
+
+const putRequest = (server, location, payload) => {
+  const baseUrl = `http://localhost:${server.address().port}`
+  return chaiRequest.execute(baseUrl).put(location).send(payload)
+}
+
+const deleteRequest = (server, location) => {
+  const baseUrl = `http://localhost:${server.address().port}`
+  return chaiRequest.execute(baseUrl).delete(location)
+}
+
+const createTempDir = () => {
+  const base = fs.mkdtempSync(
+    path.join(fs.realpathSync(os.tmpdir()), 'charts-imports-')
+  )
+  return base
+}
+
+const createTempFile = (name, content = 'test') => {
+  const dir = createTempDir()
+  const filePath = path.join(dir, name)
+  fs.writeFileSync(filePath, content)
+  return filePath
+}
+
+const uploadRequest = (server, location, opts) => {
+  const baseUrl = `http://localhost:${server.address().port}`
+  let req = chaiRequest.execute(baseUrl).post(location)
+  if (opts?.detectedType) req = req.field('detectedType', opts.detectedType)
+  if (opts?.metadata) req = req.field('metadata', opts.metadata)
+  if (opts?.filePath) req = req.attach('file', opts.filePath, opts.filename)
+  return req
+}
+
+const parseSseBlock = (block) => {
+  const lines = block.split('\n')
+  const eventLine = lines.find((line) => line.startsWith('event:'))
+  const dataLine = lines.find((line) => line.startsWith('data:'))
+  if (!eventLine || !dataLine) return null
+  const event = eventLine.replace('event:', '').trim()
+  const raw = dataLine.replace('data:', '').trim()
+  let data = null
+  try {
+    data = JSON.parse(raw)
+  } catch {
+    data = null
+  }
+  return { event, data }
+}
+
+const readSseEvents = (res, count = 1, timeoutMs = 2000) => {
+  return new Promise((resolve, reject) => {
+    const events = []
+    let buffer = ''
+    const timer = setTimeout(() => {
+      reject(new Error('Timed out waiting for SSE events'))
+    }, timeoutMs)
+
+    res.on('data', (chunk) => {
+      buffer += chunk.toString()
+      const blocks = buffer.split('\n\n')
+      buffer = blocks.pop() || ''
+      for (const block of blocks) {
+        const parsed = parseSseBlock(block)
+        if (parsed) {
+          events.push(parsed)
+          if (events.length >= count) {
+            clearTimeout(timer)
+            resolve(events)
+            return
+          }
+        }
+      }
+    })
+
+    res.on('error', (err) => {
+      clearTimeout(timer)
+      reject(err)
+    })
+  })
+}
+
+const openSse = (server, location) => {
+  const baseUrl = `http://localhost:${server.address().port}`
+  return new Promise((resolve, reject) => {
+    const req = http.get(`${baseUrl}${location}`, (res) => {
+      resolve({ req, res })
+    })
+    req.on('error', reject)
+  })
+}
+
+describe('Imports Web API', () => {
+  let pluginInstance
+  let testServer
+  let chartsRoots = []
+
+  beforeEach(async () => {
+    resetImportStore()
+    const { app, server } = await createApp()
+    pluginInstance = plugin(app)
+    testServer = server
+    const chartsRoot = createChartsRoot({ fixturesRoot })
+    chartsRoots.push(chartsRoot)
+    await pluginInstance.start({ chartsRoot })
+  })
+
+  afterEach((done) => {
+    resetImportStore()
+    chartsRoots.forEach(removeChartsRoot)
+    chartsRoots = []
+    if (testServer) {
+      testServer.close(() => done())
+    } else {
+      done()
+    }
+  })
+
+  describe('GET /@signalk/charts-plugin/imports', () => {
+    it('returns empty array by default', () => {
+      return getRequest(testServer, '/@signalk/charts-plugin/imports').then(
+        (res) => {
+          expect(res.status).to.equal(200)
+          expect(res.body).to.deep.equal([])
+        }
+      )
+    })
+  })
+
+  describe('POST /@signalk/charts-plugin/imports', () => {
+    it('rejects missing items', () => {
+      return postRequest(testServer, '/@signalk/charts-plugin/imports', {})
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body).to.include({ error: 'BadRequest' })
+        })
+    })
+    it('rejects multiple sources', () => {
+      return postRequest(testServer, '/@signalk/charts-plugin/imports', {
+        items: [
+          {
+            filename: 'test.tif',
+            sourcePath: '/tmp/a.tif',
+            sourceUrl: 'https://example.com/a.tif'
+          }
+        ]
+      })
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/Exactly one source/)
+        })
+    })
+
+    it('rejects unsupported detectedType', () => {
+      return postRequest(testServer, '/@signalk/charts-plugin/imports', {
+        items: [
+          {
+            filename: 'test.tif',
+            sourcePath: '/tmp/test.tif',
+            detectedType: 'nope'
+          }
+        ]
+      })
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/detectedType/)
+        })
+    })
+
+    it('accepts a valid item', () => {
+      return postRequest(testServer, '/@signalk/charts-plugin/imports', {
+        items: [
+          {
+            filename: 'test.tif',
+            sourcePath: '/tmp/test.tif',
+            detectedType: 'geotiff'
+          }
+        ]
+      }).then((res) => {
+        expect(res.status).to.equal(202)
+        expect(res.body).to.have.property('id')
+        expect(res.body.items).to.have.length(1)
+      })
+    })
+  })
+
+  describe('POST /@signalk/charts-plugin/imports/upload', () => {
+    it('creates an import job from uploaded file', () => {
+      const filePath = createTempFile('upload.tif')
+      return uploadRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/upload',
+        {
+          filePath,
+          filename: 'upload.tif',
+          detectedType: 'geotiff'
+        }
+      ).then((res) => {
+        expect(res.status).to.equal(202)
+        expect(res.body).to.have.property('id')
+        expect(res.body.items).to.have.length(1)
+        expect(res.body.items[0].filename).to.equal('upload.tif')
+      })
+    })
+
+    it('rejects unsupported detectedType', () => {
+      const filePath = createTempFile('upload.tif')
+      return uploadRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/upload',
+        {
+          filePath,
+          filename: 'upload.tif',
+          detectedType: 'nope'
+        }
+      )
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/detectedType/)
+        })
+    })
+
+    it('rejects invalid metadata JSON', () => {
+      const filePath = createTempFile('upload.tif')
+      return uploadRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/upload',
+        {
+          filePath,
+          filename: 'upload.tif',
+          detectedType: 'geotiff',
+          metadata: '{bad json'
+        }
+      )
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+          expect(res.body.message).to.match(/metadata/i)
+        })
+    })
+  })
+
+  describe('GET /@signalk/charts-plugin/imports/:id', () => {
+    it('returns 400 for invalid id', () => {
+      return getRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/not-a-number'
+      )
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(400)
+        })
+    })
+
+    it('returns 404 for missing job', () => {
+      return getRequest(testServer, '/@signalk/charts-plugin/imports/999')
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(404)
+        })
+    })
+
+    it('returns a job when it exists', () => {
+      const job = createImportJob([
+        {
+          filename: 'sample.tif',
+          sourcePath: '/tmp/sample.tif',
+          detectedType: 'geotiff'
+        }
+      ])
+
+      return getRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/${job.id}`
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body.id).to.equal(job.id)
+      })
+    })
+  })
+
+  describe('DELETE /@signalk/charts-plugin/imports/:id', () => {
+    it('returns 404 for missing job', () => {
+      return deleteRequest(testServer, '/@signalk/charts-plugin/imports/999')
+        .catch((err) => err.response)
+        .then((res) => {
+          expect(res.status).to.equal(404)
+        })
+    })
+
+    it('deletes a completed job when action=delete', () => {
+      const job = createImportJob([
+        {
+          filename: 'sample.tif',
+          sourcePath: '/tmp/sample.tif',
+          detectedType: 'geotiff'
+        }
+      ])
+      updateImportJobState(job.id, 'COMPLETED')
+
+      return deleteRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/${job.id}?action=delete`
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body.id).to.equal(job.id)
+      })
+    })
+
+    it('cancels a job by default', () => {
+      const job = createImportJob([
+        {
+          filename: 'sample.tif',
+          sourcePath: '/tmp/sample.tif',
+          detectedType: 'geotiff'
+        }
+      ])
+
+      return deleteRequest(
+        testServer,
+        `/@signalk/charts-plugin/imports/${job.id}`
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body.id).to.equal(job.id)
+        expect(res.body.state).to.equal('CANCELED')
+      })
+    })
+  })
+
+  describe('GET /@signalk/charts-plugin/imports/converters/:type', () => {
+    it('returns converters for geotiff', () => {
+      return getRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/converters/geotiff'
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body).to.be.an('array')
+      })
+    })
+  })
+
+  describe('GET /@signalk/charts-plugin/imports/events', () => {
+    it('emits hello and snapshot events with SSE headers', async () => {
+      const { req, res } = await openSse(
+        testServer,
+        '/@signalk/charts-plugin/imports/events'
+      )
+
+      try {
+        expect(res.statusCode).to.equal(200)
+        expect(res.headers['content-type']).to.match(/text\/event-stream/)
+        expect(res.headers['cache-control']).to.include('no-cache')
+        expect(res.headers['cache-control']).to.include('no-transform')
+        expect(res.headers['x-accel-buffering']).to.equal('no')
+
+        const events = await readSseEvents(res, 2, 2000)
+        expect(events[0].event).to.equal('hello')
+        expect(events[1].event).to.equal('snapshot')
+      } finally {
+        req.destroy()
+      }
+    })
+  })
+
+  describe('Config endpoints', () => {
+    it('returns config entries', () => {
+      return getRequest(
+        testServer,
+        '/@signalk/charts-plugin/imports/config'
+      ).then((res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body).to.be.an('array')
+        const keys = res.body.map((entry) => entry.key)
+        expect(keys).to.include('chartsRoot')
+        expect(keys).to.include('vectorTheme')
+      })
+    })
+
+    it('applies config changes', () => {
+      return putRequest(testServer, '/@signalk/charts-plugin/imports/config', {
+        changes: [
+          { key: 'chartsRoot', value: '/tmp/charts-root' },
+          { key: 'vectorTheme', value: 's52_day' }
+        ]
+      }).then((res) => {
+        expect(res.status).to.equal(200)
+        const entry = res.body.find((item) => item.key === 'vectorTheme')
+        expect(entry.value).to.equal('s52_day')
+      })
+    })
+  })
+
+  describe('SSE events', () => {
+    it('emits snapshot and item updates', async () => {
+      const job = createImportJob([
+        {
+          filename: 'sample.tif',
+          sourcePath: '/tmp/sample.tif',
+          detectedType: 'geotiff'
+        }
+      ])
+      const itemId = job.items[0].id
+
+      const { req, res } = await openSse(
+        testServer,
+        '/@signalk/charts-plugin/imports/events'
+      )
+      try {
+        const events = await readSseEvents(res, 2)
+        const snapshot = events.find((event) => event.event === 'snapshot')
+        expect(snapshot).to.exist
+        expect(snapshot.data.type).to.equal('snapshot')
+        expect(snapshot.data.data).to.be.an('array')
+
+        updateImportItem(job.id, itemId, { state: 'COMPLETED' })
+        const updates = await readSseEvents(res, 1)
+        expect(updates[0].event).to.equal('item')
+      } finally {
+        req.destroy()
+      }
+    })
+  })
+})

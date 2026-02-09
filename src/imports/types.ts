@@ -1,0 +1,75 @@
+export type ImportFileType =
+  | 'geotiff'
+  | 's57'
+  | 'mbtiles'
+  | 'pmtiles'
+  | 'unknown'
+
+export type ImportStreamType = 'wms' | 'wmts' | 'cog'
+
+export type ImportJobState =
+  | 'QUEUED'
+  | 'RUNNING'
+  | 'DOWNLOADING'
+  | 'COPYING'
+  | 'DOWNLOADED'
+  | 'METADATA_FAILED'
+  | 'CONVERTING'
+  | 'STAGED'
+  | 'FAILED'
+  | 'COMPLETED'
+  | 'AVAILABLE'
+  | 'CANCELED'
+
+export type ImportConversionTarget = 'pmtiles'
+
+export type ImportConversionOptions = {
+  target: ImportConversionTarget
+  format?: 'png' | 'jpg'
+  vectorFormat?: 'mvt'
+  maxZoom?: number
+}
+
+export type ImportExtractOptions = {
+  kind: 'pmtiles'
+  bbox: [number, number, number, number]
+  maxZoom?: number
+}
+
+export type ImportItemMetadata = {
+  bounds?: [number, number, number, number]
+  minZoom?: number
+  maxZoom?: number
+  updatedAt?: string
+  format?: string
+  type?: ImportFileType
+  description?: string
+}
+
+export type ImportItem = {
+  id: string
+  filename: string
+  detectedType: ImportFileType
+  sizeBytes?: number
+  state: ImportJobState
+  convert?: ImportConversionOptions
+  extract?: ImportExtractOptions
+  stagingDir?: string
+  sourcePath?: string
+  sourceUrl?: string
+  streamUrl?: string
+  streamType?: ImportStreamType
+  metadata?: ImportItemMetadata
+  output?: string
+  errors: string[]
+  warnings: string[]
+}
+
+export type ImportJob = {
+  id: number
+  createdAt: string
+  updatedAt: string
+  state: ImportJobState
+  items: ImportItem[]
+  errors: string[]
+}

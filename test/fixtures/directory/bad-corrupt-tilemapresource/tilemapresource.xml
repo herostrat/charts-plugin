@@ -1,0 +1,8 @@
+<TileMap>
+  <Title>Corrupt Tilemap</Title>
+  <TileFormat extension="png"/>
+  <BoundingBox minx="0" miny="0" maxx="1" maxy="1"/>
+  <TileSets>
+    <TileSet href="0"/>
+    <TileSet href="5"/>
+  <!-- missing closing tags and structure -->

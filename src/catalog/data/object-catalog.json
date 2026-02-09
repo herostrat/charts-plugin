@@ -1,0 +1,3933 @@
+{
+  "version": "0.2.1",
+  "objects": [
+    {
+      "id": "ACHARE",
+      "aliases": ["anchorage", "ACHARE", "achare", "anchorage_area"],
+      "symbolId": "s52_achare",
+      "sprite": "circle",
+      "prettyName": "Anchorage Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "priority": 20,
+        "maxZoom": 24,
+        "description": "anchorage area rendered as a filled polygon with an optional anchor symbol",
+        "iconId": "achare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ACHBRT",
+      "aliases": ["anchor_berth", "ACHBRT", "achbrt"],
+      "symbolId": "s52_achbrt",
+      "sprite": "circle",
+      "prettyName": "Anchor Berth",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "black": "#000000",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "designated anchor berth for a single vessel",
+        "iconId": "achbrt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ADMARE",
+      "aliases": [
+        "ADMARE",
+        "admare",
+        "administration_area_named",
+        "administrative",
+        "admin"
+      ],
+      "symbolId": "s52_admare",
+      "sprite": "circle",
+      "prettyName": "Administration Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "admare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "AIRARE",
+      "aliases": ["AIRARE", "airare", "airport_airfield"],
+      "symbolId": "s52_airare",
+      "sprite": "circle",
+      "prettyName": "Airfield Area",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "symbol for airport as a point",
+        "iconId": "airare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ARCSLN",
+      "aliases": [],
+      "symbolId": "s52_arcsln",
+      "sprite": "circle",
+      "prettyName": "Archipelagic Sea Lane",
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ASLXIS",
+      "aliases": [],
+      "symbolId": "s52_aslxis",
+      "sprite": "circle",
+      "prettyName": "Archipelagic Sea Lane Axis",
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BCNCAR",
+      "aliases": ["BCNCAR", "bcncar", "beacon_cardinal"],
+      "symbolId": "s52_bcncar",
+      "sprite": "circle",
+      "prettyName": "Beacon Cardinal",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FFF559",
+        "black": "#000000",
+        "yellow": "#FFF559"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "bcncar",
+        "labelField": "name",
+        "priority": 60,
+        "maxZoom": 24,
+        "description": "cardinal beacon, north, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BCNISD",
+      "aliases": ["BCNISD", "bcnisd", "beacon_isolated_danger"],
+      "symbolId": "s52_bcnisd",
+      "sprite": "circle",
+      "prettyName": "Beacon Isolated Danger",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FF5E7D",
+        "black": "#000000",
+        "red": "#FF5E7D"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "iconId": "bcnisd",
+        "labelField": "name",
+        "priority": 70,
+        "maxZoom": 24,
+        "description": "isolated danger beacon, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BCNLAT",
+      "aliases": ["BCNLAT", "bcnlat", "beacon_lateral"],
+      "symbolId": "s52_bcnlat",
+      "sprite": "circle",
+      "prettyName": "Beacon Lateral",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FF5E7D",
+        "black": "#000000",
+        "red": "#FF5E7D"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "bcnlat",
+        "labelField": "name",
+        "priority": 60,
+        "maxZoom": 24,
+        "description": "major lateral beacon, red, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BCNSAW",
+      "aliases": ["BCNSAW", "bcnsaw", "beacon_safe_water"],
+      "symbolId": "s52_bcnsaw",
+      "sprite": "circle",
+      "prettyName": "Beacon Safe Water",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#74CDFF",
+        "black": "#000000",
+        "blue": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "bcnsaw",
+        "labelField": "name",
+        "priority": 55,
+        "maxZoom": 24,
+        "description": "major safe water beacon, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BCNSPP",
+      "aliases": [
+        "beacon",
+        "BCNSPP",
+        "bcnspp",
+        "beacon_special_purpose_general"
+      ],
+      "symbolId": "s52_bcnspp",
+      "sprite": "circle",
+      "prettyName": "Beacon Special Purpose",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FFF559",
+        "black": "#000000",
+        "yellow": "#FFF559"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "minor special purpose beacon, simplified",
+        "iconId": "bcnspp"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BERTHS",
+      "aliases": ["BERTHS", "berth", "berths"],
+      "symbolId": "s52_berths",
+      "sprite": "circle",
+      "prettyName": "Berths",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "black": "#000000",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "berth number symbol",
+        "iconId": "berths"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BOYCAR",
+      "aliases": ["BOYCAR", "boycar", "buoy_cardinal"],
+      "symbolId": "s52_boycar",
+      "sprite": "circle",
+      "prettyName": "Buoy Cardinal",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FFF559",
+        "black": "#000000",
+        "yellow": "#FFF559"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "boycar",
+        "labelField": "name",
+        "priority": 55,
+        "maxZoom": 24,
+        "description": "cardinal buoy, north, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BOYINB",
+      "aliases": ["BOYINB", "boyinb", "buoy_installation"],
+      "symbolId": "s52_boyinb",
+      "sprite": "circle",
+      "prettyName": "Buoy Installation",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "boyinb",
+        "labelField": "name",
+        "priority": 45,
+        "maxZoom": 24,
+        "description": "installation buoy and mooring buoy, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BOYISD",
+      "aliases": ["BOYISD", "boyisd", "buoy_isolated_danger"],
+      "symbolId": "s52_boyisd",
+      "sprite": "circle",
+      "prettyName": "Buoy Isolated Danger",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FF5E7D",
+        "black": "#000000",
+        "red": "#FF5E7D"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "iconId": "boyisd",
+        "labelField": "name",
+        "priority": 70,
+        "maxZoom": 24,
+        "description": "isolated danger buoy, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BOYLAT",
+      "aliases": ["BOYLAT", "boylat", "buoy_lateral"],
+      "symbolId": "s52_boylat",
+      "sprite": "circle",
+      "prettyName": "Buoy Lateral",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FF5E7D",
+        "black": "#000000",
+        "red": "#FF5E7D"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "boylat",
+        "labelField": "name",
+        "priority": 50,
+        "maxZoom": 24,
+        "description": "conical lateral buoy, red, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BOYSAW",
+      "aliases": ["BOYSAW", "boysaw", "buoy_safe_water"],
+      "symbolId": "s52_boysaw",
+      "sprite": "circle",
+      "prettyName": "Buoy Safe Water",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FF5E7D",
+        "black": "#000000",
+        "red": "#FF5E7D"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "boysaw",
+        "labelField": "name",
+        "priority": 55,
+        "maxZoom": 24,
+        "description": "safe water buoy, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BOYSPP",
+      "aliases": ["buoy", "BOYSPP", "boyspp", "buoy_special_purpose_general"],
+      "symbolId": "s52_boyspp",
+      "sprite": "circle",
+      "prettyName": "Buoy Special Purpose",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#FFF559",
+        "black": "#000000",
+        "yellow": "#FFF559"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "iconId": "boyspp",
+        "labelField": "name",
+        "priority": 45,
+        "maxZoom": 24,
+        "description": "special purpose buoy, simplified"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BRIDGE",
+      "aliases": ["BRIDGE"],
+      "symbolId": "s52_bridge",
+      "sprite": "circle",
+      "prettyName": "Bridge",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "bridge"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BUAARE",
+      "aliases": ["BUAARE", "buaare", "built_up_area", "buildings"],
+      "symbolId": "s52_buaare",
+      "sprite": "circle",
+      "prettyName": "Built-Up Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#957322",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 0,
+        "maxZoom": 24,
+        "description": "built-up area"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BUISGL",
+      "aliases": ["BUISGL", "building_single", "buisgl", "business"],
+      "symbolId": "s52_buisgl",
+      "sprite": "circle",
+      "prettyName": "Building Single",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#BCA444"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "single building",
+        "iconId": "buisgl"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CANALS",
+      "aliases": ["CANALS", "canal", "canals"],
+      "symbolId": "s52_canals",
+      "sprite": "circle",
+      "prettyName": "Canals",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "canals"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CAUSWY",
+      "aliases": ["CAUSWY", "causeway", "causwy"],
+      "symbolId": "s52_causwy",
+      "sprite": "circle",
+      "prettyName": "Causeway",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "causwy"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CBLARE",
+      "aliases": ["CBLARE", "cable_area", "cblare"],
+      "symbolId": "s52_cblare",
+      "sprite": "circle",
+      "prettyName": "Cable Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "cblare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CBLOHD",
+      "aliases": ["CBLOHD", "cable_overhead", "cblohd"],
+      "symbolId": "s52_cblohd",
+      "sprite": "circle",
+      "prettyName": "Cable Overhead",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style DASH",
+        "iconId": "cblohd"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CBLSUB",
+      "aliases": ["cable", "CBLSUB", "cable_submarine", "cblsub"],
+      "symbolId": "s52_cblsub",
+      "sprite": "circle",
+      "prettyName": "Cable Submarine",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "submarine cable",
+        "iconId": "cblsub"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CGUSTA",
+      "aliases": ["CGUSTA", "cgusta", "coastguard_station"],
+      "symbolId": "s52_cgusta",
+      "sprite": "circle",
+      "prettyName": "Coast Guard Station",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#DEFFFF",
+        "magenta": "#E0BBFF",
+        "white": "#DEFFFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "coastguard station",
+        "iconId": "cgusta"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CHKPNT",
+      "aliases": ["CHKPNT", "checkpoint", "chkpnt"],
+      "symbolId": "s52_chkpnt",
+      "sprite": "circle",
+      "prettyName": "Checkpoint",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "chkpnt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "COALNE",
+      "aliases": ["COALNE", "coalne", "coastline"],
+      "symbolId": "s52_coalne",
+      "sprite": "circle",
+      "prettyName": "Coastline",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "priority": 12,
+        "maxZoom": 24,
+        "description": "S-52 line portrayal",
+        "iconId": "coalne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CONVYR",
+      "aliases": ["CONVYR", "conveyor", "convyr"],
+      "symbolId": "s52_convyr",
+      "sprite": "circle",
+      "prettyName": "Conveyor",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#839BA7",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "verclr",
+        "iconId": "convyr"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CONZNE",
+      "aliases": ["CONZNE", "contiguous_zone", "conzne"],
+      "symbolId": "s52_conzne",
+      "sprite": "circle",
+      "prettyName": "Contiguous Zone",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "conzne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "COSARE",
+      "aliases": ["COSARE", "continental_shelf_area", "cosare"],
+      "symbolId": "s52_cosare",
+      "sprite": "circle",
+      "prettyName": "COSARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "cosare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CRANES",
+      "aliases": ["CRANES", "crane", "cranes"],
+      "symbolId": "s52_cranes",
+      "sprite": "circle",
+      "prettyName": "CRANES",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "cranes",
+        "iconId": "cranes"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CTNARE",
+      "aliases": ["CTNARE", "ctnare"],
+      "symbolId": "s52_ctnare",
+      "sprite": "circle",
+      "prettyName": "Caution Area",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "HO caution note",
+        "iconId": "ctnare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CTRPNT",
+      "aliases": ["CTRPNT", "control_point", "ctrpnt"],
+      "symbolId": "s52_ctrpnt",
+      "sprite": "circle",
+      "prettyName": "Control Point",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "position of an elevation or control point",
+        "iconId": "ctrpnt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CTSARE",
+      "aliases": ["CTSARE", "ctsare", "transhipment-dock"],
+      "symbolId": "s52_ctsare",
+      "sprite": "circle",
+      "prettyName": "CTSARE",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "HO information note",
+        "iconId": "ctsare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CURENT",
+      "aliases": ["CURENT", "curent", "current_non_gravitational"],
+      "symbolId": "s52_curent",
+      "sprite": "circle",
+      "prettyName": "CURENT",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "curent"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CUSZNE",
+      "aliases": ["CUSZNE", "custom_zone", "cuszne"],
+      "symbolId": "s52_cuszne",
+      "sprite": "circle",
+      "prettyName": "CUSZNE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "cuszne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DAMCON",
+      "aliases": ["DAMCON", "dam", "dam_polygons", "damcon"],
+      "symbolId": "s52_damcon",
+      "sprite": "circle",
+      "prettyName": "Dam",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "damcon"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DAYMAR",
+      "aliases": ["DAYMAR", "daymar", "daymark"],
+      "symbolId": "s52_daymar",
+      "sprite": "circle",
+      "prettyName": "Daymark",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#C2EFFF",
+        "black": "#000000",
+        "magenta": "#D44DE7",
+        "blue": "#C2EFFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "square or rectangular daymark, simplified",
+        "iconId": "daymar"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DEPARE",
+      "aliases": ["DEPARE", "depare"],
+      "symbolId": "s52_depare",
+      "sprite": "circle",
+      "prettyName": "Depth Area",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 7,
+        "priority": 10,
+        "maxZoom": 24,
+        "description": "S-52 conditional symbology procedure DEPCNT02",
+        "iconId": "depare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DEPCNT",
+      "aliases": ["DEPCNT", "depcnt"],
+      "symbolId": "s52_depcnt",
+      "sprite": "circle",
+      "prettyName": "Depth Contour",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 7,
+        "priority": 10,
+        "maxZoom": 24,
+        "labelField": "depth",
+        "description": "S-52 conditional symbology procedure DEPCNT02",
+        "iconId": "depcnt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DISMAR",
+      "aliases": ["DISMAR", "dismar", "distance_mark"],
+      "symbolId": "s52_dismar",
+      "sprite": "circle",
+      "prettyName": "Distance Mark",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "distance mark",
+        "iconId": "dismar"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DMPGRD",
+      "aliases": ["DMPGRD", "dmpgrd"],
+      "symbolId": "s52_dmpgrd",
+      "sprite": "circle",
+      "prettyName": "Dumping Ground",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "HO information note",
+        "iconId": "dmpgrd"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DOCARE",
+      "aliases": ["DOCARE", "docare", "dock_area", "dock"],
+      "symbolId": "s52_docare",
+      "sprite": "circle",
+      "prettyName": "DOCARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#74CDFF",
+        "black": "#000000",
+        "blue": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "docare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DRGARE",
+      "aliases": ["DRGARE", "dredged_area", "drgare"],
+      "symbolId": "s52_drgare",
+      "sprite": "circle",
+      "prettyName": "Dredged Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "labelField": "depth",
+        "description": "S-52 conditional symbology procedure DEPARE01",
+        "iconId": "drgare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DRYDOC",
+      "aliases": ["DRYDOC", "dry_dock", "drydoc"],
+      "symbolId": "s52_drydoc",
+      "sprite": "circle",
+      "prettyName": "Dry Dock",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D4D094"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "labelField": "depth",
+        "iconId": "drydoc"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DWRTCL",
+      "aliases": ["DWRTCL", "deep_water_route_centerline", "dwrtcl"],
+      "symbolId": "s52_dwrtcl",
+      "sprite": "circle",
+      "prettyName": "DWRTCL",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "black": "#000000",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "labelField": "orient",
+        "description": "one-way deep water route centreline, not based on fixed marks",
+        "iconId": "dwrtcl"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DWRTPT",
+      "aliases": ["DWRTPT", "deep_water_route_part", "dwrtpt"],
+      "symbolId": "s52_dwrtpt",
+      "sprite": "circle",
+      "prettyName": "DWRTPT",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "dwrtpt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DYKCON",
+      "aliases": ["DYKCON", "dam_lines", "dykcon", "dyke"],
+      "symbolId": "s52_dykcon",
+      "sprite": "circle",
+      "prettyName": "DYKCON",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "dykcon"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "EXEZNE",
+      "aliases": ["EXEZNE", "exclusive_economic_zone", "exezne"],
+      "symbolId": "s52_exezne",
+      "sprite": "circle",
+      "prettyName": "EXEZNE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "exezne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FAIRWY",
+      "aliases": ["FAIRWY", "fairway", "fairwy"],
+      "symbolId": "s52_fairwy",
+      "sprite": "circle",
+      "prettyName": "Fairway",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "priority": 25,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "fairwy"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FERYRT",
+      "aliases": ["ferry_route", "FERYRT", "feryrt", "ferries", "ferry"],
+      "symbolId": "s52_feryrt",
+      "sprite": "circle",
+      "prettyName": "Ferry Route",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "feryrt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FLODOC",
+      "aliases": ["FLODOC", "floating_dock", "flodoc"],
+      "symbolId": "s52_flodoc",
+      "sprite": "circle",
+      "prettyName": "FLODOC",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#55666E"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "flodoc"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FNCLNE",
+      "aliases": ["FNCLNE", "fence_wall", "fnclne"],
+      "symbolId": "s52_fnclne",
+      "sprite": "circle",
+      "prettyName": "FNCLNE",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style SOLD",
+        "iconId": "fnclne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FOGSIG",
+      "aliases": ["FOGSIG", "fog_signal", "fogsig"],
+      "symbolId": "s52_fogsig",
+      "sprite": "circle",
+      "prettyName": "Fog Signal",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "fog signal",
+        "iconId": "fogsig"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FORSTC",
+      "aliases": ["FORSTC", "forstc", "fortified_structure"],
+      "symbolId": "s52_forstc",
+      "sprite": "circle",
+      "prettyName": "Fortified Structure",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "fortified structure",
+        "iconId": "forstc"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FRPARE",
+      "aliases": ["FRPARE", "free_port_area", "frpare"],
+      "symbolId": "s52_frpare",
+      "sprite": "circle",
+      "prettyName": "Free Port Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "frpare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FSHFAC",
+      "aliases": ["FSHFAC", "fishing_facility", "fshfac"],
+      "symbolId": "s52_fshfac",
+      "sprite": "circle",
+      "prettyName": "FSHFAC",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "fish stakes",
+        "iconId": "fshfac"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FSHGRD",
+      "aliases": ["FSHGRD", "fishing_ground", "fshgrd"],
+      "symbolId": "s52_fshgrd",
+      "sprite": "circle",
+      "prettyName": "FSHGRD",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "fshgrd"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "FSHZNE",
+      "aliases": ["FSHZNE", "fishery_zone", "fshzne"],
+      "symbolId": "s52_fshzne",
+      "sprite": "circle",
+      "prettyName": "FSHZNE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "fshzne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "GATCON",
+      "aliases": ["GATCON", "gatcon", "gate"],
+      "symbolId": "s52_gatcon",
+      "sprite": "circle",
+      "prettyName": "Gate",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "non-navigable lock gate",
+        "iconId": "gatcon"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "GRIDRN",
+      "aliases": ["GRIDRN", "gridiron", "gridrn"],
+      "symbolId": "s52_gridrn",
+      "sprite": "circle",
+      "prettyName": "Gridiron",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "gridrn"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "HRBARE",
+      "aliases": [
+        "HRBARE",
+        "harbour_area_administrative",
+        "hrbare",
+        "turning-basin",
+        "turning_basin"
+      ],
+      "symbolId": "s52_hrbare",
+      "sprite": "circle",
+      "prettyName": "Harbour Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "hrbare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "HRBFAC",
+      "aliases": ["HRBFAC", "harbour_facility", "hrbfac", "fuel"],
+      "symbolId": "s52_hrbfac",
+      "sprite": "circle",
+      "prettyName": "Harbour Facility",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "fishing harbour",
+        "iconId": "hrbfac"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "HULKES",
+      "aliases": ["HULKES", "hulk", "hulkes"],
+      "symbolId": "s52_hulkes",
+      "sprite": "circle",
+      "prettyName": "Hulk",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#BCA444"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "hulk",
+        "iconId": "hulkes"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ICEARE",
+      "aliases": ["ICEARE", "ice_area", "iceare"],
+      "symbolId": "s52_iceare",
+      "sprite": "circle",
+      "prettyName": "ICEARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "continuous pattern for an ice area (glacier, etc.)",
+        "iconId": "iceare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ICNARE",
+      "aliases": ["ICNARE", "icnare"],
+      "symbolId": "s52_icnare",
+      "sprite": "circle",
+      "prettyName": "ICNARE",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "HO information note",
+        "iconId": "icnare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ISTZNE",
+      "aliases": ["ISTZNE", "inshore_traffic_zone", "istzne"],
+      "symbolId": "s52_istzne",
+      "sprite": "circle",
+      "prettyName": "ISTZNE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "istzne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LAKARE",
+      "aliases": ["LAKARE", "lakare", "lake"],
+      "symbolId": "s52_lakare",
+      "sprite": "circle",
+      "prettyName": "LAKARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#74CDFF",
+        "black": "#000000",
+        "blue": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "lakare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LIGHTS",
+      "aliases": ["light", "LIGHTS", "lights"],
+      "symbolId": "s52_lights",
+      "sprite": "circle",
+      "prettyName": "Lights",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "labelField": "name",
+        "priority": 70,
+        "maxZoom": 24,
+        "description": "S-52 conditional symbology procedure LIGHTS05",
+        "iconId": "lights"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LITFLT",
+      "aliases": ["LITFLT", "light_float", "litflt"],
+      "symbolId": "s52_litflt",
+      "sprite": "circle",
+      "prettyName": "Light Float",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "light float, simplified",
+        "iconId": "litflt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LITVES",
+      "aliases": ["LITVES", "light_vessel", "litves"],
+      "symbolId": "s52_litves",
+      "sprite": "circle",
+      "prettyName": "Light Vessel",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "light vessel, simplified",
+        "iconId": "litves"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LNDARE",
+      "aliases": [
+        "LNDARE",
+        "land_area",
+        "lndare",
+        "earth",
+        "land",
+        "landuse",
+        "landcover"
+      ],
+      "symbolId": "s52_lndare",
+      "sprite": "circle",
+      "prettyName": "Land Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D4D094"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 0,
+        "maxZoom": 24,
+        "description": "land area"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LNDELV",
+      "aliases": ["LNDELV", "land_elevation", "lndelv"],
+      "symbolId": "s52_lndelv",
+      "sprite": "circle",
+      "prettyName": "LNDELV",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "position of an elevation or control point",
+        "iconId": "lndelv"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LNDMRK",
+      "aliases": [
+        "landmark",
+        "LNDMRK",
+        "lndmrk",
+        "navigation-structure",
+        "place",
+        "places",
+        "poi",
+        "pois",
+        "sites"
+      ],
+      "symbolId": "s52_lndmrk",
+      "sprite": "circle",
+      "prettyName": "Landmark",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "position of a point feature",
+        "iconId": "lndmrk"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LNDRGN",
+      "aliases": ["LNDRGN", "land_region", "lndrgn"],
+      "symbolId": "s52_lndrgn",
+      "sprite": "circle",
+      "prettyName": "LNDRGN",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "position of an elevation or control point",
+        "iconId": "lndrgn"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LOCMAG",
+      "aliases": ["LOCMAG", "local_magnetic_anomaly", "locmag"],
+      "symbolId": "s52_locmag",
+      "sprite": "circle",
+      "prettyName": "LOCMAG",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "cursor pick site for a magnetic anomaly at a point",
+        "iconId": "locmag"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LOGPON",
+      "aliases": ["LOGPON", "log_pond", "logpon"],
+      "symbolId": "s52_logpon",
+      "sprite": "circle",
+      "prettyName": "LOGPON",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "logpon"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LOKBSN",
+      "aliases": ["LOKBSN", "lock_basin", "lokbsn", "lock"],
+      "symbolId": "s52_lokbsn",
+      "sprite": "circle",
+      "prettyName": "Lock Basin",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#74CDFF",
+        "black": "#000000",
+        "blue": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "lokbsn"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "MAGVAR",
+      "aliases": ["MAGVAR", "magnetic_variation", "magvar"],
+      "symbolId": "s52_magvar",
+      "sprite": "circle",
+      "prettyName": "MAGVAR",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "black": "#000000",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "cursor pick site for magnetic variation at a point",
+        "iconId": "magvar"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "MARCUL",
+      "aliases": ["MARCUL", "marcul", "marine_farm_culture"],
+      "symbolId": "s52_marcul",
+      "sprite": "circle",
+      "prettyName": "Marine Culture",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "fish farm",
+        "iconId": "marcul"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "MIPARE",
+      "aliases": ["MIPARE", "military_practice_area", "mipare"],
+      "symbolId": "s52_mipare",
+      "sprite": "circle",
+      "prettyName": "Military Practice Area",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "description": "HO caution note",
+        "iconId": "mipare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "MORFAC",
+      "aliases": ["MORFAC", "mooring_warping_facility", "morfac"],
+      "symbolId": "s52_morfac",
+      "sprite": "circle",
+      "prettyName": "Mooring Facility",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D4D094",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "mooring dolphin",
+        "iconId": "morfac"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "NAVLNE",
+      "aliases": ["NAVLNE", "navigation_line", "navlne"],
+      "symbolId": "s52_navlne",
+      "sprite": "circle",
+      "prettyName": "Navigation Line",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "priority": 25,
+        "maxZoom": 24,
+        "description": "S-52 line style DASH",
+        "iconId": "navlne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "NEWOBJ",
+      "aliases": ["NEWOBJ", "new_object", "newobj"],
+      "symbolId": "s52_newobj",
+      "sprite": "circle",
+      "prettyName": "NEWOBJ",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "newobj"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "OBSTRN",
+      "aliases": ["obstruction", "OBSTRN", "obstrn", "hazard"],
+      "symbolId": "s52_obstrn",
+      "sprite": "cross",
+      "prettyName": "Obstruction",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "priority": 60,
+        "maxZoom": 24,
+        "description": "S-52 conditional symbology procedure OBSTRN04",
+        "iconId": "obstrn"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "OFSPLF",
+      "aliases": ["OFSPLF", "offshore_platform", "ofsplf"],
+      "symbolId": "s52_ofsplf",
+      "sprite": "circle",
+      "prettyName": "OFSPLF",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "offshore platform",
+        "iconId": "ofsplf"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "OILBAR",
+      "aliases": ["OILBAR", "oil_barrier", "oilbar"],
+      "symbolId": "s52_oilbar",
+      "sprite": "circle",
+      "prettyName": "Oil Barrier",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style DASH",
+        "iconId": "oilbar"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "OSPARE",
+      "aliases": ["OSPARE", "offshore_production_area", "ospare"],
+      "symbolId": "s52_ospare",
+      "sprite": "circle",
+      "prettyName": "OSPARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "ospare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PILBOP",
+      "aliases": ["pilot_boarding", "PILBOP", "pilbop", "pilot_boarding_place"],
+      "symbolId": "s52_pilbop",
+      "sprite": "circle",
+      "prettyName": "Pilot Boarding Place",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#DEFFFF",
+        "black": "#000000",
+        "magenta": "#D44DE7",
+        "white": "#DEFFFF",
+        "blue": "#C2EFFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "Pilot boarding place",
+        "iconId": "pilbop"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PILPNT",
+      "aliases": ["PILPNT", "pile", "pilpnt"],
+      "symbolId": "s52_pilpnt",
+      "sprite": "circle",
+      "prettyName": "PILPNT",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "pile or bollard",
+        "iconId": "pilpnt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PIPARE",
+      "aliases": ["pipeline_area", "PIPARE", "pipare"],
+      "symbolId": "s52_pipare",
+      "sprite": "circle",
+      "prettyName": "Pipeline Area",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "description": "HO information note",
+        "iconId": "pipare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PIPOHD",
+      "aliases": ["PIPOHD", "pipeline_overhead", "pipohd"],
+      "symbolId": "s52_pipohd",
+      "sprite": "circle",
+      "prettyName": "PIPOHD",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#839BA7",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "labelField": "verclr",
+        "description": "S-52 line style SOLD",
+        "iconId": "pipohd"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PIPSOL",
+      "aliases": ["PIPSOL", "pipeline_submarine_on_land", "pipsol"],
+      "symbolId": "s52_pipsol",
+      "sprite": "circle",
+      "prettyName": "PIPSOL",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "pipsol"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PONTON",
+      "aliases": ["PONTON", "pier_lines", "pier_polygons", "ponton", "pontoon"],
+      "symbolId": "s52_ponton",
+      "sprite": "circle",
+      "prettyName": "Pontoon",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#55666E"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "ponton"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PRCARE",
+      "aliases": ["PRCARE", "prcare", "precautionary_area"],
+      "symbolId": "s52_prcare",
+      "sprite": "circle",
+      "prettyName": "Precautionary Area",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "point symbol for traffic precautionary area",
+        "iconId": "prcare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PRDARE",
+      "aliases": ["PRDARE", "prdare", "production_storage_area"],
+      "symbolId": "s52_prdare",
+      "sprite": "circle",
+      "prettyName": "PRDARE",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "prdare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "PYLONS",
+      "aliases": ["PYLONS", "pylon_bridge_support", "pylons"],
+      "symbolId": "s52_pylons",
+      "sprite": "circle",
+      "prettyName": "Pylon",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "position of a conspicuous point feature",
+        "iconId": "pylons"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RADLNE",
+      "aliases": ["RADLNE", "radar_line", "radlne"],
+      "symbolId": "s52_radlne",
+      "sprite": "circle",
+      "prettyName": "Radar Line",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "black": "#000000",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "labelField": "orient",
+        "description": "S-52 line style DASH",
+        "iconId": "radlne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RADRFL",
+      "aliases": ["RADRFL", "radar_reflector", "radrfl"],
+      "symbolId": "s52_radrfl",
+      "sprite": "circle",
+      "prettyName": "Radar Reflector",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "radar reflector",
+        "iconId": "radrfl"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RADRNG",
+      "aliases": ["RADRNG", "radar_range", "radrng"],
+      "symbolId": "s52_radrng",
+      "sprite": "circle",
+      "prettyName": "Radar Range",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "radrng"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RADSTA",
+      "aliases": ["radar_station", "radio_station", "RADSTA", "radsta"],
+      "symbolId": "s52_radsta",
+      "sprite": "circle",
+      "prettyName": "Radar Station",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "position of a point feature",
+        "iconId": "radsta"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RAILWY",
+      "aliases": [
+        "RAILWY",
+        "aerialways",
+        "public_transport",
+        "railway",
+        "railwy",
+        "transit"
+      ],
+      "symbolId": "s52_railwy",
+      "sprite": "circle",
+      "prettyName": "RAILWY",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style SOLD",
+        "iconId": "railwy"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RAPIDS",
+      "aliases": ["RAPIDS", "rapids"],
+      "symbolId": "s52_rapids",
+      "sprite": "circle",
+      "prettyName": "Rapids",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "rapids"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RCRTCL",
+      "aliases": [
+        "recommended_route_centreline",
+        "recommended_track",
+        "RCRTCL",
+        "rcrtcl",
+        "recommended_route_centerline"
+      ],
+      "symbolId": "s52_rcrtcl",
+      "sprite": "circle",
+      "prettyName": "Recommended Route Centreline",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "black": "#000000",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "labelField": "orient",
+        "description": "regulated one-way recommended route centreline, not based on fixed marks",
+        "iconId": "rcrtcl"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RCTLPT",
+      "aliases": ["RCTLPT", "rctlpt", "recommended_traffic_lane_part"],
+      "symbolId": "s52_rctlpt",
+      "sprite": "circle",
+      "prettyName": "Recommended Track",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "recommended route between parts of a traffic separation scheme, or for ships not needing a deep water route, with the direction not specified in the data",
+        "iconId": "rctlpt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RDOCAL",
+      "aliases": [
+        "RDOCAL",
+        "radio_calling_in_point",
+        "rdocal",
+        "radio-call-point"
+      ],
+      "symbolId": "s52_rdocal",
+      "sprite": "circle",
+      "prettyName": "RDOCAL",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "black": "#000000",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "name",
+        "description": "radio calling-in point whose direction is not known",
+        "iconId": "rdocal"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RDOSTA",
+      "aliases": ["RDOSTA", "radio_station", "rdosta"],
+      "symbolId": "s52_rdosta",
+      "sprite": "circle",
+      "prettyName": "RDOSTA",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "radio station",
+        "iconId": "rdosta"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RECTRC",
+      "aliases": ["RECTRC", "recommended_track", "rectrc"],
+      "symbolId": "s52_rectrc",
+      "sprite": "circle",
+      "prettyName": "RECTRC",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#839BA7",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "labelField": "orient",
+        "iconId": "rectrc"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RESARE",
+      "aliases": ["RESARE", "resare", "restricted_area"],
+      "symbolId": "s52_resare",
+      "sprite": "circle",
+      "prettyName": "Restricted Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "resare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RETRFL",
+      "aliases": ["RETRFL", "retrfl", "retro_reflector"],
+      "symbolId": "s52_retrfl",
+      "sprite": "circle",
+      "prettyName": "RETRFL",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "retro reflector, simplified",
+        "iconId": "retrfl"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RIVERS",
+      "aliases": ["RIVERS", "river", "rivers", "water_lines"],
+      "symbolId": "s52_rivers",
+      "sprite": "circle",
+      "prettyName": "RIVERS",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "rivers"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ROADWY",
+      "aliases": [
+        "ROADWY",
+        "road",
+        "roadwy",
+        "roads",
+        "street_polygons",
+        "streets"
+      ],
+      "symbolId": "s52_roadwy",
+      "sprite": "circle",
+      "prettyName": "ROADWY",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "roadwy"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RSCSTA",
+      "aliases": ["RSCSTA", "rescue_station", "rscsta"],
+      "symbolId": "s52_rscsta",
+      "sprite": "circle",
+      "prettyName": "Rescue Station",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "position approximate",
+        "iconId": "rscsta"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RTPBCN",
+      "aliases": ["RTPBCN", "radar_transponder_beacon", "rtpbcn"],
+      "symbolId": "s52_rtpbcn",
+      "sprite": "circle",
+      "prettyName": "Radar Transponder Beacon",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "radar transponder beacon",
+        "iconId": "rtpbcn"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RUNWAY",
+      "aliases": ["RUNWAY", "runway"],
+      "symbolId": "s52_runway",
+      "sprite": "circle",
+      "prettyName": "RUNWAY",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "runway"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SBDARE",
+      "aliases": ["SBDARE", "sbdare", "seabed_area"],
+      "symbolId": "s52_sbdare",
+      "sprite": "circle",
+      "prettyName": "SBDARE",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "sbdare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SEAARE",
+      "aliases": [
+        "SEAARE",
+        "ocean",
+        "sea_area_named_water_area",
+        "seaare",
+        "inlet",
+        "water",
+        "water_polygons"
+      ],
+      "symbolId": "s52_seaare",
+      "sprite": "circle",
+      "prettyName": "Sea Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 0,
+        "maxZoom": 24,
+        "iconId": "seaare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SILTNK",
+      "aliases": ["SILTNK", "silo_tank", "siltnk"],
+      "symbolId": "s52_siltnk",
+      "sprite": "circle",
+      "prettyName": "Tank",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "tank",
+        "iconId": "siltnk"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SISTAT",
+      "aliases": ["SISTAT", "signal_station_traffic", "sistat"],
+      "symbolId": "s52_sistat",
+      "sprite": "circle",
+      "prettyName": "SISTAT",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#DEFFFF",
+        "magenta": "#E0BBFF",
+        "white": "#DEFFFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "signal station",
+        "iconId": "sistat"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SISTAW",
+      "aliases": [
+        "SISTAW",
+        "signal_station_warning",
+        "sistaw",
+        "notice-to-mariners"
+      ],
+      "symbolId": "s52_sistaw",
+      "sprite": "circle",
+      "prettyName": "SISTAW",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#DEFFFF",
+        "magenta": "#E0BBFF",
+        "white": "#DEFFFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "signal station",
+        "iconId": "sistaw"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SLCONS",
+      "aliases": ["SLCONS", "shoreline_construction", "slcons"],
+      "symbolId": "s52_slcons",
+      "sprite": "circle",
+      "prettyName": "Shoreline Construction",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#D4D094",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "mooring dolphin",
+        "iconId": "slcons"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SLOGRD",
+      "aliases": ["SLOGRD", "slogrd", "sloping_ground"],
+      "symbolId": "s52_slogrd",
+      "sprite": "circle",
+      "prettyName": "SLOGRD",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "hill or mountain top",
+        "iconId": "slogrd"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SLOTOP",
+      "aliases": ["SLOTOP", "slope_topline", "slotop"],
+      "symbolId": "s52_slotop",
+      "sprite": "circle",
+      "prettyName": "SLOTOP",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#957322"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style SOLD",
+        "iconId": "slotop"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SMCFAC",
+      "aliases": [
+        "SMCFAC",
+        "small_craft_facility",
+        "smcfac",
+        "boatramp",
+        "marina"
+      ],
+      "symbolId": "s52_smcfac",
+      "sprite": "circle",
+      "prettyName": "SMCFAC",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "smcfac"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SNDWAV",
+      "aliases": ["SNDWAV", "sand_waves", "sndwav"],
+      "symbolId": "s52_sndwav",
+      "sprite": "circle",
+      "prettyName": "SNDWAV",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "sand waves",
+        "iconId": "sndwav"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SOUNDG",
+      "aliases": ["SOUNDG", "soundg", "sounding"],
+      "symbolId": "s52_soundg",
+      "sprite": "circle",
+      "prettyName": "Sounding",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "iconId": "soundg",
+        "labelField": "depth",
+        "priority": 15,
+        "maxZoom": 24,
+        "description": "S-52 conditional symbology procedure SOUNDG02"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SPLARE",
+      "aliases": ["SPLARE", "sea_plane_landing_area", "splare"],
+      "symbolId": "s52_splare",
+      "sprite": "circle",
+      "prettyName": "Separation Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "sea plane landing area",
+        "iconId": "splare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SPRING",
+      "aliases": ["spring", "SPRING"],
+      "symbolId": "s52_spring",
+      "sprite": "circle",
+      "prettyName": "SPRING",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "spring",
+        "iconId": "spring"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "STSLNE",
+      "aliases": ["STSLNE", "straight_territorial_sea_baseline", "stslne"],
+      "symbolId": "s52_stslne",
+      "sprite": "circle",
+      "prettyName": "STSLNE",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style DASH",
+        "iconId": "stslne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SUBTLN",
+      "aliases": ["SUBTLN", "submarine_transit_lane", "subtln"],
+      "symbolId": "s52_subtln",
+      "sprite": "circle",
+      "prettyName": "SUBTLN",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "subtln"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SWPARE",
+      "aliases": ["SWPARE", "swept_area", "swpare"],
+      "symbolId": "s52_swpare",
+      "sprite": "circle",
+      "prettyName": "SWPARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "drval1",
+        "description": "S-52 area portrayal",
+        "iconId": "swpare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TESARE",
+      "aliases": ["TESARE", "territorial_sea_area", "tesare"],
+      "symbolId": "s52_tesare",
+      "sprite": "circle",
+      "prettyName": "TESARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "description": "S-52 conditional symbology procedure RESTRN01",
+        "iconId": "tesare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TIDEWY",
+      "aliases": [
+        "TIDEWY",
+        "tideway",
+        "tidewy",
+        "waterway-guage",
+        "waterway_gauge"
+      ],
+      "symbolId": "s52_tidewy",
+      "sprite": "circle",
+      "prettyName": "TIDEWY",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "tidewy"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TOPMAR",
+      "aliases": ["TOPMAR", "topmar", "topmark"],
+      "symbolId": "s52_topmar",
+      "sprite": "circle",
+      "prettyName": "Topmark",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "topmar"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TSELNE",
+      "aliases": ["TSELNE", "traffic_separation_line", "tselne"],
+      "symbolId": "s52_tselne",
+      "sprite": "circle",
+      "prettyName": "TSELNE",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style SOLD",
+        "iconId": "tselne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TSEZNE",
+      "aliases": ["TSEZNE", "traffic_separation_zone", "tsezne"],
+      "symbolId": "s52_tsezne",
+      "sprite": "circle",
+      "prettyName": "TSEZNE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "tsezne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TSSBND",
+      "aliases": [
+        "separation_boundary",
+        "TSSBND",
+        "traffic_separation_scheme_boundary",
+        "tssbnd"
+      ],
+      "symbolId": "s52_tssbnd",
+      "sprite": "circle",
+      "prettyName": "Traffic Separation Boundary",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line style DASH",
+        "iconId": "tssbnd"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TSSCRS",
+      "aliases": [
+        "separation_crossing",
+        "TSSCRS",
+        "traffic_separation_scheme_crossing",
+        "tsscrs"
+      ],
+      "symbolId": "s52_tsscrs",
+      "sprite": "circle",
+      "prettyName": "Traffic Separation Crossing",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "precautionary area or a traffic separation scheme crossing or roundabout",
+        "iconId": "tsscrs"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TSSLPT",
+      "aliases": ["TSSLPT", "traffic_separation_scheme_lane_part", "tsslpt"],
+      "symbolId": "s52_tsslpt",
+      "sprite": "circle",
+      "prettyName": "TSSLPT",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "black": "#000000",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "precautionary area or a traffic separation scheme crossing or roundabout",
+        "iconId": "tsslpt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TSSRON",
+      "aliases": [
+        "separation_roundabout",
+        "TSSRON",
+        "traffic_separation_scheme_roundabout",
+        "tssron"
+      ],
+      "symbolId": "s52_tssron",
+      "sprite": "circle",
+      "prettyName": "Traffic Separation Roundabout",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "precautionary area or a traffic separation scheme crossing or roundabout",
+        "iconId": "tssron"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TUNNEL",
+      "aliases": ["TUNNEL", "tunnel"],
+      "symbolId": "s52_tunnel",
+      "sprite": "circle",
+      "prettyName": "TUNNEL",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "tunnel"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TWRTPT",
+      "aliases": ["TWRTPT", "two_way_route_part", "twrtpt"],
+      "symbolId": "s52_twrtpt",
+      "sprite": "circle",
+      "prettyName": "Two-Way Route",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "S-52 area portrayal",
+        "iconId": "twrtpt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "UNSARE",
+      "aliases": ["UNSARE", "unsare", "unsurveyed_area"],
+      "symbolId": "s52_unsare",
+      "sprite": "circle",
+      "prettyName": "UNSARE",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#ACCADA"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "area of no chart data",
+        "iconId": "unsare"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "UWTROC",
+      "aliases": ["UWTROC", "underwater_rock_awash_rock", "uwtroc"],
+      "symbolId": "s52_uwtroc",
+      "sprite": "circle",
+      "prettyName": "UWTROC",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "description": "S-52 conditional symbology procedure OBSTRN04",
+        "iconId": "uwtroc"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "VEGATN",
+      "aliases": ["VEGATN", "vegatn", "vegetation"],
+      "symbolId": "s52_vegatn",
+      "sprite": "circle",
+      "prettyName": "Vegetation",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "vegatn"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "WATFAL",
+      "aliases": ["WATFAL", "waterfall", "watfal"],
+      "symbolId": "s52_watfal",
+      "sprite": "circle",
+      "prettyName": "Waterfall",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "watfal"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "WATTUR",
+      "aliases": ["WATTUR", "water_turbulence", "wattur"],
+      "symbolId": "s52_wattur",
+      "sprite": "circle",
+      "prettyName": "WATTUR",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "overfalls, eddies and breakers",
+        "iconId": "wattur"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "WEDKLP",
+      "aliases": ["WEDKLP", "wedklp", "weed_kelp"],
+      "symbolId": "s52_wedklp",
+      "sprite": "circle",
+      "prettyName": "WEDKLP",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#839BA7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "weed, kelp",
+        "iconId": "wedklp"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "WRECKS",
+      "aliases": ["wreck", "WRECKS", "wrecks"],
+      "symbolId": "s52_wrecks",
+      "sprite": "cross",
+      "prettyName": "Wreck",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 7,
+        "labelField": "name",
+        "priority": 65,
+        "maxZoom": 24,
+        "description": "S-52 conditional symbology procedure WRECKS02",
+        "iconId": "wrecks"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ACHPNT",
+      "aliases": ["ACHPNT", "achpnt", "anchor"],
+      "symbolId": "s52_achpnt",
+      "sprite": "circle",
+      "prettyName": "ACHPNT",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#E0BBFF",
+        "magenta": "#E0BBFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "anchor",
+        "iconId": "achpnt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "BUIREL",
+      "aliases": ["BUIREL", "building_religous", "buirel"],
+      "symbolId": "s52_buirel",
+      "sprite": "circle",
+      "prettyName": "BUIREL",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "conspicuous religious building, Christian",
+        "iconId": "buirel"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CANBNK",
+      "aliases": ["CANBNK", "canbnk"],
+      "symbolId": "s52_canbnk",
+      "sprite": "circle",
+      "prettyName": "CANBNK",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "canbnk"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "CHNWIR",
+      "aliases": ["CHNWIR", "chain_wire", "chnwir"],
+      "symbolId": "s52_chnwir",
+      "sprite": "circle",
+      "prettyName": "CHNWIR",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "chnwir"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "LAKSHR",
+      "aliases": ["LAKSHR", "lake_shore", "lakshr"],
+      "symbolId": "s52_lakshr",
+      "sprite": "circle",
+      "prettyName": "LAKSHR",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#55666E"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "lakshr"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "MONUMT",
+      "aliases": ["MONUMT", "monument", "monumt"],
+      "symbolId": "s52_monumt",
+      "sprite": "circle",
+      "prettyName": "MONUMT",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "conspicuous monument",
+        "iconId": "monumt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RIVBNK",
+      "aliases": ["RIVBNK", "rivbnk", "river_bank"],
+      "symbolId": "s52_rivbnk",
+      "sprite": "circle",
+      "prettyName": "RIVBNK",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "rivbnk"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "SQUARE",
+      "aliases": ["SQUARE", "square"],
+      "symbolId": "s52_square",
+      "sprite": "circle",
+      "prettyName": "SQUARE",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "square"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TOWERS",
+      "aliases": ["TOWERS", "tower", "towers"],
+      "symbolId": "s52_towers",
+      "sprite": "circle",
+      "prettyName": "TOWERS",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#C2EFFF",
+        "black": "#000000",
+        "blue": "#C2EFFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "tower, black, full-chart and simplified",
+        "iconId": "towers"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ZEMCNT",
+      "aliases": ["ZEMCNT", "zemcnt", "zero_meter_contour"],
+      "symbolId": "s52_zemcnt",
+      "sprite": "circle",
+      "prettyName": "ZEMCNT",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000",
+        "black": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "iconId": "zemcnt"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "ANNOTA",
+      "aliases": ["ANNOTA", "annota", "annotation"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "ANNOTA",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "annota"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "RESTRC",
+      "aliases": ["RESTRC", "generic_boundary", "restrc"],
+      "symbolId": "s52_restrc",
+      "sprite": "circle",
+      "prettyName": "RESTRC",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line portrayal",
+        "iconId": "restrc"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "TRFLNE",
+      "aliases": ["TRFLNE", "traffic_line", "trflne"],
+      "symbolId": "s52_trflne",
+      "sprite": "circle",
+      "prettyName": "TRFLNE",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "S-52 line portrayal",
+        "iconId": "trflne"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "GENNAV",
+      "aliases": ["GENNAV", "generic_navaid", "gennav"],
+      "symbolId": "s52_gennav",
+      "sprite": "circle",
+      "prettyName": "GENNAV",
+      "featureType": "poi",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "poi",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "iconId": "gennav"
+      },
+      "origin": "S52 objects",
+      "notes": ["origin: S52 objects"]
+    },
+    {
+      "id": "DEPTH_AREA",
+      "aliases": ["depth_area"],
+      "symbolId": "s52_depare",
+      "sprite": "circle",
+      "prettyName": "Depth Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "description": "depth area",
+        "iconId": "depare",
+        "priority": 10
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from DEPARE alias depth_area"
+      ]
+    },
+    {
+      "id": "DEPTH_CONTOUR",
+      "aliases": ["depth_contour"],
+      "symbolId": "s52_depcnt",
+      "sprite": "circle",
+      "prettyName": "Depth Contour",
+      "featureType": "depth",
+      "colorScheme": {
+        "default": "#74CDFF"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "depth",
+        "minZoom": 7,
+        "maxZoom": 24,
+        "labelField": "depth",
+        "description": "depth contour",
+        "iconId": "depcnt",
+        "priority": 10
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from DEPCNT alias depth_contour"
+      ]
+    },
+    {
+      "id": "CAUTION_AREA",
+      "aliases": ["caution_area"],
+      "symbolId": "s52_ctnare",
+      "sprite": "circle",
+      "prettyName": "Caution Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "caution area",
+        "iconId": "ctnare"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from CTNARE alias caution_area"
+      ]
+    },
+    {
+      "id": "CARGO_TRANSSHIPMENT_AREA",
+      "aliases": ["cargo_transshipment_area"],
+      "symbolId": "s52_ctsare",
+      "sprite": "circle",
+      "prettyName": "Cargo Transshipment Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "cargo transshipment area",
+        "iconId": "ctsare"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from CTSARE alias cargo_transshipment_area"
+      ]
+    },
+    {
+      "id": "DUMPING_GROUND_AREA",
+      "aliases": ["dumping_ground"],
+      "symbolId": "s52_dmpgrd",
+      "sprite": "circle",
+      "prettyName": "Dumping Ground",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "dumping ground",
+        "iconId": "dmpgrd"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from DMPGRD alias dumping_ground"
+      ]
+    },
+    {
+      "id": "INCINERATION_AREA",
+      "aliases": ["incineration_area"],
+      "symbolId": "s52_icnare",
+      "sprite": "circle",
+      "prettyName": "Incineration Area",
+      "featureType": "area",
+      "colorScheme": {
+        "default": "#D44DE7",
+        "magenta": "#D44DE7"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "area",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "description": "incineration area",
+        "iconId": "icnare"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from ICNARE alias incineration_area"
+      ]
+    },
+    {
+      "id": "BRIDGE_LINE",
+      "aliases": ["bridge", "bridges"],
+      "symbolId": "s52_bridge",
+      "sprite": "circle",
+      "prettyName": "Bridge",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "bridge line",
+        "iconId": "bridge"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from BRIDGE aliases bridge/bridges"
+      ]
+    },
+    {
+      "id": "CANAL_BANK_LINE",
+      "aliases": ["canal_bank"],
+      "symbolId": "s52_canbnk",
+      "sprite": "circle",
+      "prettyName": "Canal Bank",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 10,
+        "maxZoom": 24,
+        "description": "canal bank",
+        "iconId": "canbnk"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from CANBNK alias canal_bank"
+      ]
+    },
+    {
+      "id": "BOUNDARY_LINE",
+      "aliases": ["boundary", "boundaries"],
+      "symbolId": "s52_restrc",
+      "sprite": "circle",
+      "prettyName": "Boundary Line",
+      "featureType": "line",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "line",
+        "minZoom": 9,
+        "maxZoom": 24,
+        "description": "boundary line",
+        "iconId": "restrc"
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from COALNE aliases boundary/boundaries"
+      ]
+    },
+    {
+      "id": "LABELS_ADDRESS",
+      "aliases": ["addresses"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Address Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 12,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 10,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": ["origin: custom mapping", "derived from LNDMRK alias addresses"]
+    },
+    {
+      "id": "LABELS_BOUNDARY",
+      "aliases": ["boundary_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Boundary Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "line",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias boundary_labels"
+      ]
+    },
+    {
+      "id": "LABELS_PLACE",
+      "aliases": ["place_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Place Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias place_labels"
+      ]
+    },
+    {
+      "id": "LABELS_STREET",
+      "aliases": ["street_labels", "streets_polygons_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Street Labels",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 11,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "line",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK aliases street_labels/streets_polygons_labels"
+      ]
+    },
+    {
+      "id": "LABELS_STREET_POINT",
+      "aliases": ["street_labels_points"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Street Labels (Points)",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 12,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 10,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias street_labels_points"
+      ]
+    },
+    {
+      "id": "LABELS_WATER_LINE",
+      "aliases": ["water_lines_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Water Labels (Lines)",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "line",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias water_lines_labels"
+      ]
+    },
+    {
+      "id": "LABELS_WATER_AREA",
+      "aliases": ["water_polygons_labels"],
+      "symbolId": "s52_annota",
+      "sprite": "circle",
+      "prettyName": "Water Labels (Areas)",
+      "featureType": "text",
+      "colorScheme": {
+        "default": "#000000"
+      },
+      "mapboxRenderingHints": {
+        "layerType": "text",
+        "minZoom": 8,
+        "maxZoom": 24,
+        "labelField": "name",
+        "textPlacement": "point",
+        "textSize": 11,
+        "textAllowOverlap": false
+      },
+      "origin": "Custom mapping",
+      "notes": [
+        "origin: custom mapping",
+        "derived from LNDMRK alias water_polygons_labels"
+      ]
+    }
+  ],
+  "unmappedAliases": [
+    "building",
+    "bunker_station",
+    "calling-in_point",
+    "communication_area",
+    "exceptional_structure",
+    "harbour",
+    "harbour_basin",
+    "marine_farm",
+    "military_area",
+    "mooring",
+    "notice",
+    "pipeline",
+    "platform",
+    "production_area",
+    "pylon",
+    "radar_transponder",
+    "recommended_traffic_lane",
+    "rock",
+    "sea_area",
+    "seagrass",
+    "seaplane_landing_area",
+    "separation_lane",
+    "separation_line",
+    "separation_zone",
+    "signal_station",
+    "tank",
+    "two-way_route",
+    "vehicle_transfer",
+    "virtual_aton",
+    "wall",
+    "weed"
+  ]
+}

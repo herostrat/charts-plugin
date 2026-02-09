@@ -1,0 +1,853 @@
+{
+  "generatedAt": "2026-02-08T19:48:15.202Z",
+  "source": "generated",
+  "providers": [
+    {
+      "id": "noaa-enc",
+      "name": "NOAA Office of Coast Survey - ENC",
+      "homepage": "https://charts.noaa.gov/ENCs/ENCs.shtml",
+      "note": "U.S. coasts, Puerto Rico, US Virgin Islands, Hawaiian Islands to Midway, American Samoa, Guam, Northern Marianas Islands.",
+      "checkedAt": "2026-02-08T19:48:15.202Z",
+      "charts": [
+        {
+          "id": "noaa-all-encs-all",
+          "name": "All",
+          "url": "https://charts.noaa.gov/ENCs/All_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 791674880,
+          "details": "Group: All ENCs",
+          "lastUpdated": "2026-02-06T05:52:05.000Z"
+        },
+        {
+          "id": "noaa-all-encs-ten-days",
+          "name": "Ten Days",
+          "url": "https://charts.noaa.gov/ENCs/TenDays_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 48234496,
+          "details": "Group: All ENCs",
+          "lastUpdated": "2026-02-06T05:53:48.000Z"
+        },
+        {
+          "id": "noaa-all-encs-one-week",
+          "name": "One Week",
+          "url": "https://charts.noaa.gov/ENCs/OneWeek_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 27262976,
+          "details": "Group: All ENCs",
+          "lastUpdated": "2026-02-06T05:53:31.000Z"
+        },
+        {
+          "id": "noaa-all-encs-two-days",
+          "name": "Two Days",
+          "url": "https://charts.noaa.gov/ENCs/TwoDays_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 8388608,
+          "details": "Group: All ENCs",
+          "lastUpdated": "2026-02-06T05:53:51.000Z"
+        },
+        {
+          "id": "noaa-all-encs-one-day",
+          "name": "One Day",
+          "url": "https://charts.noaa.gov/ENCs/OneDay_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 3145728,
+          "details": "Group: All ENCs",
+          "lastUpdated": "2026-02-06T05:53:30.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-01-cgd",
+          "name": "01 CGD",
+          "url": "https://charts.noaa.gov/ENCs/01CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 101711872,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:47:03.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-05-cgd",
+          "name": "05 CGD",
+          "url": "https://charts.noaa.gov/ENCs/05CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 87031808,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:48:19.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-07-cgd",
+          "name": "07 CGD",
+          "url": "https://charts.noaa.gov/ENCs/07CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 92274688,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:48:48.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-08-cgd",
+          "name": "08 CGD",
+          "url": "https://charts.noaa.gov/ENCs/08CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 100663296,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:49:16.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-09-cgd",
+          "name": "09 CGD",
+          "url": "https://charts.noaa.gov/ENCs/09CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 59768832,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:49:18.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-11-cgd",
+          "name": "11 CGD",
+          "url": "https://charts.noaa.gov/ENCs/11CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 42991616,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:49:20.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-13-cgd",
+          "name": "13 CGD",
+          "url": "https://charts.noaa.gov/ENCs/13CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 57671680,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:49:22.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-14-cgd",
+          "name": "14 CGD",
+          "url": "https://charts.noaa.gov/ENCs/14CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 49283072,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:49:24.000Z"
+        },
+        {
+          "id": "noaa-encs-by-coast-guard-districts-17-cgd",
+          "name": "17 CGD",
+          "url": "https://charts.noaa.gov/ENCs/17CGD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 217055232,
+          "details": "Group: ENCs by Coast Guard Districts",
+          "lastUpdated": "2026-02-06T05:49:55.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ak",
+          "name": "AK",
+          "url": "https://charts.noaa.gov/ENCs/AK_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 217055232,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:51:27.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-al",
+          "name": "AL",
+          "url": "https://charts.noaa.gov/ENCs/AL_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 8388608,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:07.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-aq",
+          "name": "AQ",
+          "url": "https://charts.noaa.gov/ENCs/AQ_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 0,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:08.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-bs",
+          "name": "BS",
+          "url": "https://charts.noaa.gov/ENCs/BS_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 0,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:08.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ca",
+          "name": "CA",
+          "url": "https://charts.noaa.gov/ENCs/CA_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 38797312,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:09.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ct",
+          "name": "CT",
+          "url": "https://charts.noaa.gov/ENCs/CT_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 9437184,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:09.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-de",
+          "name": "DE",
+          "url": "https://charts.noaa.gov/ENCs/DE_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 6291456,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:30.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-fl",
+          "name": "FL",
+          "url": "https://charts.noaa.gov/ENCs/FL_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 59768832,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:33.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-fm",
+          "name": "FM",
+          "url": "https://charts.noaa.gov/ENCs/FM_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 5242880,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:36.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ga",
+          "name": "GA",
+          "url": "https://charts.noaa.gov/ENCs/GA_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 14680064,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:38.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-gt",
+          "name": "GT",
+          "url": "https://charts.noaa.gov/ENCs/GT_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 0,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:38.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-hi",
+          "name": "HI",
+          "url": "https://charts.noaa.gov/ENCs/HI_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 17825792,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:39.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ht",
+          "name": "HT",
+          "url": "https://charts.noaa.gov/ENCs/HT_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 5242880,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:40.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-id",
+          "name": "ID",
+          "url": "https://charts.noaa.gov/ENCs/ID_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 0,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:40.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-il",
+          "name": "IL",
+          "url": "https://charts.noaa.gov/ENCs/IL_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 2097152,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:41.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-in",
+          "name": "IN",
+          "url": "https://charts.noaa.gov/ENCs/IN_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 1048576,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:42.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-la",
+          "name": "LA",
+          "url": "https://charts.noaa.gov/ENCs/LA_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 56623104,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:44.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ma",
+          "name": "MA",
+          "url": "https://charts.noaa.gov/ENCs/MA_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 26214400,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:45.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-md",
+          "name": "MD",
+          "url": "https://charts.noaa.gov/ENCs/MD_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 25165824,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:45.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-me",
+          "name": "ME",
+          "url": "https://charts.noaa.gov/ENCs/ME_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 39845888,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:54.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-mh",
+          "name": "MH",
+          "url": "https://charts.noaa.gov/ENCs/MH_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 4194304,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:55.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-mi",
+          "name": "MI",
+          "url": "https://charts.noaa.gov/ENCs/MI_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 33554432,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:56.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-mn",
+          "name": "MN",
+          "url": "https://charts.noaa.gov/ENCs/MN_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 2097152,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:52:58.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ms",
+          "name": "MS",
+          "url": "https://charts.noaa.gov/ENCs/MS_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 7340032,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:00.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-nc",
+          "name": "NC",
+          "url": "https://charts.noaa.gov/ENCs/NC_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 19922944,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:13.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-nh",
+          "name": "NH",
+          "url": "https://charts.noaa.gov/ENCs/NH_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 4194304,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:15.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-nj",
+          "name": "NJ",
+          "url": "https://charts.noaa.gov/ENCs/NJ_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 15728640,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:26.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-nv",
+          "name": "NV",
+          "url": "https://charts.noaa.gov/ENCs/NV_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 4194304,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:27.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ny",
+          "name": "NY",
+          "url": "https://charts.noaa.gov/ENCs/NY_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 35651584,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:28.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-oh",
+          "name": "OH",
+          "url": "https://charts.noaa.gov/ENCs/OH_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 7340032,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:29.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-or",
+          "name": "OR",
+          "url": "https://charts.noaa.gov/ENCs/OR_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 17825792,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:32.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-pa",
+          "name": "PA",
+          "url": "https://charts.noaa.gov/ENCs/PA_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 2097152,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:32.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-po",
+          "name": "PO",
+          "url": "https://charts.noaa.gov/ENCs/PO_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 18874368,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:33.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-pw",
+          "name": "PW",
+          "url": "https://charts.noaa.gov/ENCs/PW_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 0,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:38.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-pr",
+          "name": "PR",
+          "url": "https://charts.noaa.gov/ENCs/PR_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 12582912,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:37.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-ri",
+          "name": "RI",
+          "url": "https://charts.noaa.gov/ENCs/RI_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 6291456,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:41.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-sc",
+          "name": "SC",
+          "url": "https://charts.noaa.gov/ENCs/SC_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 17825792,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:46.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-sp",
+          "name": "SP",
+          "url": "https://charts.noaa.gov/ENCs/SP_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 0,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:46.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-tx",
+          "name": "TX",
+          "url": "https://charts.noaa.gov/ENCs/TX_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 28311552,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:51.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-va",
+          "name": "VA",
+          "url": "https://charts.noaa.gov/ENCs/VA_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 34603008,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:52.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-vt",
+          "name": "VT",
+          "url": "https://charts.noaa.gov/ENCs/VT_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 0,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:52.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-wa",
+          "name": "WA",
+          "url": "https://charts.noaa.gov/ENCs/WA_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 42991616,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:53.000Z"
+        },
+        {
+          "id": "noaa-encs-by-state-wi",
+          "name": "WI",
+          "url": "https://charts.noaa.gov/ENCs/WI_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 8388608,
+          "details": "Group: ENCs by State",
+          "lastUpdated": "2026-02-06T05:53:59.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-02",
+          "name": "02",
+          "url": "https://charts.noaa.gov/ENCs/02Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 65011712,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:47:05.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-03",
+          "name": "03",
+          "url": "https://charts.noaa.gov/ENCs/03Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 59768832,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:47:32.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-04",
+          "name": "04",
+          "url": "https://charts.noaa.gov/ENCs/04Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 57671680,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:47:52.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-06",
+          "name": "06",
+          "url": "https://charts.noaa.gov/ENCs/06Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 56623104,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:48:21.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-07",
+          "name": "07",
+          "url": "https://charts.noaa.gov/ENCs/07Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 32505856,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:48:49.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-08",
+          "name": "08",
+          "url": "https://charts.noaa.gov/ENCs/08Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 38797312,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:49:17.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-10",
+          "name": "10",
+          "url": "https://charts.noaa.gov/ENCs/10Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 15728640,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:49:19.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-12",
+          "name": "12",
+          "url": "https://charts.noaa.gov/ENCs/12Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 37748736,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:49:21.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-13",
+          "name": "13",
+          "url": "https://charts.noaa.gov/ENCs/13Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 16777216,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:49:23.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-14",
+          "name": "14",
+          "url": "https://charts.noaa.gov/ENCs/14Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 49283072,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:49:25.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-15",
+          "name": "15",
+          "url": "https://charts.noaa.gov/ENCs/15Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 34603008,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:49:26.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-17",
+          "name": "17",
+          "url": "https://charts.noaa.gov/ENCs/17Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 92274688,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:22.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-22",
+          "name": "22",
+          "url": "https://charts.noaa.gov/ENCs/22Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 23068672,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:23.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-24",
+          "name": "24",
+          "url": "https://charts.noaa.gov/ENCs/24Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 12582912,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:24.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-26",
+          "name": "26",
+          "url": "https://charts.noaa.gov/ENCs/26Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 9437184,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:24.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-30",
+          "name": "30",
+          "url": "https://charts.noaa.gov/ENCs/30Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 83886080,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:36.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-32",
+          "name": "32",
+          "url": "https://charts.noaa.gov/ENCs/32Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 56623104,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:41.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-34",
+          "name": "34",
+          "url": "https://charts.noaa.gov/ENCs/34Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 75497472,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:43.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-36",
+          "name": "36",
+          "url": "https://charts.noaa.gov/ENCs/36Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 22020096,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:55.000Z"
+        },
+        {
+          "id": "noaa-encs-by-region-40",
+          "name": "40",
+          "url": "https://charts.noaa.gov/ENCs/40Region_ENCs.zip",
+          "type": "s57",
+          "sizeBytes": 47185920,
+          "details": "Group: ENCs by Region",
+          "lastUpdated": "2026-02-06T05:50:56.000Z"
+        }
+      ]
+    },
+    {
+      "id": "openseamap",
+      "name": "OpenSeaMap (stub)",
+      "homepage": "https://www.openseamap.org/",
+      "note": "Terms: https://openseamap.org/index.php?id=copyright (site content CC BY-SA 2.0). Verify data licensing before use.",
+      "checkedAt": "2026-02-08T19:48:15.202Z",
+      "charts": [
+        {
+          "id": "seamap",
+          "name": "OpenSeaMap Seamarks",
+          "url": "https://fsn1.your-objectstorage.com/mtk-seamap/seamap.pmtiles",
+          "type": "pmtiles",
+          "note": "Attribution: OpenSeaMap contributors.",
+          "details": "format: pbf",
+          "deliveries": [
+            {
+              "id": "pmtiles-bbox",
+              "label": "PMTiles (area extract)",
+              "kind": "bbox",
+              "method": "pmtiles",
+              "type": "pmtiles",
+              "sourceUrl": "https://fsn1.your-objectstorage.com/mtk-seamap/seamap.pmtiles",
+              "maxZoom": 14,
+              "preferred": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "openstreetmap",
+      "name": "OpenStreetMap (stub)",
+      "homepage": "https://www.openstreetmap.org/",
+      "note": "Terms: https://www.openstreetmap.org/copyright (ODbL; attribution required).",
+      "checkedAt": "2026-02-08T19:48:15.202Z",
+      "charts": [
+        {
+          "id": "osm",
+          "name": "OpenStreetMap",
+          "url": "https://fsn1.your-objectstorage.com/mtk-seamap/osm.pmtiles",
+          "type": "pmtiles",
+          "note": "Attribution: OpenStreetMap contributors (ODbL).",
+          "details": "format: pbf",
+          "deliveries": [
+            {
+              "id": "pmtiles-bbox",
+              "label": "PMTiles (area extract)",
+              "kind": "bbox",
+              "method": "pmtiles",
+              "type": "pmtiles",
+              "sourceUrl": "https://fsn1.your-objectstorage.com/mtk-seamap/osm.pmtiles",
+              "maxZoom": 14,
+              "preferred": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mapterhorn",
+      "name": "Mapterhorn Terrain (stub)",
+      "homepage": "https://mapterhorn.com/",
+      "note": "Terms: https://mapterhorn.com/attribution (source-specific licenses).",
+      "checkedAt": "2026-02-08T19:48:15.202Z",
+      "charts": [
+        {
+          "id": "mapterhorn",
+          "name": "Mapterhorn Terrain",
+          "url": "https://download.mapterhorn.com/planet.pmtiles",
+          "type": "pmtiles",
+          "note": "Attribution: mapterhorn.com/attribution.",
+          "details": "format: webp | tileSize: 512 | encoding: terrarium",
+          "deliveries": [
+            {
+              "id": "pmtiles-bbox",
+              "label": "PMTiles (area extract)",
+              "kind": "bbox",
+              "method": "pmtiles",
+              "type": "pmtiles",
+              "sourceUrl": "https://download.mapterhorn.com/planet.pmtiles",
+              "maxZoom": 10,
+              "preferred": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gebco",
+      "name": "GEBCO (stub)",
+      "homepage": "https://www.gebco.net/",
+      "note": "Terms: https://www.gebco.net/data_and_products/gridded_bathymetry_data/ (public domain with attribution guidance).",
+      "checkedAt": "2026-02-08T19:48:15.202Z",
+      "charts": [
+        {
+          "id": "gebco",
+          "name": "GEBCO Bathymetry",
+          "url": "https://fsn1.your-objectstorage.com/mtk-seamap/gebco.pmtiles",
+          "type": "pmtiles",
+          "note": "Attribution: GEBCO.",
+          "details": "format: webp | tileSize: 512 | encoding: terrarium",
+          "deliveries": [
+            {
+              "id": "pmtiles-bbox",
+              "label": "PMTiles (area extract)",
+              "kind": "bbox",
+              "method": "pmtiles",
+              "type": "pmtiles",
+              "sourceUrl": "https://fsn1.your-objectstorage.com/mtk-seamap/gebco.pmtiles",
+              "maxZoom": 9,
+              "preferred": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "emodnet",
+      "name": "EMODnet (stub)",
+      "homepage": "https://emodnet.ec.europa.eu/",
+      "note": "Terms: https://emodnet.ec.europa.eu/en/terms-use (site blocked during lookup; verify manually).",
+      "checkedAt": "2026-02-08T19:48:15.202Z",
+      "charts": [
+        {
+          "id": "emodnet",
+          "name": "EMODnet Bathymetry",
+          "url": "https://fsn1.your-objectstorage.com/mtk-seamap/emod.pmtiles",
+          "type": "pmtiles",
+          "note": "Attribution: EMODnet.",
+          "details": "format: webp | tileSize: 512 | encoding: terrarium",
+          "deliveries": [
+            {
+              "id": "pmtiles-bbox",
+              "label": "PMTiles (area extract)",
+              "kind": "bbox",
+              "method": "pmtiles",
+              "type": "pmtiles",
+              "sourceUrl": "https://fsn1.your-objectstorage.com/mtk-seamap/emod.pmtiles",
+              "maxZoom": 11,
+              "preferred": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

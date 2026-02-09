@@ -1,0 +1,1 @@
+{"name": "Invalid JSON chart", "bounds": [0,0,1,1], "format": "png", "minzoom": 0, "maxzoom": 5, "scale": 250000, "type": "tilelayer", "description": "test"  // missing closing brace and comma

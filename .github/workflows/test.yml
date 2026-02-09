@@ -5,22 +5,49 @@ on:
   push:
     branches: [master]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [22.x, 24.x]
+        include:
+          - node-version: 22.x
+            latest: false
+          - node-version: 24.x
+            latest: true
+          - node-version: 25.x
+            latest: false
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install
+        cache-dependency-path: |
+          package-lock.json
+    - uses: SocketDev/action@v1
+      with:
+        mode: firewall-free
+    - run: sfw npm ci
+    - run: npm run ci-lint
+    - run: npm run build
     - run: npm test
       env:
         CI: true
+    - name: Coverage (head)
+      if: ${{ matrix.latest }}
+      run: npm run coverage
+      env:
+        CI: true
+    - name: Upload coverage to Codecov
+      if: ${{ matrix.latest }}
+      uses: codecov/codecov-action@v4
+      with:
+        files: coverage/lcov.info
+        fail_ci_if_error: false

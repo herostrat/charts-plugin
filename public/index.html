@@ -1,106 +1,633 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Chart Database</title>
 
-<head>
-    <link rel="stylesheet" href="style.css" />
-    <title>Signalk charts-addin</title>
-</head>
+    <link rel="stylesheet" href="./assets/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-<body>
-
-    <fieldset>
-        <legend>Seed charts to prefetch tiles for offline usage.</legend>
-        <strong>Select chart provider:</strong><br>
-        <label for="chart">Chart:</label>
-        <select id="chart" name="chart" required>
-        </select>
-        <br>
-        <strong>Select region type:</strong>
-        <br>
-        <!-- Choice 1: Predefined Region -->
-        <label>
-            <input type="radio" name="inputType" value="region" checked>
-            Region
-        </label>
-        <select id="region" name="region">
-        </select>
-
-        <br>
-
-        <!-- Choice 2: Bounding Box -->
-        <label>
-            <input type="radio" name="inputType" value="bbox">
-            Bounding Box (minLon, minLat, maxLon, maxLat) West to East, South to North
-        </label>
+  <body>
+    <header class="topbar">
+      <div class="topbar__brand">
+        <div class="logo" aria-hidden="true">🗺️</div>
         <div>
-            <input type="number" id="bboxMinLon" placeholder="minLon" step="0.0001" disabled value="16.51">
-            <input type="number" id="bboxMinLat" placeholder="minLat" step="0.0001" disabled value="58.59">
-            <input type="number" id="bboxMaxLon" placeholder="maxLon" step="0.0001" disabled value="16.60">
-            <input type="number" id="bboxMaxLat" placeholder="maxLat" step="0.0001" disabled value="58.65">
+          <div class="title">Chart Database</div>
+          <div class="subtitle">
+            Live job status updates — database + sources popup (no page reload)
+          </div>
         </div>
-        <!-- Choice 3: Tile -->
-        <!-- <label>
-            <input type="radio" name="inputType" value="tile">
-            Tile (x, y, z)
-        </label>
-        <div>
-            <input type="number" id="tileX" placeholder="x" disabled>
-            <input type="number" id="tileY" placeholder="y" disabled>
-            <input type="number" id="tileZ" placeholder="z" disabled>
-        </div> -->
+      </div>
 
-        <strong>Select max zoom:</strong><br>
-        <label for="maxZoom">Max Zoom</label>
-        <select id="maxZoom" name="maxZoom" required>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15" selected="selected">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-        </select>
+      <div class="topbar__actions">
+        <div class="livebox" title="Server-Sent Events live updates">
+          <div class="livebox__title">Live updates</div>
+          <div id="liveState" class="live live--re">connecting</div>
+        </div>
+        <button
+          id="refreshBtn"
+          class="btn btn--ghost btn--icon"
+          title="Manual refresh (SSE unavailable)"
+          aria-label="Manual refresh"
+        >
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <polyline points="23 4 23 10 17 10" />
+            <polyline points="1 20 1 14 7 14" />
+            <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10" />
+            <path d="M20.49 15a9 9 0 0 1-14.13 3.36L1 14" />
+          </svg>
+        </button>
+        <button
+          id="configBtn"
+          class="btn btn--ghost btn--icon"
+          title="Open configuration"
+          aria-label="Open configuration"
+        >
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51.3.12.62.18.95.18H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+        </button>
+      </div>
+    </header>
 
-        <br>
-        <button id="createJobButton">Create Seeding Job</button>
-    </fieldset>
+    <main class="shell shell--split">
+      <!-- LEFT: Database -->
+      <section class="card database" aria-label="Database">
+        <div class="card__head">
+          <div>
+            <h2>Database</h2>
+            <p>
+              Shows importing/converting items and completed ones. Click item →
+              highlight & zoom.
+            </p>
+          </div>
+          <div class="head-actions">
+            <div class="seg" aria-label="Filter">
+              <button class="is-active" data-filter="all">All</button>
+              <button data-filter="progress">In progress</button>
+              <button data-filter="available">Available</button>
+              <button data-filter="error">Error</button>
+            </div>
+          </div>
+        </div>
 
-    <div id="output">
-        <table id="activeJobsTable" aria-live="polite">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Chart</th>
-                    <th>Region</th>
-                    <th>Total tiles</th>
-                    <th>Downloaded</th>
-                    <th>Cached</th>
-                    <th>Failed</th>
-                    <th>Progress</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="7" class="muted">Loading progress…</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="kpis" aria-label="Import stats">
+          <div class="kpi">
+            <div class="kpi__k">In progress</div>
+            <div id="kpiActive" class="kpi__v">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__k">Available</div>
+            <div id="kpiAvailable" class="kpi__v">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__k">Error</div>
+            <div id="kpiFailed" class="kpi__v">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__k">Total</div>
+            <div id="kpiTotal" class="kpi__v">0</div>
+          </div>
+        </div>
+
+        <div id="errorBanner" class="banner is-hidden" role="alert"></div>
+
+        <div class="database__body">
+          <div class="dbSection">
+            <div class="sectionTitle">Online providers</div>
+            <div id="providersEmpty" class="empty is-hidden">
+              No online providers yet. Register a streaming source.
+            </div>
+            <div id="providersList" class="imports"></div>
+          </div>
+
+          <div id="importsEmpty" class="empty is-hidden">
+            No items yet. Register/import something in Sources.
+          </div>
+          <div id="importsList" class="imports" aria-live="polite"></div>
+        </div>
+
+        <div class="database__footer">
+          <button
+            id="sourcesOpen"
+            class="fab"
+            type="button"
+            aria-label="Open sources"
+            aria-expanded="false"
+            title="Open sources"
+          >
+            +
+          </button>
+        </div>
+
+        <div
+          id="sourcesPopup"
+          class="card sources-pop is-hidden"
+          role="dialog"
+          aria-label="Sources"
+        >
+          <div class="card__head">
+            <div>
+              <h2>Sources</h2>
+            </div>
+            <div class="head-actions">
+              <div class="seg" aria-label="Source mode">
+                <button class="is-active" data-tab="download">Download</button>
+                <button data-tab="upload">Upload</button>
+                <button data-tab="stream">Streaming</button>
+              </div>
+              <button
+                id="sourcesClose"
+                class="btn btn--ghost sourcesClose"
+                type="button"
+                aria-label="Close sources"
+                title="Close"
+              >
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="section">
+            <!-- Upload -->
+            <section class="panel" data-panel="upload">
+              <div class="form">
+                <label class="field">
+                  <span>Upload file</span>
+                  <input
+                    id="uploadFile"
+                    class="input"
+                    type="file"
+                    accept=".tif,.tiff,.mbtiles,.pmtiles,.s57,.000,.001"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Detected type (override)</span>
+                  <select id="uploadType" class="select">
+                    <option value="unknown">unknown</option>
+                    <option value="geotiff">geotiff</option>
+                    <option value="s57">s57</option>
+                    <option value="mbtiles">mbtiles</option>
+                    <option value="pmtiles">pmtiles</option>
+                  </select>
+                </label>
+
+                <div id="uploadHeavyWarn" class="status is-warn is-hidden">
+                  This conversion/import can be compute-intensive on an SBC.
+                  Consider converting on a dedicated PC and importing the result
+                  here.
+                </div>
+
+                <button id="uploadBtn" class="btn btn--primary" disabled>
+                  Upload
+                </button>
+                <div id="uploadStatus" class="status" role="status">
+                  Select a file to upload. Type is guessed from the filename but
+                  can be overridden.
+                </div>
+              </div>
+            </section>
+
+            <!-- Download -->
+            <section class="panel is-active" data-panel="download">
+              <div class="form">
+                <div class="catalog">
+                  <div class="catalog__head">
+                    <span>Curated sources</span>
+                    <button
+                      id="downloadCatalogRefresh"
+                      class="btn btn--ghost btn--sm"
+                    >
+                      Refresh
+                    </button>
+                  </div>
+                  <select id="downloadCatalog" class="select"></select>
+                  <div id="downloadCatalogBody" class="catalog__body">
+                    <label id="downloadChartRow" class="field is-hidden">
+                      <span>Chart</span>
+                      <select id="downloadChart" class="select"></select>
+                    </label>
+                    <label id="downloadDeliveryRow" class="field is-hidden">
+                      <span>Delivery</span>
+                      <select id="downloadDelivery" class="select"></select>
+                    </label>
+
+                    <div id="downloadBboxRow" class="field is-hidden">
+                      <span>Bounding box (minLon, minLat, maxLon, maxLat)</span>
+                      <div class="field__row">
+                        <input
+                          id="downloadBbox"
+                          class="input"
+                          type="text"
+                          placeholder="minLon,minLat,maxLon,maxLat"
+                        />
+                        <button
+                          id="downloadBboxPick"
+                          class="btn btn--ghost btn--sm"
+                          type="button"
+                        >
+                          Choose
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    id="downloadCatalogStatus"
+                    class="status is-warn is-hidden"
+                    role="status"
+                  ></div>
+                </div>
+
+                <div id="downloadUrlHome">
+                  <label id="downloadUrlRow" class="field">
+                    <div class="field__head">
+                      <span>Source URL</span>
+                      <button
+                        id="downloadCatalogDetails"
+                        class="iconBtn"
+                        type="button"
+                        aria-label="Show source details"
+                        title="Show source details"
+                      >
+                        i
+                      </button>
+                    </div>
+                    <input
+                      id="downloadUrl"
+                      class="input"
+                      type="url"
+                      placeholder="https://example.com/chart.tif"
+                    />
+                  </label>
+                  <div
+                    id="downloadCatalogInfo"
+                    class="catalog__info is-hidden"
+                  ></div>
+                </div>
+
+                <label class="field">
+                  <span>Detected type (override)</span>
+                  <select id="downloadType" class="select">
+                    <option value="unknown">unknown</option>
+                    <option value="geotiff">geotiff</option>
+                    <option value="s57">s57</option>
+                    <option value="mbtiles">mbtiles</option>
+                    <option value="pmtiles">pmtiles</option>
+                  </select>
+                </label>
+
+                <div id="downloadHeavyWarn" class="status is-warn is-hidden">
+                  This conversion/import can be compute-intensive on an SBC.
+                  Consider converting on a dedicated PC and importing the result
+                  here.
+                </div>
+
+                <button id="downloadBtn" class="btn btn--primary" disabled>
+                  Download
+                </button>
+                <div id="downloadStatus" class="status" role="status">
+                  Enter a URL. Type is guessed from the URL but can be
+                  overridden.
+                </div>
+              </div>
+            </section>
+
+            <!-- Streaming -->
+            <section class="panel" data-panel="stream">
+              <div class="form">
+                <label class="field">
+                  <span>Name</span>
+                  <input
+                    id="streamName"
+                    class="input"
+                    type="text"
+                    placeholder="WMS: My Harbor Charts"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Description (optional)</span>
+                  <input
+                    id="streamDescription"
+                    class="input"
+                    type="text"
+                    placeholder="Short description shown in the catalog"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Stream URL</span>
+                  <input
+                    id="streamUrl"
+                    class="input"
+                    type="url"
+                    placeholder="https://example.com/wms?…"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Stream type</span>
+                  <select id="streamType" class="select">
+                    <option value="wms">WMS</option>
+                    <option value="wmts">WMTS</option>
+                    <option value="cog">COG</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span>Format</span>
+                  <select id="streamFormat" class="select">
+                    <option value="png">png</option>
+                    <option value="jpg">jpg</option>
+                  </select>
+                </label>
+
+                <div class="field__row">
+                  <label class="field">
+                    <span>Min zoom</span>
+                    <input
+                      id="streamMinZoom"
+                      class="input"
+                      type="number"
+                      min="1"
+                      max="24"
+                      value="1"
+                    />
+                  </label>
+                  <label class="field">
+                    <span>Max zoom</span>
+                    <input
+                      id="streamMaxZoom"
+                      class="input"
+                      type="number"
+                      min="1"
+                      max="24"
+                      value="15"
+                    />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Bounds (optional)</span>
+                  <input
+                    id="streamBounds"
+                    class="input"
+                    type="text"
+                    placeholder="minLon,minLat,maxLon,maxLat"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Layers (comma-separated)</span>
+                  <input
+                    id="streamLayers"
+                    class="input"
+                    type="text"
+                    placeholder="layer1,layer2"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>WMTS TileMatrixSet (optional)</span>
+                  <input
+                    id="streamTileMatrixSet"
+                    class="input"
+                    type="text"
+                    placeholder="GoogleMapsCompatible"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Headers (optional, one per line)</span>
+                  <textarea
+                    id="streamHeaders"
+                    class="input"
+                    rows="3"
+                    placeholder="Authorization: Bearer …"
+                  ></textarea>
+                </label>
+
+                <label class="field">
+                  <span>Use proxy + cache</span>
+                  <input id="streamProxy" type="checkbox" checked />
+                </label>
+
+                <div id="streamHeavyWarn" class="status is-warn is-hidden">
+                  This conversion/import can be compute-intensive on an SBC.
+                  Consider converting on a dedicated PC and importing the result
+                  here.
+                </div>
+
+                <button id="streamBtn" class="btn btn--primary" disabled>
+                  Register Stream
+                </button>
+                <div id="streamStatus" class="status" role="status">
+                  Provide a stream URL and type hint.
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Map Overview -->
+      <section class="card mapcard" aria-label="Map overview">
+        <div class="card__head">
+          <div>
+            <h2>Map Overview</h2>
+            <p></p>
+          </div>
+          <div class="head-actions">
+            <button id="mapReset" class="btn btn--ghost btn--sm">
+              Zoom out
+            </button>
+            <button id="mapToggle" class="btn btn--ghost btn--sm">Hide</button>
+          </div>
+        </div>
+
+        <div id="mapWrap" class="mapwrap">
+          <div
+            id="leafletMap"
+            class="map"
+            role="img"
+            aria-label="Leaflet map overview"
+          ></div>
+          <div id="basemapNote" class="mapnote" style="display: none">
+            <b>No local basemap found.</b><br />
+            Put
+            <code>assets/world/ne_110m_admin_0_countries.geojson</code> next to
+            this HTML file.
+          </div>
+          <div id="mapEmpty" class="mapempty">No bounds available yet.</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Details overlay -->
+    <div
+      id="detailsOverlay"
+      class="overlay is-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detailsTitle"
+    >
+      <div class="modal" role="document">
+        <div class="modal__head">
+          <div class="modal__title">
+            <h3 id="detailsTitle">Details</h3>
+            <p id="detailsSub">—</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <span id="detailsChip" class="chip chip--queued">queued</span>
+            <button
+              id="detailsClose"
+              class="btn btn--ghost btn--sm"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="modal__body">
+          <div>
+            <div class="sectionTitle">Metadata</div>
+            <div id="detailsMeta" class="kvgrid" style="margin-top: 10px"></div>
+          </div>
+          <div id="detailsWarningsSection" class="is-hidden">
+            <div class="sectionTitle">Warnings</div>
+            <div
+              id="detailsWarnings"
+              class="status is-warn"
+              style="margin-top: 10px"
+            ></div>
+          </div>
+          <div>
+            <div class="sectionTitle">Import Item (raw)</div>
+            <pre id="detailsItemJson" class="json">{}</pre>
+          </div>
+          <div>
+            <div class="sectionTitle">Import Job (summary)</div>
+            <pre id="detailsJobJson" class="json">{}</pre>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script src="index.js"></script>
+    <!-- Config overlay -->
+    <div
+      id="configOverlay"
+      class="overlay is-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="configTitle"
+    >
+      <div class="modal" role="document">
+        <div class="modal__head">
+          <div class="modal__title">
+            <h3 id="configTitle">Configuration</h3>
+            <p id="configSub">Settings provided by the backend</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <button id="configSave" class="btn btn--primary btn--sm" disabled>
+              Save
+            </button>
+            <button
+              id="configClose"
+              class="btn btn--ghost btn--sm"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="modal__body">
+          <div id="configStatus" class="status" role="status">
+            Open to load configuration…
+          </div>
+          <div
+            id="configList"
+            class="cfgList"
+            aria-label="Configuration entries"
+          ></div>
+          <div class="cfgFooterNote">
+            Close without saving is always possible. “Save” only sends changed
+            values.
+          </div>
+        </div>
+      </div>
+    </div>
 
-</body>
+    <!-- Bbox overlay -->
+    <div
+      id="bboxOverlay"
+      class="overlay is-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bboxTitle"
+    >
+      <div class="modal" role="document">
+        <div class="modal__head">
+          <div class="modal__title">
+            <h3 id="bboxTitle">Select bounding box</h3>
+            <p>
+              Left-click and drag to draw a rectangle. Right-click drags the
+              map.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <button id="bboxConfirm" class="btn btn--primary btn--sm" disabled>
+              Confirm
+            </button>
+            <button
+              id="bboxClose"
+              class="btn btn--ghost btn--sm"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="modal__body">
+          <div class="bboxPanel">
+            <div id="bboxMap" class="bboxMap" aria-label="BBox map"></div>
+            <div class="bboxInfo">
+              <div class="sectionTitle">Selected bounds</div>
+              <div id="bboxValue" class="bboxValue">-</div>
+              <div class="hint">
+                Left-click and drag to draw a rectangle. Right-click drag to pan
+                the map. Use the Confirm button to apply the bounds.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <script src="./assets/leaflet/leaflet.js"></script>
+    <script type="module" src="./index.js"></script>
+  </body>
 </html>

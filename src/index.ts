@@ -1,28 +1,69 @@
 import path from 'path'
 import fs from 'fs'
-import * as _ from 'lodash'
-import { findCharts } from './charts'
+
+import { fileURLToPath } from 'url'
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+import _ from 'lodash'
+
+import { findCharts } from './tiles/catalog/scanner'
 import { apiRoutePrefix } from './constants'
-import { ChartProvider, OnlineChartProvider } from './types'
-import { ChartSeedingManager, ChartDownloader, Tile } from './chartDownloader'
-import { Request, Response, Application } from 'express'
-import { OutgoingHttpHeaders } from 'http'
+import type { ChartProvider, OnlineChartProvider } from './types'
+import { convertOnlineProviderConfig } from './tiles/catalog/online'
+import { registerTileRoutes } from './tiles/routes'
+import { registerStyleRoutes } from './resources/style-routes'
+import { getDefaultThemeKey } from './style/nautical-style-generator'
+import { createImportsConfigService } from './web/imports/config'
+import { registerCacheRoutes } from './web/cache/routes'
 import {
+  listOnlineProviders,
+  loadOnlineProvidersFromFile,
+  setOnlineProvidersPersistence
+} from './online/providers-store'
+import {
+  buildChartsStorageLayout,
+  ensureChartsStorageLayout,
+  getChartsStorageLayout,
+  resolveChartsRoot,
+  setChartsStorageLayout
+} from './imports/storage'
+import { onImportEvent } from './imports/events'
+import { startDebugInputWatcher } from './imports/debug-watcher'
+import { registerImportRoutes } from './web/imports/routes'
+import {
+  loadImportStoreFromFile,
+  seedImportJobsFromDatabase,
+  setImportStorePersistence,
+  listImportJobs
+} from './imports/store'
+import {
+  registerResourcesProvider,
+  sanitizeProvider,
+  validateVectorProviders
+} from './resources/registry'
+import express from 'express'
+import type { Request, Response, Application } from 'express'
+import type {
   Plugin,
   ServerAPI,
   ResourceProviderRegistry
 } from '@signalk/server-api'
 
 interface Config {
-  chartPaths: string[]
-  cachePath: string
+  chartsRoot?: string
+  vectorTheme?: string
   onlineChartProviders: OnlineChartProvider[]
+  sidecarEnabled?: boolean
+  sidecarBaseUrl?: string
+  sidecarTileTemplate?: string
+  vectorCatalogs?: Array<{
+    identifier: string
+    catalog: string
+  }>
 }
 
 interface ChartProviderApp
-  extends ServerAPI,
-    ResourceProviderRegistry,
-    Application {
+  extends ServerAPI, ResourceProviderRegistry, Application {
   config: {
     ssl: boolean
     configPath: string
@@ -33,26 +74,29 @@ interface ChartProviderApp
 
 const MIN_ZOOM = 1
 const MAX_ZOOM = 24
-const chartTilesPath = '/signalk/chart-tiles'
+const defaultCatalogId = 'nautical'
+type VectorCatalogChoice = typeof defaultCatalogId | 'none'
 
-module.exports = (app: ChartProviderApp): Plugin => {
+const plugin = (app: ChartProviderApp): Plugin => {
   let chartProviders: { [key: string]: ChartProvider } = {}
+  let refreshChartsFn: (() => Promise<void>) | null = null
   let pluginStarted = false
+  let vectorCatalogById = new Map<string, VectorCatalogChoice>()
+  let refreshListenerRegistered = false
   let props: Config = {
-    chartPaths: [],
-    cachePath: '',
+    vectorTheme: getDefaultThemeKey(),
     onlineChartProviders: []
   }
 
   let urlBase = ''
   const configBasePath = app.config.configPath
-  const defaultChartsPath = path.join(configBasePath, '/charts')
+  const defaultChartsRoot = resolveChartsRoot(configBasePath)
   const serverMajorVersion = app.config.version
     ? parseInt(app.config.version.split('.')[0])
     : '1'
-  ensureDirectoryExists(defaultChartsPath)
+  ensureDirectoryExists(defaultChartsRoot)
 
-  let cachePath = defaultChartsPath
+  let cachePath = defaultChartsRoot
 
   // Check Node version for schema
   const nodeVersion = process.versions.node
@@ -67,24 +111,34 @@ module.exports = (app: ChartProviderApp): Plugin => {
         versionWarning: {
           type: 'string',
           title: 'REQUIRES NODE VERSION >=22',
-          description: 'Starting with version 4 this plugin will not work with Node versions older than 22. You can install an older plugin version from the App store.',
+          description:
+            'Starting with version 4 this plugin will not work with Node versions older than 22. You can install an older plugin version from the App store.',
           default: ''
         }
       }),
-      chartPaths: {
-        type: 'array',
-        title: 'Chart paths',
-        description: `Add one or more paths to find charts. Defaults to "${defaultChartsPath}"`,
-        items: {
-          type: 'string',
-          title: 'Path',
-          description: `Path for chart files, relative to "${configBasePath}"`
-        }
-      },
-      cachePath: {
+      chartsRoot: {
         type: 'string',
-        title: 'Cache path',
-        description: `Directory for cached tiles. Defaults to "${defaultChartsPath}"`
+        title: 'Charts root',
+        description: `Root directory for imports storage layout. Defaults to "${defaultChartsRoot}"`
+      },
+      sidecarEnabled: {
+        type: 'boolean',
+        title: 'Enable sidecar proxy/cache',
+        description:
+          'Use a sidecar service for online proxy/cache/seeding instead of the built-in proxy.',
+        default: false
+      },
+      sidecarBaseUrl: {
+        type: 'string',
+        title: 'Sidecar base URL',
+        description:
+          'Base URL for the sidecar service, e.g. "http://localhost:8080".'
+      },
+      sidecarTileTemplate: {
+        type: 'string',
+        title: 'Sidecar tile URL template',
+        description:
+          'Template for sidecar tile URLs. Use {id}, {z}, {x}, {y}. Default: /tiles/{id}/{z}/{x}/{y}'
       },
       onlineChartProviders: {
         type: 'array',
@@ -134,7 +188,6 @@ module.exports = (app: ChartProviderApp): Plugin => {
             format: {
               type: 'string',
               title: 'Format',
-              default: 'png',
               enum: ['png', 'jpg', 'pbf'],
               description:
                 'Format of map tiles: raster (png, jpg, etc.) / vector (pbf).'
@@ -183,6 +236,31 @@ module.exports = (app: ChartProviderApp): Plugin => {
             }
           }
         }
+      },
+      vectorCatalogs: {
+        type: 'array',
+        title: 'Vector chart catalog selection',
+        description:
+          'Choose a catalog per vector chart identifier. Use "none" to disable catalog hints so the plotter uses defaults.',
+        items: {
+          type: 'object',
+          title: 'Vector catalog entry',
+          required: ['identifier', 'catalog'],
+          properties: {
+            identifier: {
+              type: 'string',
+              title: 'Chart identifier',
+              description:
+                'Matches the chart identifier returned by the resources API.'
+            },
+            catalog: {
+              type: 'string',
+              title: 'Catalog',
+              default: defaultCatalogId,
+              enum: [defaultCatalogId, 'none']
+            }
+          }
+        }
       }
     }
   }
@@ -194,8 +272,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
     name: 'Signal K Charts',
     schema: () => CONFIG_SCHEMA,
     uiSchema: () => CONFIG_UISCHEMA,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    start: (settings: any) => {
+    start: (settings: Config) => {
       return doStartup(settings) // return required for tests
     },
     stop: () => {
@@ -203,7 +280,7 @@ module.exports = (app: ChartProviderApp): Plugin => {
     }
   }
 
-  const doStartup = (config: Config) => {
+  const doStartup = async (config: Config) => {
     // Check Node version
     const nodeVersion = process.versions.node
     const majorVersion = parseInt(nodeVersion.split('.')[0])
@@ -216,27 +293,83 @@ module.exports = (app: ChartProviderApp): Plugin => {
 
     app.debug(`** loaded config: ${config}`)
     props = { ...config }
+    vectorCatalogById = buildVectorCatalogMap(props.vectorCatalogs)
 
     urlBase = `${app.config.ssl ? 'https' : 'http'}://localhost:${
       'getExternalPort' in app.config ? app.config.getExternalPort() : 3000
     }`
     app.debug(`**urlBase** ${urlBase}`)
 
-    const chartPaths = _.isEmpty(props.chartPaths)
-      ? [defaultChartsPath]
-      : resolveUniqueChartPaths(props.chartPaths, configBasePath)
-    cachePath = props.cachePath || defaultChartsPath
-    ensureDirectoryExists(cachePath)
+    const chartsRoot = resolveChartsRoot(configBasePath, props.chartsRoot)
+    const layout = buildChartsStorageLayout(chartsRoot)
+    ensureChartsStorageLayout(layout)
 
-    const onlineProviders = _.reduce(
-      props.onlineChartProviders,
-      (result: { [key: string]: object }, data) => {
-        const provider = convertOnlineProviderConfig(data)
-        result[provider.identifier] = provider
-        return result
-      },
-      {}
+    const chartPaths = [layout.databaseDir]
+    cachePath = path.join(getChartsStorageLayout()?.root || chartsRoot, 'cache')
+    ensureDirectoryExists(cachePath)
+    setChartsStorageLayout(layout)
+
+    const storePath = path.join(chartsRoot, 'imports-store.json')
+    setImportStorePersistence(storePath)
+    loadImportStoreFromFile(storePath)
+      .then(async () => {
+        if (listImportJobs().length === 0) {
+          await seedImportJobsFromDatabase(layout.databaseDir)
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to initialize import store:', err)
+      })
+
+    const onlineStorePath = path.join(chartsRoot, 'online-providers.json')
+    setOnlineProvidersPersistence(onlineStorePath)
+    await loadOnlineProvidersFromFile(onlineStorePath).catch((err) => {
+      console.error('Failed to load online providers store:', err)
+    })
+
+    startDebugInputWatcher(path.join(chartsRoot, 'debug_input')).catch(
+      (err) => {
+        console.error('Failed to start debug input watcher:', err)
+      }
     )
+
+    const buildOnlineProviders = () => {
+      const sidecarConfig = resolveSidecarConfig(props)
+      const combined = [
+        ...(props.onlineChartProviders ?? []),
+        ...listOnlineProviders()
+      ]
+      return _.reduce(
+        combined,
+        (result: { [key: string]: ChartProvider }, data) => {
+          const provider = convertOnlineProviderConfig(data) as ChartProvider
+          if (sidecarConfig.enabled) {
+            const sidecarUrl = buildSidecarTileUrl(
+              sidecarConfig.baseUrl,
+              sidecarConfig.template,
+              provider.identifier
+            )
+            provider.v1 = {
+              ...(provider.v1 ?? {}),
+              tilemapUrl: sidecarUrl
+            }
+            provider.v2 = {
+              ...(provider.v2 ?? {}),
+              url: sidecarUrl
+            }
+            provider.proxy = false
+            provider.remoteUrl = undefined
+            provider.sidecar = true
+            provider.sidecarUrl = sidecarUrl
+          }
+          result[provider.identifier] = provider
+          return result
+        },
+        {}
+      )
+    }
+
+    let onlineProviders = buildOnlineProviders()
     app.debug(
       `Start charts plugin. Chart paths: ${chartPaths.join(
         ', '
@@ -244,7 +377,9 @@ module.exports = (app: ChartProviderApp): Plugin => {
     )
 
     // Do not register routes if plugin has been started once already
-    pluginStarted === false && registerRoutes()
+    if (!pluginStarted) {
+      registerRoutes()
+    }
     pluginStarted = true
 
     // v2 routes - register as Resource Provider, this needs to be always on startup
@@ -261,10 +396,49 @@ module.exports = (app: ChartProviderApp): Plugin => {
         list.push(await findCharts(chartPath))
       }
       return list
-    })()
-      .then((list: ChartProvider[]) =>
-        _.reduce(list, (result, charts) => _.merge({}, result, charts), {})
-      )
+    })().then((list: Array<{ [key: string]: ChartProvider }>) =>
+      _.reduce(list, (result, charts) => _.merge({}, result, charts), {})
+    )
+
+    const refreshCharts = async () => {
+      const list = []
+      for (const chartPath of chartPaths) {
+        list.push(await findCharts(chartPath))
+      }
+      const charts = _.reduce(
+        list,
+        (result, charts) => _.merge({}, result, charts),
+        {}
+      ) as { [key: string]: ChartProvider }
+      onlineProviders = buildOnlineProviders()
+      chartProviders = _.merge({}, charts, onlineProviders) as {
+        [key: string]: ChartProvider
+      }
+      validateVectorProviders(chartProviders, app)
+    }
+    refreshChartsFn = refreshCharts
+
+    if (!refreshListenerRegistered) {
+      let refreshTimer: NodeJS.Timeout | null = null
+      onImportEvent((event) => {
+        if (event.type === 'item' && event.item.state !== 'AVAILABLE') {
+          return
+        }
+        if (event.type !== 'item' && event.type !== 'delete') {
+          return
+        }
+        if (refreshTimer) {
+          return
+        }
+        refreshTimer = setTimeout(() => {
+          refreshTimer = null
+          refreshCharts().catch((err) => {
+            console.error('Failed to refresh charts after import:', err)
+          })
+        }, 200)
+      })
+      refreshListenerRegistered = true
+    }
 
     return loadProviders
       .then((charts: { [key: string]: ChartProvider }) => {
@@ -273,7 +447,9 @@ module.exports = (app: ChartProviderApp): Plugin => {
             _.keys(charts).length
           } charts from ${chartPaths.join(', ')}.`
         )
+        onlineProviders = buildOnlineProviders()
         chartProviders = _.merge({}, charts, onlineProviders)
+        validateVectorProviders(chartProviders, app)
       })
       .catch((e: Error) => {
         console.error(`Error loading chart providers`, e.message)
@@ -285,114 +461,69 @@ module.exports = (app: ChartProviderApp): Plugin => {
   const registerRoutes = () => {
     app.debug('** Registering API paths **')
 
-    app.get(
-      `${chartTilesPath}/:identifier/:z([0-9]*)/:x([0-9]*)/:y([0-9]*)`,
-      async (req: Request, res: Response) => {
-        const { identifier, z, x, y } = req.params
-        const ix = parseInt(x)
-        const iy = parseInt(y)
-        const iz = parseInt(z)
-        const provider = chartProviders[identifier]
-        if (!provider) {
-          return res.sendStatus(404)
-        }
-        if (provider.proxy === true) {
-          return serveTileFromCacheOrRemote(res, provider, iz, ix, iy)
-        } else {
-          switch (provider._fileFormat) {
-            case 'directory':
-              return serveTileFromFilesystem(res, provider, iz, ix, iy)
-            case 'mbtiles':
-              return serveTileFromMbtiles(res, provider, iz, ix, iy)
-            default:
-              console.log(
-                `Unknown chart provider fileformat ${provider._fileFormat}`
-              )
-              res.status(500).send()
-          }
-        }
-      }
+    const publicAssetsCandidates = [
+      path.resolve(__dirname, 'public'),
+      path.resolve(__dirname, '..', 'plugin', 'public'),
+      path.resolve(__dirname, '..', 'public')
+    ]
+    const publicAssets = publicAssetsCandidates.find((candidate) =>
+      fs.existsSync(candidate)
     )
+    if (publicAssets) {
+      app.use('/@signalk/charts-plugin', express.static(publicAssets))
+    }
 
-    app.post(
-      `${chartTilesPath}/cache/:identifier`,
-      async (req: Request, res: Response) => {
-        const { identifier } = req.params
-        const { regionGUID, tile, bbox, maxZoom } = req.body as {
-          regionGUID?: string
-          tile?: Tile // query params come in as strings
-          bbox?: {
-            minLon: number
-            minLat: number
-            maxLon: number
-            maxLat: number
-          }
-          maxZoom?: string
-        }
-        const provider = chartProviders[identifier]
-        if (!provider) {
-          return res.sendStatus(500).send('Provider not found')
-        }
-        if (!maxZoom) {
-          return res.status(400).send('maxZoom parameter is required')
-        }
-        const maxZoomParsed = parseInt(maxZoom)
-        await ChartSeedingManager.createJob(
-          app.resourcesApi,
-          cachePath,
-          provider,
-          maxZoomParsed,
-          regionGUID,
-          bbox
-            ? [bbox.minLon, bbox.minLat, bbox.maxLon, bbox.maxLat]
-            : undefined,
-          tile
-        )
-        return res.status(200).json({
-          state: 'COMPLETED',
-          statusCode: 200,
-          message: 'OK'
-        })
+    const normalizeParam = (value: string | string[] | undefined) => {
+      if (Array.isArray(value)) {
+        return value[0] ?? ''
       }
-    )
+      return value ?? ''
+    }
 
-    app.get(`${chartTilesPath}/cache/jobs`, (req: Request, res: Response) => {
-      const jobs = Object.values(ChartSeedingManager.ActiveJobs).map((job) => {
-        return job.info()
-      })
-      return res.status(200).json(jobs)
+    registerTileRoutes({
+      app,
+      getProviders: () => chartProviders,
+      getCachePath: () => cachePath
     })
 
-    app.post(
-      `${chartTilesPath}/cache/jobs/:id`,
-      (req: Request, res: Response) => {
-        const { id } = req.params
-        const { action } = req.body as { action: string }
-        const parsedId = parseInt(id)
-        const job = ChartSeedingManager.ActiveJobs[parsedId]
-        if (job && action) {
-          if (action === 'start') {
-            job.seedCache()
-          } else if (action === 'stop') {
-            job.cancelJob()
-          } else if (action === 'delete') {
-            job.deleteCache()
-          } else if (action === 'remove') {
-            delete ChartSeedingManager.ActiveJobs[parsedId]
-          } else {
-            return res.status(404).send(`Job ${parsedId} not found`)
-          }
-          return res.status(200).send(`Job ${parsedId} ${action}ed`)
-        }
+    registerStyleRoutes({
+      app,
+      getProviders: () => chartProviders,
+      getCatalogChoice: (identifier) =>
+        vectorCatalogById.get(identifier) ?? defaultCatalogId,
+      getThemeKey: () => props.vectorTheme,
+      defaultCatalogId
+    })
+
+    const configService = createImportsConfigService({
+      getConfig: () => props,
+      setConfig: (next) => {
+        props = { ...props, ...next }
       }
-    )
+    })
+
+    registerImportRoutes({
+      app,
+      configService,
+      onOnlineProvidersChanged: () => {
+        refreshChartsFn?.().catch((err) => {
+          console.error('Failed to refresh charts after provider change:', err)
+        })
+      }
+    })
+
+    registerCacheRoutes({
+      app,
+      getProviders: () => chartProviders,
+      getCachePath: () => cachePath
+    })
 
     app.debug('** Registering v1 API paths **')
 
     app.get(
       apiRoutePrefix[1] + '/charts/:identifier',
       (req: Request, res: Response) => {
-        const { identifier } = req.params
+        const identifier = normalizeParam(req.params.identifier)
         const provider = chartProviders[identifier]
         if (provider) {
           return res.json(sanitizeProvider(provider))
@@ -412,228 +543,58 @@ module.exports = (app: ChartProviderApp): Plugin => {
 
   // Resources API provider registration
   const registerAsProvider = () => {
-    app.debug('** Registering as Resource Provider for `charts` **')
-    try {
-      app.registerResourceProvider({
-        type: 'charts',
-        methods: {
-          listResources: (params: {
-            [key: string]: number | string | object | null
-          }) => {
-            app.debug(`** listResources() ${params}`)
-            return Promise.resolve(
-              _.mapValues(chartProviders, (provider) =>
-                sanitizeProvider(provider, 2)
-              )
-            )
-          },
-          getResource: (id: string) => {
-            app.debug(`** getResource() ${id}`)
-            const provider = chartProviders[id]
-            if (provider) {
-              return Promise.resolve(sanitizeProvider(provider, 2))
-            } else {
-              throw new Error('Chart not found!')
-            }
-          },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setResource: (id: string, value: any) => {
-            throw new Error(`Not implemented!\n Cannot set ${id} to ${value}`)
-          },
-          deleteResource: (id: string) => {
-            throw new Error(`Not implemented!\n Cannot delete ${id}`)
-          }
-        }
-      })
-    } catch (error) {
-      app.debug('Failed Provider Registration!')
-    }
-  }
-
-  const serveTileFromCacheOrRemote = async (
-    res: Response,
-    provider: ChartProvider,
-    z: number,
-    x: number,
-    y: number
-  ) => {
-    const buffer = await ChartDownloader.getTileFromCacheOrRemote(
-      cachePath,
-      provider,
-      { x, y, z }
-    )
-    if (!buffer) {
-      res.sendStatus(502)
-      return
-    }
-    res.set('Content-Type', `image/${provider.format}`)
-    res.send(buffer)
+    registerResourcesProvider(app, () => chartProviders)
   }
 
   return plugin
 }
 
-const responseHttpOptions = {
-  headers: {
-    'Cache-Control': 'public, max-age=7776000' // 90 days
-  }
-}
+export default plugin
 
-const isAllowedTileFormat = (format?: string) => {
-  const allowedFormats = new Set(['png', 'jpg', 'jpeg', 'pbf'])
-  const normalized = format ? format.toLowerCase() : ''
-  return normalized !== '' && allowedFormats.has(normalized)
-}
-
-const resolveUniqueChartPaths = (
-  chartPaths: string[],
-  configBasePath: string
+const buildVectorCatalogMap = (
+  entries?: Array<{ identifier: string; catalog: string }>
 ) => {
-  const paths = _.map(chartPaths, (chartPath) =>
-    path.resolve(configBasePath, chartPath)
-  )
-  return _.uniq(paths)
-}
-
-const convertOnlineProviderConfig = (provider: OnlineChartProvider) => {
-  const id = _.kebabCase(_.deburr(provider.name))
-
-  const parseHeaders = (
-    arr: string[] | undefined
-  ): { [key: string]: string } => {
-    if (arr === undefined) {
-      return {}
+  const map = new Map<string, VectorCatalogChoice>()
+  if (!entries) {
+    return map
+  }
+  entries.forEach((entry) => {
+    if (!entry?.identifier) {
+      return
     }
-    return arr.reduce<{ [key: string]: string }>((acc, entry) => {
-      if (typeof entry == 'string') {
-        const idx = entry.indexOf(':')
-        const key = entry.slice(0, idx).trim()
-        const value = entry.slice(idx + 1).trim()
-        if (key && value) {
-          acc[key] = value
-        }
-      }
-      return acc
-    }, {})
-  }
-
-  const data = {
-    identifier: id,
-    name: provider.name,
-    description: provider.description,
-    bounds: [-180, -90, 180, 90],
-    minzoom: Math.min(Math.max(1, provider.minzoom), 24),
-    maxzoom: Math.min(Math.max(1, provider.maxzoom), 24),
-    format: provider.format,
-    scale: 250000,
-    type: provider.serverType ? provider.serverType : 'tilelayer',
-    style: provider.style ? provider.style : null,
-    v1: {
-      tilemapUrl: provider.proxy
-        ? `~tilePath~/${id}/{z}/{x}/{y}`
-        : provider.url,
-      chartLayers: provider.layers ? provider.layers : null
-    },
-    v2: {
-      url: provider.proxy ? `~tilePath~/${id}/{z}/{x}/{y}` : provider.url,
-      layers: provider.layers ? provider.layers : null
-    },
-    proxy: provider.proxy ? provider.proxy : false,
-    remoteUrl: provider.proxy ? provider.url : null,
-    headers: parseHeaders(provider.headers)
-  }
-  return data
-}
-
-const sanitizeProvider = (provider: ChartProvider, version = 1) => {
-  let v
-  if (version === 1) {
-    v = _.merge({}, provider.v1)
-    v.tilemapUrl = v.tilemapUrl.replace('~tilePath~', chartTilesPath)
-  } else if (version === 2) {
-    v = _.merge({}, provider.v2)
-    v.url = v.url ? v.url.replace('~tilePath~', chartTilesPath) : ''
-  }
-  provider = _.omit(provider, [
-    '_filePath',
-    '_fileFormat',
-    '_mbtilesHandle',
-    '_flipY',
-    'v1',
-    'v2'
-  ]) as ChartProvider
-  return _.merge(provider, v)
+    const normalized = (entry.catalog || '').toLowerCase()
+    const choice = normalized === 'none' ? 'none' : defaultCatalogId
+    map.set(entry.identifier, choice)
+  })
+  return map
 }
 
 const ensureDirectoryExists = (path: string) => {
   if (!fs.existsSync(path)) {
-    fs.mkdirSync(path)
+    fs.mkdirSync(path, { recursive: true })
   }
 }
 
-const serveTileFromFilesystem = (
-  res: Response,
-  provider: ChartProvider,
-  z: number,
-  x: number,
-  y: number
-) => {
-  const { format, _flipY, _filePath } = provider
-  const normalizedFormat = format ? format.toLowerCase() : ''
-  if (!isAllowedTileFormat(normalizedFormat)) {
-    res.status(404).send('Tile not found')
-    return
+const resolveSidecarConfig = (config: Config) => {
+  const enabled = Boolean(config.sidecarEnabled)
+  const baseUrl = (config.sidecarBaseUrl || '').trim()
+  const template = (
+    config.sidecarTileTemplate || '/tiles/{id}/{z}/{x}/{y}'
+  ).trim()
+  if (!enabled || baseUrl.length === 0) {
+    return { enabled: false, baseUrl: '', template }
   }
-  const flippedY = Math.pow(2, z) - 1 - y
-  const tileFile = `${z}/${x}/${_flipY ? flippedY : y}.${normalizedFormat}`
-  const file = _filePath ? path.resolve(_filePath, tileFile) : ''
-  try {
-    if (!file) {
-      res.status(404).send('Tile not found')
-      return
-    }
-    const stats = fs.statSync(file)
-    if (!stats.isFile()) {
-      res.status(404).send('Tile not found')
-      return
-    }
-    fs.accessSync(file, fs.constants.R_OK)
-  } catch {
-    res.status(404).send('Tile not found')
-    return
-  }
-  res.sendFile(file, responseHttpOptions)
+  return { enabled: true, baseUrl, template }
 }
 
-const serveTileFromMbtiles = (
-  res: Response,
-  provider: ChartProvider,
-  z: number,
-  x: number,
-  y: number
+const buildSidecarTileUrl = (
+  baseUrl: string,
+  template: string,
+  identifier: string
 ) => {
-  if (!isAllowedTileFormat(provider.format)) {
-    res.status(404).send('Tile not found')
-    return
-  }
-  provider._mbtilesHandle.getTile(
-    z,
-    x,
-    y,
-    (err: Error, tile: Buffer, headers: OutgoingHttpHeaders) => {
-      if (err && err.message && err.message === 'Tile does not exist') {
-        res.sendStatus(404)
-      } else if (err) {
-        console.error(
-          `Error fetching tile ${provider.identifier}/${z}/${x}/${y}:`,
-          err
-        )
-        res.sendStatus(500)
-      } else {
-        headers['Cache-Control'] = responseHttpOptions.headers['Cache-Control']
-        res.writeHead(200, headers)
-        res.end(tile)
-      }
-    }
-  )
+  const normalizedBase = baseUrl.replace(/\/+$/, '')
+  const normalizedTemplate = template.startsWith('/')
+    ? template
+    : `/${template}`
+  return `${normalizedBase}${normalizedTemplate}`.replace('{id}', identifier)
 }
